@@ -64,6 +64,8 @@
                                 data-i18n="Stock In">Stock In</a></li>
                         <li class="pc-item"><a class="pc-link" href="#" data-i18n="Stock Out">Stock Out</a></li>
                         <li class="pc-item"><a class="pc-link" href="" data-i18n="Transfer">Transfer</a></li>
+                        <li class="pc-item"><a class="pc-link" href="{{ route('stockinit.index') }}"
+                                data-i18n="Initation">Initation</a></li>
                     </ul>
                 </li>
 

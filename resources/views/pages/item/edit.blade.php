@@ -179,20 +179,20 @@
                             </div>
                         </div>
                         <div class="mb-3 row">
-                            <label class="col-lg-4 col-form-label">Variant Code:</label>
-                            <div class="col-lg-8">
-                                <div class="">
-                                    <input type="text" class="form-control" placeholder="Variant Code (3 Characters)"
-                                        name="kode_varian" maxlength="3" />
-                                </div>
-                            </div>
-                        </div>
-                        <div class="mb-3 row">
                             <label class="col-lg-4 col-form-label">Variant Name:</label>
                             <div class="col-lg-8">
                                 <div class="">
                                     <input type="text" class="form-control" placeholder="Variant Name"
                                         name="name_varian" />
+                                </div>
+                            </div>
+                        </div>
+                        <div class="mb-3 row">
+                            <label class="col-lg-4 col-form-label">Variant Code:</label>
+                            <div class="col-lg-8">
+                                <div class="">
+                                    <input type="text" class="form-control" placeholder="Variant Code (3 Characters)"
+                                        name="kode_varian" maxlength="3" />
                                 </div>
                             </div>
                         </div>

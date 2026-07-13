@@ -28,21 +28,24 @@ Route::group(['middleware' => ['isAdmin', 'auth']], function () {
     // ajax
     Route::get('get-item-variant/{id}',     [AjaxController::class, 'getVariants'])->name('getVariants');
 
-    //stock
+    // PENGADAAN
+
+    //GUDANG
+    // -----> Stock
     require __DIR__ . '/admin/stock/stockin.php';
     require __DIR__ . '/admin/stock/stockout.php';
     require __DIR__ . '/admin/stock/transfer.php';
     require __DIR__ . '/admin/stock/mutation.php';
     require __DIR__ . '/admin/stock/current.php';
-
-    // item master data
+    require __DIR__ . '/admin/stock/initation.php';
+    // -----> Item Master
     require __DIR__ . '/admin/item/category.php';
     require __DIR__ . '/admin/item/satuan.php';
     require __DIR__ . '/admin/item/vendor.php';
     require __DIR__ . '/admin/item/item.php';
     require __DIR__ . '/admin/item/item_variant.php';
 
-    // master data lain
+    // MASTER DATA
     require __DIR__ . '/admin/master/outlet.php';
     require __DIR__ . '/admin/master/bank_account.php';
     require __DIR__ . '/admin/master/entitas.php';

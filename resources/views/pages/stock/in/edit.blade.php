@@ -288,7 +288,10 @@
                         <div class="col-1 text-center">
                             <i class="fs-3 ph-duotone ph-arrow-elbow-down-right"></i>
                         </div>
-                        <div class="col-8">
+                        <div class="col-2">
+                            <input type="text" class="form-control" value="${variant.sku_varian}" disabled>
+                        </div>
+                        <div class="col-6">
                             <input type="text" class="form-control" value="${variant.name_varian}" disabled>
                         </div>
                         <div class="col-3">

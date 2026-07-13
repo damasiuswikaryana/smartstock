@@ -311,11 +311,17 @@
                     $.each(res.variants, function(i, variant) {
                         html += `
                     <div class="row mb-2 align-items-center">
-                        <div class="col-8">
+                        <div class="col-1 text-center">
+                            <i class="fs-3 ph-duotone ph-arrow-elbow-down-right"></i>
+                        </div>
+                        <div class="col-2">
+                            <input type="text" class="form-control" value="${variant.sku_varian}" disabled>
+                        </div>
+                        <div class="col-6">
                             <input type="text" class="form-control" value="${variant.name_varian}" disabled>
                         </div>
                         <div class="col-4">
-                            <input type="number" min="0" class="form-control" name="item[${index}][variants][${variant.id}][qty]" placeholder="Qty">
+                            <input type="number" min="0" class="form-control" name="item[${index}][variants][${variant.id}][qty]" placeholder="Qty" value="0">
                             <input type="hidden" name="item[${index}][variants][${variant.id}][id_variant]" value="${variant.id}">
                         </div>
                     </div>`;
