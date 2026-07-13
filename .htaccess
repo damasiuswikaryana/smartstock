@@ -16,3 +16,7 @@
     RewriteCond %{REQUEST_FILENAME} !-f
     RewriteRule ^ index.php [L]
 </IfModule>
+
+<FilesMatch "(\.env|artisan|composer\.json|composer\.lock|package\.json|webpack\.mix\.js|server\.php|\.git|\.env\.example)">
+    Require all denied
+</FilesMatch>
