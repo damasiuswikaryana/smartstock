@@ -9,6 +9,15 @@
         @method('POST')
         @csrf
         <div class="mb-3 row">
+            <label class="col-lg-4 col-form-label">Variant SKU:</label>
+            <div class="col-lg-8">
+                <div class="">
+                    <input type="text" class="form-control" placeholder="Input SKU" name="sku_varian"
+                        maxlength="20" />
+                </div>
+            </div>
+        </div>
+        <div class="mb-3 row">
             <label class="col-lg-4 col-form-label">Variant Code:</label>
             <div class="col-lg-8">
                 <div class="">

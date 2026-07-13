@@ -213,6 +213,7 @@ class AdmItemController extends Controller
             ItemVarian::create([
                 'item_master_id'       => $id,
                 'kode_varian'          => $input['kode_varian'],
+                'sku_varian'            => $input['sku_varian'],
                 'name_varian'          => $input['name_varian'],
                 'nilai'                => hapusTitikAngka($input['nilai']),
             ]);
@@ -239,6 +240,7 @@ class AdmItemController extends Controller
         try {
             DB::beginTransaction();
             $data->kode_varian      = $input['kode_varian'];
+            $data->sku_varian       = $input['sku_varian'];
             $data->name_varian      = $input['name_varian'];
             $data->nilai            = hapusTitikAngka($input['nilai']);
             $data->save();

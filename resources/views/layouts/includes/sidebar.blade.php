@@ -3,10 +3,10 @@
         <div class="m-header">
             <a href="{{ route('dashboard') }}" class="b-brand text-primary">
                 @if (auth()->user()->mode_style == 'light')
-                    <img src="{{ asset('img/logo/logo_rnd_color.png') }}" alt="logo image" class="logo-lg mt-2"
+                    <img src="{{ asset('assets/images/logo/logo_rnd_color.png') }}" alt="logo image" class="logo-lg mt-2"
                         height="40" />
                 @else
-                    <img src="{{ asset('img/logo/logo_rnd_white.png') }}" alt="logo image" class="logo-lg mt-2"
+                    <img src="{{ asset('assets/images/logo/logo_rnd_white.png') }}" alt="logo image" class="logo-lg mt-2"
                         height="40" />
                 @endif
                 <span class="badge bg-brand-color-2 rounded-pill ms-1 theme-version">v1.3.0</span>
@@ -25,7 +25,12 @@
                 </li>
 
                 <li class="pc-item pc-caption">
-                    <label data-i18n="Stock">Stock</label>
+                    <label data-i18n="Pengadaan">Pengadaan</label>
+                    <i class="ph-duotone ph-chart-pie"></i>
+                </li>
+
+                <li class="pc-item pc-caption">
+                    <label data-i18n="Gudang">Gudang</label>
                     <i class="ph-duotone ph-chart-pie"></i>
                 </li>
 
@@ -43,9 +48,9 @@
                         </li>
                         <li class="pc-item"><a class="pc-link" href="{{ route('stockMutation.index') }}"
                                 data-i18n="Mutation">Mutation</a></li>
+                        <li class="pc-item"><a class="pc-link" href="" data-i18n="Opnam">Opnam</a></li>
                     </ul>
                 </li>
-
                 <li class="pc-item pc-hasmenu">
                     <a href="javascript:void(0);" class="pc-link active">
                         <span class="pc-micon">
@@ -60,20 +65,6 @@
                         <li class="pc-item"><a class="pc-link" href="#" data-i18n="Stock Out">Stock Out</a></li>
                         <li class="pc-item"><a class="pc-link" href="" data-i18n="Transfer">Transfer</a></li>
                     </ul>
-                </li>
-
-                <li class="pc-item">
-                    <a href="#" class="pc-link">
-                        <span class="pc-micon">
-                            <i class="ph-duotone ph-arrows-clockwise"></i>
-                        </span>
-                        <span class="pc-mtext" data-i18n="Opnam">Opnam</span>
-                    </a>
-                </li>
-
-                <li class="pc-item pc-caption">
-                    <label data-i18n="Management">Management</label>
-                    <i class="ph-duotone ph-chart-pie"></i>
                 </li>
 
                 <li
@@ -98,6 +89,11 @@
                     </ul>
                 </li>
 
+                <li class="pc-item pc-caption">
+                    <label data-i18n="Master Data">Master Data</label>
+                    <i class="ph-duotone ph-chart-pie"></i>
+                </li>
+
                 <li
                     class="pc-item pc-hasmenu {{ request()->is('outlet*') || request()->is('bank-account*') || request()->is('user*') ? 'active pc-trigger' : '' }}">
                     <a href="javascript:void(0);" class="pc-link active">
@@ -118,11 +114,6 @@
                         <li class="pc-item {{ request()->is('user*') ? 'active' : '' }}"><a class="pc-link"
                                 href="{{ route('user.index') }}" data-i18n="System Users">System Users</a></li>
                     </ul>
-                </li>
-
-                <li class="pc-item pc-caption">
-                    <label data-i18n="Report">Report</label>
-                    <i class="ph-duotone ph-chart-pie"></i>
                 </li>
             </ul>
         </div>
