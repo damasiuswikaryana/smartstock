@@ -28019,7 +28019,6 @@ select[data-multiselectsplitter-secondselect-selector].dataTable-input {
     width: 100%;
 }
 .auth-main.v2 {
-    background: url("/img/bg/auth-bg-small.jpg");
     background-size: cover;
     background-position: center;
 }

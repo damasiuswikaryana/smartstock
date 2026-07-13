@@ -45,12 +45,12 @@
 <body data-pc-preset="preset-1" data-pc-sidebar-theme="light" data-pc-sidebar-caption="true" data-pc-direction="ltr"
     data-pc-theme="light">
 
-    <div class="auth-main v2">
+    <div class="auth-main v2" style="background-image: url({{ asset('assets/images/bg/auth-bg-small.jpg') }})";>
         <div class="bg-overlay bg-dark"></div>
         <div class="auth-wrapper">
             <div class="auth-sidecontent">
                 <div class="auth-sidefooter">
-                    <img src="{{ asset('img/logo/logo_apik_color.png') }}" class=" img-fluid" alt="images"
+                    <img src="{{ asset('assets/images/logo/logo_apik_color.png') }}" class=" img-fluid" alt="images"
                         width="35%" style="margin-left: -15px !important;" />
                     <!--<hr class="mb-3 mt-4" />-->
                     <div class="row">
@@ -68,8 +68,8 @@
                 <div class="card my-4 mx-3">
                     <div class="card-body">
                         <div class="d-flex justify-content-center align-items-center mb-4 text-center">
-                            <img src="{{ asset('img/logo/logo_rnd_color.png') }}" class="img-fluid" alt="images"
-                                width="70%" />
+                            <img src="{{ asset('assets/images/logo/logo_rnd_color.png') }}" class="img-fluid"
+                                alt="images" width="70%" />
                         </div>
                         <div class="mb-4">
                             <input type="text"
