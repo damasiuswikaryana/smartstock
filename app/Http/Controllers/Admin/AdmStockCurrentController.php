@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Models\Stock;
+use App\Models\Outlet;
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -13,10 +14,24 @@ class AdmStockCurrentController extends Controller
 {
     public function index(Request $request)
     {
-        $lokasi     = Auth::user()->loc_id;
-        $data       = Stock::where('lokasi_id', $lokasi)->get();
+        $allGudang      = Outlet::all();
+        $lokasi         = Auth::user()->loc_id;
+        // jika yang login adalah masteradmin
+        if (Auth::user()->roles[0]->name == "masteradmin") {
+            $data       = Stock::query();
+        } else {
+            $data       = Stock::where('lokasi_id', $lokasi)->get();
+        }
 
         if ($request->ajax()) {
+            // filter werehouse
+            if ($request->gudang) {
+                $gudang_id  = $request->gudang;
+                $data       = $data->where('lokasi_id', $gudang_id);
+            }
+            // get data
+            $data = $data->get();
+
             return DataTables::of($data)
                 ->addIndexColumn()
                 ->addColumn('last_update', function ($row) {
@@ -43,6 +58,6 @@ class AdmStockCurrentController extends Controller
                 ->rawColumns(['action', 'last_update', 'item', 'variant', 'werehouse', 'entity', 'category', 'qty'])
                 ->make(true);
         }
-        return view('pages.stock.current.index');
+        return view('pages.stock.current.index', compact('allGudang'));
     }
 }

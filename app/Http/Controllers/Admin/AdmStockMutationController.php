@@ -24,7 +24,7 @@ class AdmStockMutationController extends Controller
                 ->addColumn('action', function ($row) {
                     return '<ul class="list-inline mb-0">
                                 <li class="list-inline-item">
-                                    <a data-bs-toggle="modal" data-bs-target="#modalDetail" data-bs-placement="top" title="Detail" href="' . route('stockMutation.detail', $row->id) . '" class="avtar avtar-s btn-link-success btn-pc-default btn-edit"><i class="ti ti-eye f-20"></i></a>
+                                    <a data-bs-toggle="modal" data-bs-target="#modalDetail" data-bs-placement="top" title="Detail" href="' . route('stockMutation.detail', $row->id) . '" class="avtar avtar-xs btn-link-success btn-pc-default btn-edit"><i class="ti ti-eye f-20"></i></a>
                                 </li>
                             </ul>';
                 })

@@ -26,7 +26,8 @@ Route::group(['middleware' => ['isAdmin', 'auth']], function () {
     Route::get('log-activity',              [HomeController::class, 'logActivity'])->name('log-activity');
 
     // ajax
-    Route::get('get-item-variant/{id}',     [AjaxController::class, 'getVariants'])->name('getVariants');
+    Route::get('get-item-variant/{id}',                 [AjaxController::class, 'getVariants'])->name('getVariants');
+    Route::get('get-item-variant-stocks/{id}/{whid}',   [AjaxController::class, 'getVariantStocks'])->name('getVariantStocks');
 
     // PENGADAAN
 
@@ -49,5 +50,6 @@ Route::group(['middleware' => ['isAdmin', 'auth']], function () {
     require __DIR__ . '/admin/master/outlet.php';
     require __DIR__ . '/admin/master/bank_account.php';
     require __DIR__ . '/admin/master/entitas.php';
+    require __DIR__ . '/admin/master/project.php';
     require __DIR__ . '/admin/user/user.php';
 });

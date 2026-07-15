@@ -37,7 +37,7 @@
                 <li class="pc-item pc-hasmenu">
                     <a href="javascript:void(0);" class="pc-link active">
                         <span class="pc-micon">
-                            <i class="ph-duotone ph-arrows-left-right"></i>
+                            <i class="ph-duotone ph-monitor"></i>
                         </span>
                         <span class="pc-mtext" data-i18n="Stock Monitor">Stock Monitor</span>
                         <span class="pc-arrow"><i data-feather="chevron-right"></i></span>
@@ -62,7 +62,8 @@
                     <ul class="pc-submenu">
                         <li class="pc-item"><a class="pc-link" href="{{ route('stockin.index') }}"
                                 data-i18n="Stock In">Stock In</a></li>
-                        <li class="pc-item"><a class="pc-link" href="#" data-i18n="Stock Out">Stock Out</a></li>
+                        <li class="pc-item"><a class="pc-link" href="{{ route('stockout.index') }}"
+                                data-i18n="Stock Out">Stock Out</a></li>
                         <li class="pc-item"><a class="pc-link" href="" data-i18n="Transfer">Transfer</a></li>
                         <li class="pc-item"><a class="pc-link" href="{{ route('stockinit.index') }}"
                                 data-i18n="Initation">Initation</a></li>
@@ -110,6 +111,9 @@
                                 href="{{ route('outlet.index') }}" data-i18n="Werehouse">Werehouse</a></li>
                         <li class="pc-item {{ request()->is('entitas*') ? 'active' : '' }}"><a class="pc-link"
                                 href="{{ route('entitas.index') }}" data-i18n="Entity">Entity</a></li>
+                        <li class="pc-item {{ request()->is('project*') ? 'active' : '' }}"><a class="pc-link"
+                                href="{{ route('project.index') }}" data-i18n="Projects">Projects</a>
+                        </li>
                         <li class="pc-item {{ request()->is('bank-account*') ? 'active' : '' }}"><a class="pc-link"
                                 href="{{ route('bank-account.index') }}" data-i18n="Bank Accounts">Bank Accounts</a>
                         </li>

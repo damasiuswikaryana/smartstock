@@ -17,4 +17,9 @@ class ItemVarian extends Model
     {
         return $this->belongsTo(ItemMaster::class, 'item_master_id', 'id');
     }
+
+    public function stock()
+    {
+        return $this->hasMany(Stock::class, 'item_varian_id');
+    }
 }

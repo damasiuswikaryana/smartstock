@@ -11,7 +11,17 @@
     </x-page-header>
 
     <div class="d-flex justify-content-between align-items-center mb-4 mt-3">
-        <div class="col-12 text-end">
+        <div class="col-4 text-start">
+            <div class="form-search">
+                <i class="ph-duotone ph-funnel icon-search"></i>
+                <select class="form-control" id="fl_werehouse">
+                    @foreach ($allGudang as $g)
+                        <option value="{{ $g->id }}">{{ $g->nama }}</option>
+                    @endforeach
+                </select>
+            </div>
+        </div>
+        <div class="col-4 text-end">
             <div class="form-search">
                 <i class="ph-duotone ph-magnifying-glass icon-search"></i>
                 <input type="search" id="search" class="form-control" placeholder="Search here...">
@@ -32,7 +42,12 @@
         let table = $('#myTable').DataTable({
             processing: true,
             serverSide: true,
-            ajax: "{{ route('stockCurrent.index') }}",
+            ajax: {
+                url: "{{ route('stockCurrent.index') }}",
+                data: function(d) {
+                    d.gudang = $('#fl_werehouse').val();
+                }
+            },
             scrollY: true,
             scrollX: true,
             scrollCollapse: true,
@@ -98,6 +113,10 @@
 
         $('#search').keyup(function() {
             table.search($(this).val()).draw();
+        });
+
+        $('#fl_werehouse').on('change', function() {
+            table.ajax.reload();
         });
 
         table.on('draw', function() {

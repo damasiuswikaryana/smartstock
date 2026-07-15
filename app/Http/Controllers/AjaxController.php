@@ -19,4 +19,31 @@ class AjaxController extends Controller
             'variants' => $item->varian
         ]);
     }
+
+    public function getVariantStocks(int $id, int $gudang_id)
+    {
+        $item = ItemMaster::with([
+            'varian' => function ($q) use ($gudang_id) {
+                $q->with([
+                    'stock' => function ($q) use ($gudang_id) {
+                        $q->where('lokasi_id', $gudang_id);
+                    }
+                ]);
+            }
+        ])->findOrFail($id);
+
+        $variants = $item->varian->map(function ($variant) {
+            return [
+                'id'            => $variant->id,
+                'sku_varian'    => $variant->sku_varian,
+                'name_varian'   => $variant->name_varian,
+                'stok'          => $variant->stock->sum('jumlah'),
+            ];
+        });
+
+        return response()->json([
+            'success'   => true,
+            'variants'  => $variants
+        ]);
+    }
 }
