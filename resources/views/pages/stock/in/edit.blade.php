@@ -9,20 +9,41 @@
         <form class="row" action="#" method="post" id="form-edit" name="form-edit">
             @csrf
             @method('POST')
-            <div class="col-6">
-                <h4 class="fw-bold mb-3">Stock Info</h4>
+            <div class="col-12">
                 <div class="mb-3 row">
-                    <label class="col-lg-4 col-form-label">Stock In Number:</label>
-                    <div class="col-lg-8">
-                        <input type="text" class="form-control" placeholder="Number" name="stock_in_number"
+                    <label class="col-lg-12 col-form-label pt-0">Stock In Number:</label>
+                    <div class="col-lg-12">
+                        <input type="text" class="form-control" placeholder="ASTA/XXX/XXX" name="stock_in_number"
                             value="{{ $data->stock_in_number }}">
                     </div>
                 </div>
+            </div>
+            <div class="col-6">
+                <div class="mb-3 row">
+                    <label class="col-lg-4 col-form-label">Werehouse:</label>
+                    <div class="col-lg-8">
+                        <select class="form-control" name="werehouse_id">
+                            @foreach ($gudang as $wh)
+                                <option @if ($data->werehouse_id == $wh->id) selected @endif value="{{ $wh->id }}">
+                                    {{ $wh->nama }}</option>
+                            @endforeach
+                        </select>
+                    </div>
+                </div>
+
                 <div class="mb-3 row">
                     <label class="col-lg-4 col-form-label">Date:</label>
                     <div class="col-lg-8">
                         <input type="date" class="form-control" placeholder="Date stock in" name="in_date"
                             value="{{ $data->in_date }}">
+                    </div>
+                </div>
+
+                <div class="mb-3 row">
+                    <label class="col-lg-4 col-form-label">PO Number:</label>
+                    <div class="col-lg-8">
+                        <input type="text" class="form-control" placeholder="Input PO Number" name="po_number"
+                            value="{{ $data->po_number }}">
                     </div>
                 </div>
             </div>
@@ -41,6 +62,17 @@
                     </div>
                 </div>
                 <div class="mb-3 row">
+                    <label class="col-lg-4 col-form-label">Project:</label>
+                    <div class="col-lg-8">
+                        <select class="form-control" name="pekerjaan_id">
+                            @foreach ($pekerjaan as $pr)
+                                <option @if ($data->pekerjaan_id == $pr->id) selected @endif value="{{ $pr->id }}">
+                                    {{ $pr->name }}</option>
+                            @endforeach
+                        </select>
+                    </div>
+                </div>
+                <div class="mb-3 row">
                     <label class="col-lg-4 col-form-label">Entity:</label>
                     <div class="col-lg-8">
                         <select class="form-control" name="entitas_id">
@@ -51,13 +83,7 @@
                         </select>
                     </div>
                 </div>
-                <div class="mb-3 row">
-                    <label class="col-lg-4 col-form-label">PO Number:</label>
-                    <div class="col-lg-8">
-                        <input type="text" class="form-control" placeholder="Input PO Number" name="po_number"
-                            value="{{ $data->po_number }}">
-                    </div>
-                </div>
+
             </div>
 
             <div class="col-12 mb-4">

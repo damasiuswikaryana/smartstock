@@ -10,6 +10,16 @@ use Illuminate\Support\Facades\Auth;
 
 class AjaxController extends Controller
 {
+    public function getItembyCategory(int $id)
+    {
+        $items = ItemMaster::where('category_id', $id)->get();
+
+        return response()->json([
+            'success'   => true,
+            'items'     => $items
+        ]);
+    }
+
     public function getVariants(int $id)
     {
         $item = ItemMaster::with('varian')->findOrFail($id);

@@ -11,6 +11,8 @@ use App\Models\StockInMaster;
 use App\Models\StockInMasterPhoto;
 use App\Models\StockInChild;
 use App\Models\Stock;
+use App\Models\Outlet;
+use App\Models\Project;
 
 use Illuminate\Http\Request;
 use Yajra\DataTables\DataTables;
@@ -27,6 +29,8 @@ class InOutStockController extends Controller
         $entitas    = Entitas::all();
         $data       = StockInMaster::with('child');
         $items      = ItemMaster::all();
+        $pekerjaan  = Project::all();
+        $gudang     = Outlet::all();
 
         if ($request->ajax()) {
             return DataTables::of($data)
@@ -55,6 +59,16 @@ class InOutStockController extends Controller
                 ->addColumn('updated_at', function ($row) {
                     return tanggalIndoWaktuLidgkap($row->updated_at);
                 })
+                ->addColumn('si_number', function ($row) {
+                    return "<code>" . $row->stock_in_number . "</code>";
+                })
+                ->addColumn('werehouse', function ($row) {
+                    return $row->gudang->nama;
+                })
+                ->addColumn('entitas', function ($row) {
+                    return '<p class="fw-bold mb-0">' . $row->pekerjaan->name . '</p>
+                        <p class="f-10 mb-0">' . $row->entitas->entitas_name . '</p>';
+                })
                 ->addColumn('date', function ($row) {
                     return tanggalIndo($row->in_date);
                 })
@@ -74,10 +88,10 @@ class InOutStockController extends Controller
                         return '<span class="badge bg-light-success">Approval</span>';
                     }
                 })
-                ->rawColumns(['action', 'updated_at', 'date', 'vendor', 'po_number', 'status'])
+                ->rawColumns(['action', 'updated_at', 'si_number', 'entitas', 'date', 'werehouse', 'vendor', 'po_number', 'status'])
                 ->make(true);
         }
-        return view('pages.stock.in.index', compact('vendor', 'items', 'entitas'));
+        return view('pages.stock.in.index', compact('vendor', 'items', 'entitas', 'pekerjaan', 'gudang'));
     }
 
     public function store(Request $request)
@@ -90,6 +104,8 @@ class InOutStockController extends Controller
                 'in_date'           => $input['in_date'],
                 'vendor_id'         => $input['vendor_id'],
                 'entitas_id'        => $input['entitas_id'],
+                'werehouse_id'      => $input['werehouse_id'],
+                'pekerjaan_id'      => $input['pekerjaan_id'],
                 'po_number'         => $input['po_number'],
                 'note'              => $input['notes'],
                 'status'            => "Pending",
@@ -129,6 +145,8 @@ class InOutStockController extends Controller
     {
         $vendor         = Vendor::all();
         $entitas        = Entitas::all();
+        $pekerjaan      = Project::all();
+        $gudang         = Outlet::all();
         $items          = ItemMaster::all();
         $data           = StockInMaster::with('child')->where('id', $id)->first();
         $document       = StockInMasterPhoto::where('stock_in_m_id', $id)->get();
@@ -144,7 +162,7 @@ class InOutStockController extends Controller
         // Mapping qty berdasarkan item_varian_id
         $qtyData        = $data->child->keyBy('item_varian_id');
 
-        return view('pages.stock.in.edit', compact('data', 'vendor', 'entitas', 'items', 'itemMasters', 'document', 'qtyData'));
+        return view('pages.stock.in.edit', compact('data', 'vendor', 'entitas', 'items', 'itemMasters', 'document', 'qtyData', 'pekerjaan', 'gudang'));
     }
 
     public function update(Request $request, int $id)
@@ -157,6 +175,8 @@ class InOutStockController extends Controller
             $data->in_date          = $input['in_date'];
             $data->vendor_id        = $input['vendor_id'];
             $data->entitas_id       = $input['entitas_id'];
+            $data->werehouse_id     = $input['werehouse_id'];
+            $data->pekerjaan_id     = $input['pekerjaan_id'];
             $data->po_number        = $input['po_number'];
             $data->note             = $input['notes'];
             $data->save();
@@ -245,17 +265,24 @@ class InOutStockController extends Controller
             DB::commit();
 
             // masukin ke stock mutasi, agar dapat ditrack
+            $namaGudang = namaLokasi($data->werehouse_id);
             $tipe       = 'Masuk';
+            $pekerjaan  = $data->pekerjaan_id;
             $source     = 'External';
             $source_id  = NULL;
-            $target     = 'Central';
-            $target_id  = Auth::user()->lokasi->id;
-            $keterangan = 'Item masuk dari external ke gudang central';
+            if ($data->werehouse_id == 1) {
+                $target = "Central";
+            } else {
+                $target = "Cabang";
+            }
+            $target_id  = $data->werehouse_id;
+            $keterangan = 'Item masuk dari external ke ' . $namaGudang;
             $entitas    = $data->entitas_id;
             $dataChild  = $data->child()->get();
             foreach ($dataChild as $child) {
                 storeMutation(
                     $tipe,
+                    $pekerjaan,
                     $source,
                     $source_id,
                     $target,

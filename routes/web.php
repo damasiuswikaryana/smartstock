@@ -28,8 +28,11 @@ Route::group(['middleware' => ['isAdmin', 'auth']], function () {
     // ajax
     Route::get('get-item-variant/{id}',                 [AjaxController::class, 'getVariants'])->name('getVariants');
     Route::get('get-item-variant-stocks/{id}/{whid}',   [AjaxController::class, 'getVariantStocks'])->name('getVariantStocks');
+    Route::get('get-item-by-category/{id}',             [AjaxController::class, 'getItembyCategory'])->name('getItembyCategory');
 
     // PENGADAAN
+    require __DIR__ . '/admin/pengadaan/fullfillment.php';
+    require __DIR__ . '/admin/pengadaan/requirement.php';
 
     //GUDANG
     // -----> Stock

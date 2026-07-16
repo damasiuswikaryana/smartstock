@@ -18,7 +18,7 @@
                 <li class="pc-item {{ request()->is('/') ? 'active' : '' }}">
                     <a href="{{ route('dashboard') }}" class="pc-link">
                         <span class="pc-micon">
-                            <i class="ph-duotone ph-gauge"></i>
+                            <i class="ph-duotone ph-house-line"></i>
                         </span>
                         <span class="pc-mtext" data-i18n="Dashboard">Dashboard</span>
                     </a>
@@ -27,6 +27,15 @@
                 <li class="pc-item pc-caption">
                     <label data-i18n="Pengadaan">Pengadaan</label>
                     <i class="ph-duotone ph-chart-pie"></i>
+                </li>
+
+                <li class="pc-item">
+                    <a href="{{ route('fullfillment.index') }}" class="pc-link">
+                        <span class="pc-micon">
+                            <i class="ph-duotone ph-cloud-check"></i>
+                        </span>
+                        <span class="pc-mtext" data-i18n="Contract Fulfillment">Contract Fulfillment</span>
+                    </a>
                 </li>
 
                 <li class="pc-item pc-caption">

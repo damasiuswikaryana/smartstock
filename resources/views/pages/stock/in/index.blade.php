@@ -25,7 +25,7 @@
     </div>
 
     @php
-        $thead = ['No', 'Date', 'Vendor', 'PO', 'Items', 'Status', 'Options'];
+        $thead = ['Number', 'Project', 'Date', 'Werehouse', 'Vendor', 'PO', 'Items', 'Status', 'Options'];
     @endphp
     <x-datatable :thead=$thead :filter="null">
     </x-datatable>
@@ -35,7 +35,9 @@
         <div class="modal-dialog modal-xl modal-dialog-centered" role="document">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h5 class="modal-title" id="exampleModalCenterTitle">Add New Stock In</h5>
+                    <h5 class="modal-title" id="exampleModalCenterTitle">
+                        Add New Stock In
+                    </h5>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <form class="modal-body" action="#" method="post" id="form-tambah">
@@ -43,13 +45,25 @@
                         @csrf
                         @method('POST')
                         <div class="row">
-                            <div class="col-6">
-                                <h4 class="fw-bold mb-3">Stock Info</h4>
+                            <div class="col-12">
                                 <div class="mb-3 row">
-                                    <label class="col-lg-4 col-form-label">Stock In Number:</label>
-                                    <div class="col-lg-8">
-                                        <input type="text" class="form-control" placeholder="Number"
+                                    <label class="col-lg-12 col-form-label pt-0">Stock In Number:</label>
+                                    <div class="col-lg-12">
+                                        <input type="text" class="form-control" placeholder="ASTA/XXX/XXX"
                                             name="stock_in_number" value="">
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="col-6">
+                                <div class="mb-3 row">
+                                    <label class="col-lg-4 col-form-label">Werehouse:</label>
+                                    <div class="col-lg-8">
+                                        <select class="form-control" name="werehouse_id">
+                                            @foreach ($gudang as $wh)
+                                                <option value="{{ $wh->id }}">{{ $wh->nama }}</option>
+                                            @endforeach
+                                        </select>
                                     </div>
                                 </div>
                                 <div class="mb-3 row">
@@ -59,16 +73,32 @@
                                             name="in_date" value="">
                                     </div>
                                 </div>
+                                <div class="mb-3 row">
+                                    <label class="col-lg-4 col-form-label">PO Number:</label>
+                                    <div class="col-lg-8">
+                                        <input type="text" class="form-control" placeholder="Input PO Number"
+                                            name="po_number" value="">
+                                    </div>
+                                </div>
                             </div>
 
                             <div class="col-6">
-                                <h4 class="fw-bold mb-3">Vendor</h4>
                                 <div class="mb-3 row">
                                     <label class="col-lg-4 col-form-label">Vendor:</label>
                                     <div class="col-lg-8">
                                         <select class="form-control" name="vendor_id">
                                             @foreach ($vendor as $vd)
                                                 <option value="{{ $vd->id }}">{{ $vd->nama }}</option>
+                                            @endforeach
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="mb-3 row">
+                                    <label class="col-lg-4 col-form-label">Project:</label>
+                                    <div class="col-lg-8">
+                                        <select class="form-control" name="pekerjaan_id">
+                                            @foreach ($pekerjaan as $pr)
+                                                <option value="{{ $pr->id }}">{{ $pr->name }}</option>
                                             @endforeach
                                         </select>
                                     </div>
@@ -81,13 +111,6 @@
                                                 <option value="{{ $et->id }}">{{ $et->entitas_name }}</option>
                                             @endforeach
                                         </select>
-                                    </div>
-                                </div>
-                                <div class="mb-3 row">
-                                    <label class="col-lg-4 col-form-label">PO Number:</label>
-                                    <div class="col-lg-8">
-                                        <input type="text" class="form-control" placeholder="Input PO Number"
-                                            name="po_number" value="">
                                     </div>
                                 </div>
                             </div>
@@ -158,19 +181,24 @@
                 [0, 'asc']
             ],
             columns: [{
-                    data: null,
-                    name: 'no',
-                    class: 'text-center py-1',
-                    orderable: false,
-                    searchable: false,
-                    render: function(data, type, row, meta) {
-                        return meta.row + meta.settings._iDisplayStart + 1;
-                    }
+                    data: 'si_number',
+                    name: 'si_number',
+                    class: 'py-1 fw-bold',
+                },
+                {
+                    data: 'entitas',
+                    name: 'entitas',
+                    class: 'py-1',
                 },
                 {
                     data: 'date',
                     name: 'date',
-                    class: 'py-1 fw-bold',
+                    class: 'py-1',
+                },
+                {
+                    data: 'werehouse',
+                    name: 'werehouse',
+                    class: 'py-1',
                 },
                 {
                     data: 'vendor',
@@ -317,7 +345,7 @@
                         <div class="col-2">
                             <input type="text" class="form-control" value="${variant.sku_varian}" disabled>
                         </div>
-                        <div class="col-6">
+                        <div class="col-5">
                             <input type="text" class="form-control" value="${variant.name_varian}" disabled>
                         </div>
                         <div class="col-4">

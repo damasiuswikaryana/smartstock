@@ -273,6 +273,7 @@ class OutStockController extends Controller
     {
         $data   = StockOutMaster::where('id', $id)->first();
         $gudang = $data->werehouse_id;
+        $namaGudang = namaLokasi($gudang);
         try {
             DB::beginTransaction();
             $data->status           = 'Approved';
@@ -292,12 +293,14 @@ class OutStockController extends Controller
             }
             $target     = 'External';
             $target_id  = NULL;
-            $keterangan = 'Item keluar habis pakai dari ke gudang ...';
+            $keterangan = 'Item keluar habis pakai dari gudang ' . $namaGudang . ' ke External';
             $entitas    = $data->entitas_id;
+            $pekerjaan  = $data->pekerjaan_id;
             $dataChild  = $data->child()->get();
             foreach ($dataChild as $child) {
                 storeMutation(
                     $tipe,
+                    $pekerjaan,
                     $source,
                     $source_id,
                     $target,
