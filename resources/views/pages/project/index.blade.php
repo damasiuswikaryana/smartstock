@@ -5,16 +5,16 @@
 @endpush
 
 @section('content')
-    <x-page-header title="Project List" module="Projects">
+    <x-page-header title="Project List" module="Client Projects">
         <li class="breadcrumb-item">Master Data</li>
-        <li class="breadcrumb-item">Projects</li>
+        <li class="breadcrumb-item">Client Projects</li>
     </x-page-header>
 
     <div class="d-flex justify-content-between align-items-center mb-4 mt-3">
         <div class="col-6">
             <button type="button" class="btn btn-shadow btn-light-primary me-2 d-flex align-items-center"
                 data-bs-toggle="modal" data-bs-target="#exampleModalCenter"><i
-                    class="ph-duotone ph-plus-circle icon-search me-2"></i> Add New Project</button>
+                    class="ph-duotone ph-plus-circle icon-search me-2"></i> Add New Client Project</button>
         </div>
         <div class="col-6 text-end">
             <div class="form-search">
@@ -35,7 +35,7 @@
         <div class="modal-dialog modal-lg modal-dialog-centered" role="document">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h5 class="modal-title" id="exampleModalCenterTitle">Add New Project</h5>
+                    <h5 class="modal-title" id="exampleModalCenterTitle">Add New Client Project</h5>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <form class="modal-body" action="#" method="post" id="form-tambah">
@@ -54,6 +54,16 @@
                                 <select class="form-control" name="entitas_id">
                                     @foreach ($entitas as $et)
                                         <option value="{{ $et->id }}">{{ $et->entitas_name }}</option>
+                                    @endforeach
+                                </select>
+                            </div>
+                        </div>
+                        <div class="mb-3 row">
+                            <label class="col-lg-4 col-form-label">Werehouse:</label>
+                            <div class="col-lg-8">
+                                <select class="form-control" name="werehouse_id">
+                                    @foreach ($gudang as $gd)
+                                        <option value="{{ $gd->id }}">{{ $gd->nama }}</option>
                                     @endforeach
                                 </select>
                             </div>

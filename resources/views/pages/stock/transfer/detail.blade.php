@@ -1,16 +1,16 @@
 @extends('layouts.main')
 
 @section('content')
-    <x-page-header title="Detail" module="Stock Out Detail">
+    <x-page-header title="Detail" module="Stock Transfer Detail">
         <li class="breadcrumb-item">Stock</li>
-        <li class="breadcrumb-item">Stock Out</li>
+        <li class="breadcrumb-item">Stock Transfer</li>
     </x-page-header>
 
     <div class="d-flex justify-content-between align-items-center mb-4 mt-3">
         @if ($data->status == 'Pending')
             <div class="col-12 d-flex justify-content-between align-items-center">
                 <button type="button" id="approval-btn" class="btn btn-shadow btn-primary me-2 d-flex align-items-center">
-                    <i class="ph-duotone ph-check-circle icon-search me-2"></i> Approve Stock Out
+                    <i class="ph-duotone ph-check-circle icon-search me-2"></i> Approve Stock Transfer
                 </button>
             </div>
         @else
@@ -26,7 +26,7 @@
             <div class="card">
                 <div class="card-header py-3">
                     <h4 class="mb-0 d-flex align-items-center">
-                        <code>OUT : {{ $data->stock_out_number }}</code>
+                        <code>TRANSFER : {{ $data->stock_transfer_number }}</code>
                         <i class="ms-3 ph-duotone ph-arrow-fat-lines-right text-danger"></i>
                     </h4>
                 </div>
@@ -39,7 +39,7 @@
                                         Date
                                     </div>
                                     <div class="ms-0 me-auto fw-bold col-6">
-                                        {{ tanggalIndo($data->out_date) }}
+                                        {{ tanggalIndo($data->transfer_date) }}
                                     </div>
                                 </li>
                                 <li class="list-group-item d-flex justify-content-between align-items-start">
@@ -64,9 +64,17 @@
                                         Source
                                     </div>
                                     <div class="ms-0 me-auto fw-bold col-6">
-                                        {{ $data->gudang->nama }}
+                                        {{ $data->gudangAsal->nama }}
                                         <p class="fw-medium mb-0">{{ tanggalIndoWaktuLidgkap($data->created_at) }} by
                                             {{ $data->createdBy->firstname . ' ' . $data->createdBy->lastname }}</p>
+                                    </div>
+                                </li>
+                                <li class="list-group-item d-flex justify-content-between align-items-start">
+                                    <div class="ms-0 me-auto col-6">
+                                        Target
+                                    </div>
+                                    <div class="ms-0 me-auto fw-bold col-6">
+                                        {{ $data->gudangTarget->nama }}
                                     </div>
                                 </li>
                                 <li class="list-group-item d-flex justify-content-between align-items-start">
@@ -80,7 +88,8 @@
                                             <span class="f-14 badge bg-success">Approved</span>
                                         @endif
                                         @if ($data->approved_by != null)
-                                            <p class="fw-medium mb-0">{{ tanggalIndoWaktuLidgkap($data->approved_date) }} by
+                                            <p class="fw-medium mb-0">{{ tanggalIndoWaktuLidgkap($data->approved_date) }}
+                                                by
                                                 {{ $data->approvedBy->firstname . ' ' . $data->approvedBy->lastname }}</p>
                                         @endif
                                     </div>
@@ -150,7 +159,7 @@
     <script type="text/javascript">
         $(document).on('click', '#approval-btn', function() {
             let id = {{ $data->id }};
-            var url = "{{ route('stockout.approve', ':id:') }}";
+            var url = "{{ route('stocktransfer.approve', ':id:') }}";
             var url = url.replace(':id:', id);
 
             if (confirm('Approve this data?')) {

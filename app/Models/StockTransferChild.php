@@ -6,16 +6,16 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
-class StockOutChild extends Model
+class StockTransferChild extends Model
 {
     use SoftDeletes;
     protected $guarded = ['id'];
     protected $dates = ['deleted_at'];
-    protected $table = 'stock_out_child';
+    protected $table = 'stock_transfer_child';
 
     public function master(): BelongsTo
     {
-        return $this->belongsTo(StockOutMaster::class, 'out_master_id', 'id');
+        return $this->belongsTo(StockTransferMaster::class, 'transfer_master_id', 'id');
     }
 
     public function varian(): BelongsTo

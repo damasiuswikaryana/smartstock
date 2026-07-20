@@ -19,4 +19,19 @@ class StockMutation extends Model
     {
         return $this->belongsTo(Entitas::class, 'entitas_id', 'id');
     }
+
+    public function pekerjaan(): BelongsTo
+    {
+        return $this->belongsTo(Project::class, 'pekerjaan_id', 'id');
+    }
+
+    public function gudangAsal(): BelongsTo
+    {
+        return $this->belongsTo(Outlet::class, 'source_id', 'id');
+    }
+
+    public function gudangTarget(): BelongsTo
+    {
+        return $this->belongsTo(Outlet::class, 'target_id', 'id');
+    }
 }

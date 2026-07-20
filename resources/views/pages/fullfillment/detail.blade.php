@@ -1,5 +1,13 @@
 @extends('layouts.main')
 
+@push('css')
+    <style>
+        .text-add {
+            color: #00b569 !important;
+        }
+    </style>
+@endpush
+
 @section('content')
     <x-page-header title="Fullfillment Detail" module="Contract Fullfillment Detail">
         <li class="breadcrumb-item">Contract Fullfillment</li>
@@ -33,11 +41,17 @@
                                         <th>Item</th>
                                         <th>Quantity</th>
                                         <th>Reality</th>
-                                        <th>Cost Budget</th>
+                                        <th>Budget Contract</th>
+                                        <th>Budget Company</th>
                                         <th>Cost Purchase</th>
                                     </tr>
                                 </thead>
                                 <tbody>
+                                    @php
+                                        $totalBudgetContract = 0;
+                                        $totalBudgetCompany = 0;
+                                        $totalCostBudget = 0;
+                                    @endphp
                                     @forelse($data->items as $item)
                                         @php
                                             $stock = $stockSummary->get($item->item_master_id);
@@ -52,24 +66,38 @@
                                                 </div>
                                             </td>
                                             <td>
-                                                <code class="mb-0">x {{ $item->req_qty }}</code>
+                                                <code style="font-size:13px;" class="mb-0">x {{ $item->req_qty }}</code>
+                                            </td>
+                                            <td>
+                                                <p class="mb-0">{{ $stock?->reality_qty ?? 0 }}</p>
+                                                @if ($stock != null)
+                                                    @if ($stock->reality_qty - $stock->qty_out != 0)
+                                                        <p class="mb-0 text-muted">
+                                                            <small>In stock:
+                                                                {{ $stock->reality_qty - $stock->qty_out }}</small>
+                                                        </p>
+                                                    @endif
+                                                @endif
+                                            </td>
+                                            @php
+                                                $subtotalBudgetContract = $item->req_qty * $item->req_nominal;
+                                                $subtotalBudgetCompany = $item->req_qty * $item->req_nominal_company;
+
+                                                $totalBudgetContract = $totalBudgetContract + $subtotalBudgetContract;
+                                                $totalBudgetCompany = $totalBudgetCompany + $subtotalBudgetCompany;
+                                                $totalCostBudget = $totalCostBudget + $stock?->purchase_cost;
+                                            @endphp
+                                            <td>
+                                                <p class="mb-0">{{ rupiah($subtotalBudgetContract) }}</p>
                                                 <p class="mb-0 text-muted">
                                                     <small>{{ '@' . rupiah($item->req_nominal) }}</small>
                                                 </p>
                                             </td>
                                             <td>
-                                                <p class="mb-0">{{ $stock?->reality_qty ?? 0 }}</p>
-                                                @if ($stock->reality_qty - $stock->qty_out != 0)
-                                                    <p class="mb-0 text-muted">
-                                                        <small>In stock: {{ $stock->reality_qty - $stock->qty_out }}</small>
-                                                    </p>
-                                                @endif
-                                            </td>
-                                            @php
-                                                $subtotalBudget = $item->req_qty * $item->req_nominal;
-                                            @endphp
-                                            <td>
-                                                <p class="mb-0">{{ rupiah($subtotalBudget) }}</p>
+                                                <p class="mb-0">{{ rupiah($subtotalBudgetCompany) }}</p>
+                                                <p class="mb-0 text-muted">
+                                                    <small>{{ '@' . rupiah($item->req_nominal_company) }}</small>
+                                                </p>
                                             </td>
                                             <td>
                                                 <p class="mb-0">{{ rupiah($stock?->purchase_cost ?? 0) }}</p>
@@ -83,6 +111,14 @@
                                         </tr>
                                     @endforelse
                                 </tbody>
+                                <thead>
+                                    <tr>
+                                        <th colspan="3">Total</th>
+                                        <th>{{ rupiah($totalBudgetContract) }}</th>
+                                        <th>{{ rupiah($totalBudgetCompany) }}</th>
+                                        <th>{{ rupiah($totalCostBudget) }}</th>
+                                    </tr>
+                                </thead>
                             </table>
                         </div>
                     </div>
@@ -111,15 +147,161 @@
                         </ul>
                         <div class="tab-content" id="pills-tabContent">
                             <div class="tab-pane fade show active" id="pills-sin" role="tabpanel"
-                                aria-labelledby="pills-home-tab">
-                                <p class="mb-0">Comoing soon</p>
+                                aria-labelledby="pills-sin-tab">
+                                <div class="table-responsive">
+                                    <table class="table table-hover table-borderless table-sm mb-0">
+                                        <thead>
+                                            <tr>
+                                                <th>Item</th>
+                                                <th>Date</th>
+                                                <th>Source</th>
+                                                <th>Destination</th>
+                                                <th>Quantity</th>
+                                                <th>Note</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            @foreach ($data_in as $item_in)
+                                                <tr>
+                                                    <td>
+                                                        <p class="mb-0">{{ tanggalIndo3($item_in->created_at) }}</p>
+                                                    </td>
+                                                    <td>
+                                                        <div class="d-inline-block align-middle">
+                                                            <div class="d-inline-block">
+                                                                <h6 class="m-b-0">{{ $item_in->item_varian->name_varian }}
+                                                                </h6>
+                                                                <p class="text-muted m-b-0">
+                                                                    {{ $item_in->item_varian->sku_varian }}
+                                                                </p>
+                                                            </div>
+                                                        </div>
+                                                    </td>
+                                                    <td class="text-center">
+                                                        <code class="mb-0">{{ $item_in->source_type }}</code>
+                                                    </td>
+                                                    <td>
+                                                        <i class="f-20 ph-duotone ph-arrow-fat-lines-right text-add"></i>
+                                                        <p class="mb-0">{{ $item_in->gudangTarget->nama }}</p>
+                                                    </td>
+                                                    <td class="text-center">
+                                                        <p class="mb-0 text-add fw-bold">+{{ $item_in->jumlah }}</p>
+                                                    </td>
+                                                    <td>
+                                                        <p class="mb-0">{{ $item_in->keterangan }}</p>
+                                                    </td>
+                                                </tr>
+                                            @endforeach
+                                        </tbody>
+                                    </table>
+                                </div>
                             </div>
                             <div class="tab-pane fade" id="pills-sout" role="tabpanel" aria-labelledby="pills-sout-tab">
-                                <p class="mb-0">Comoing soon</p>
+                                <div class="table-responsive">
+                                    <table class="table table-hover table-borderless table-sm mb-0">
+                                        <thead>
+                                            <tr>
+                                                <th>Item</th>
+                                                <th>Date</th>
+                                                <th>Source</th>
+                                                <th>Destination</th>
+                                                <th>Quantity</th>
+                                                <th>Note</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            @foreach ($data_out as $item_out)
+                                                <tr>
+                                                    <td>
+                                                        <p class="mb-0">{{ tanggalIndo3($item_out->created_at) }}</p>
+                                                    </td>
+                                                    <td>
+                                                        <div class="d-inline-block align-middle">
+                                                            <div class="d-inline-block">
+                                                                <h6 class="m-b-0">
+                                                                    {{ $item_out->item_varian->name_varian }}
+                                                                </h6>
+                                                                <p class="text-muted m-b-0">
+                                                                    {{ $item_out->item_varian->sku_varian }}
+                                                                </p>
+                                                            </div>
+                                                        </div>
+                                                    </td>
+                                                    <td>
+                                                        <i class="f-20 ph-duotone ph-arrow-fat-lines-right text-danger"></i>
+                                                        <p class="mb-0">{{ $item_out->gudangAsal->nama }}</p>
+
+                                                    </td>
+                                                    <td class="text-center">
+                                                        <code class="mb-0">{{ $item_out->target_type }}</code>
+                                                    </td>
+                                                    <td class="text-center">
+                                                        <p class="mb-0 text-danger fw-bold">-{{ $item_out->jumlah }}</p>
+                                                    </td>
+                                                    <td>
+                                                        <p class="mb-0">{{ $item_out->keterangan }}</p>
+                                                    </td>
+                                                </tr>
+                                            @endforeach
+                                        </tbody>
+                                    </table>
+                                </div>
                             </div>
                             <div class="tab-pane fade" id="pills-stransfer" role="tabpanel"
-                                aria-labelledby="pills-contact-tab">
-                                <p class="mb-0">Comoing soon</p>
+                                aria-labelledby="pills-transfer-tab">
+                                <div class="table-responsive">
+                                    <table class="table table-hover table-borderless table-sm mb-0">
+                                        <thead>
+                                            <tr>
+                                                <th>Item</th>
+                                                <th>Date</th>
+                                                <th>Source</th>
+                                                <th>Destination</th>
+                                                <th>Quantity</th>
+                                                <th>Note</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            @foreach ($data_trf as $item_transfer)
+                                                <tr>
+                                                    <td>
+                                                        <p class="mb-0">{{ tanggalIndo3($item_transfer->created_at) }}
+                                                        </p>
+                                                    </td>
+                                                    <td>
+                                                        <div class="d-inline-block align-middle">
+                                                            <div class="d-inline-block">
+                                                                <h6 class="m-b-0">
+                                                                    {{ $item_transfer->item_varian->name_varian }}
+                                                                </h6>
+                                                                <p class="text-muted m-b-0">
+                                                                    {{ $item_transfer->item_varian->sku_varian }}
+                                                                </p>
+                                                            </div>
+                                                        </div>
+                                                    </td>
+                                                    <td>
+                                                        <i
+                                                            class="f-20 ph-duotone ph-arrow-fat-lines-right text-danger"></i>
+                                                        <p class="mb-0">{{ $item_transfer->gudangAsal->nama }}</p>
+
+                                                    </td>
+                                                    <td>
+                                                        <i class="f-20 ph-duotone ph-arrow-fat-lines-right text-add"></i>
+                                                        <p class="mb-0">{{ $item_transfer->gudangTarget->nama }}</p>
+                                                    </td>
+                                                    <td class="text-center">
+                                                        <p class="mb-0 text-add fw-bold">{{ $item_transfer->jumlah }}
+                                                        </p>
+                                                    </td>
+                                                    <td>
+                                                        <p class="mb-0">{{ $item_transfer->keterangan }}</p>
+                                                    </td>
+                                                </tr>
+                                            @endforeach
+                                        </tbody>
+                                    </table>
+                                </div>
                             </div>
                         </div>
                     </div>

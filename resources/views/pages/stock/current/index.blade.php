@@ -12,14 +12,11 @@
 
     <div class="d-flex justify-content-between align-items-center mb-4 mt-3">
         <div class="col-4 text-start">
-            <div class="form-search">
-                <i class="ph-duotone ph-funnel icon-search"></i>
-                <select class="form-control" id="fl_werehouse">
-                    @foreach ($allGudang as $g)
-                        <option value="{{ $g->id }}">{{ $g->nama }}</option>
-                    @endforeach
-                </select>
-            </div>
+            <button class="btn btn-light-primary d-flex align-items-center" type="button" data-bs-toggle="collapse"
+                data-bs-target="#collapseExample" aria-expanded="false" aria-controls="collapseExample">
+                <i class="ph-duotone ph-funnel icon-search me-2"></i>
+                <span>Data Filter</span>
+                <i data-feather="chevron-down" class="icon-search ms-3"></i></button>
         </div>
         <div class="col-4 text-end">
             <div class="form-search">
@@ -29,8 +26,48 @@
         </div>
     </div>
 
+    <div class="border-0 mb-3">
+        <div class="collapse" id="collapseExample">
+            <div class="row">
+                <div class="col-3 text-start">
+                    <div class="form-search w-100">
+                        <i class="ph-duotone ph-house icon-search"></i>
+                        <select class="form-control w-100" id="fl_werehouse">
+                            <option value="">All Werehouses</option>
+                            @foreach ($allGudang as $g)
+                                <option value="{{ $g->id }}">{{ $g->nama }}</option>
+                            @endforeach
+                        </select>
+                    </div>
+                </div>
+                <div class="col-3 text-start">
+                    <div class="form-search w-100">
+                        <i class="ph-duotone ph-package icon-search"></i>
+                        <select class="form-control w-100" id="fl_category">
+                            <option value="">All Categories</option>
+                            @foreach ($allCategory as $c)
+                                <option value="{{ $c->id }}">{{ $c->title }}</option>
+                            @endforeach
+                        </select>
+                    </div>
+                </div>
+                <div class="col-3 text-start">
+                    <div class="form-search w-100">
+                        <i class="ph-duotone ph-star icon-search"></i>
+                        <select class="form-control w-100" id="fl_entitas">
+                            <option value="">All Entities</option>
+                            @foreach ($allEntitas as $e)
+                                <option value="{{ $e->id }}">{{ $e->entitas_name }}</option>
+                            @endforeach
+                        </select>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
     @php
-        $thead = ['No', 'Item', 'Variant', 'Werehouse', 'Entity', 'Category', 'Qty', 'Last Update'];
+        $thead = ['No', 'Item', 'Variant', 'Category', 'Werehouse', 'Qty', 'Last Update'];
     @endphp
     <x-datatable :thead=$thead :filter="null">
     </x-datatable>
@@ -46,6 +83,8 @@
                 url: "{{ route('stockCurrent.index') }}",
                 data: function(d) {
                     d.gudang = $('#fl_werehouse').val();
+                    d.category = $('#fl_category').val();
+                    d.entitas = $('#fl_entitas').val();
                 }
             },
             scrollY: true,
@@ -73,21 +112,11 @@
                 {
                     data: 'item',
                     name: 'item',
-                    class: 'py-0 fw-bold text-center',
+                    class: 'py-0',
                 },
                 {
                     data: 'variant',
                     name: 'variant',
-                    class: 'py-0 text-center',
-                },
-                {
-                    data: 'werehouse',
-                    name: 'werehouse',
-                    class: 'py-0 text-center',
-                },
-                {
-                    data: 'entity',
-                    name: 'entity',
                     class: 'py-0 text-center',
                 },
                 {
@@ -96,6 +125,12 @@
                     visible: true,
                     class: 'py-0 text-center',
                 },
+                {
+                    data: 'werehouse',
+                    name: 'werehouse',
+                    class: 'py-0 text-start',
+                },
+
                 {
                     data: 'qty',
                     name: 'qty',
@@ -115,7 +150,7 @@
             table.search($(this).val()).draw();
         });
 
-        $('#fl_werehouse').on('change', function() {
+        $('#fl_werehouse, #fl_category, #fl_entitas').on('change', function() {
             table.ajax.reload();
         });
 

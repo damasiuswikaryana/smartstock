@@ -46,11 +46,15 @@ class AdmFullfillmentController extends Controller
         $data       = Project::with('items')->where('id', $id)->first();
 
         $totalQty   = $data->items->sum('req_qty');
-        $grandTotal = $data->items->sum(function ($item) {
+        $grandTotalContract = $data->items->sum(function ($item) {
             return $item->req_qty * $item->req_nominal;
         });
+        $grandTotalCompany = $data->items->sum(function ($item) {
+            return $item->req_qty * $item->req_nominal_company;
+        });
 
-        return view('pages.fullfillment.add', compact('data', 'category', 'totalQty', 'grandTotal'));
+
+        return view('pages.fullfillment.add', compact('data', 'category', 'totalQty', 'grandTotalContract', 'grandTotalCompany'));
     }
 
     public function storeItem(Request $request, int $id)
@@ -59,10 +63,11 @@ class AdmFullfillmentController extends Controller
         try {
             DB::beginTransaction();
             $stock_master = ProjectItems::create([
-                'pekerjaan_id'      => $id,
-                'item_master_id'    => $input['item_master_id'],
-                'req_qty'           => $input['qty'],
-                'req_nominal'       => hapusTitikAngka($input['harga']),
+                'pekerjaan_id'          => $id,
+                'item_master_id'        => $input['item_master_id'],
+                'req_qty'               => $input['qty'],
+                'req_nominal'           => hapusTitikAngka($input['harga']),
+                'req_nominal_company'   => hapusTitikAngka($input['harga_company']),
             ]);
             DB::commit();
             return redirect()->back()->with('success', '1 item added');
@@ -135,6 +140,24 @@ class AdmFullfillmentController extends Controller
             return $item->req_qty * $item->req_nominal;
         });
 
-        return view('pages.fullfillment.detail', compact('data', 'category', 'totalQty', 'grandTotal', 'stockSummary'));
+        $data_in        = StockMutation::where('pekerjaan_id', $id)
+            ->where('tipe', 'Masuk')
+            ->where('target_id', $gudang_koneksi)
+            ->get();
+
+        $data_out        = StockMutation::where('pekerjaan_id', $id)
+            ->where('tipe', 'Keluar')
+            ->where('source_id', $gudang_koneksi)
+            ->get();
+
+        $data_trf       = StockMutation::where('pekerjaan_id', $id)
+            ->where('tipe', 'Transfer')
+            ->where(function ($query) use ($gudang_koneksi) {
+                $query->where('source_id', $gudang_koneksi)
+                    ->orWhere('target_id', $gudang_koneksi);
+            })
+            ->get();
+
+        return view('pages.fullfillment.detail', compact('data', 'category', 'totalQty', 'grandTotal', 'stockSummary', 'data_in', 'data_out', 'data_trf'));
     }
 }

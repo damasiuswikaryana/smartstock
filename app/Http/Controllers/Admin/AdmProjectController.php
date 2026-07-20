@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Admin;
 
 use App\Models\Project;
 use App\Models\Entitas;
+use App\Models\Outlet;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
@@ -15,6 +16,7 @@ class AdmProjectController extends Controller
     public function index(Request $request)
     {
         $entitas    = Entitas::all();
+        $gudang     = Outlet::all();
         $data       = Project::all();
 
         if ($request->ajax()) {
@@ -38,7 +40,7 @@ class AdmProjectController extends Controller
                 })->rawColumns(['action', 'updated_at', 'no_kontrak', 'jangka_waktu'])
                 ->make(true);
         }
-        return view('pages.project.index', compact('entitas'));
+        return view('pages.project.index', compact('entitas', 'gudang'));
     }
 
     public function store(Request $request)
@@ -50,6 +52,7 @@ class AdmProjectController extends Controller
             Project::create([
                 'name'                  => $input['name'],
                 'entitas_id'            => $input['entitas_id'],
+                'werehouse_id'          => $input['werehouse_id'],
                 'no_kontrak'            => $input['no_kontrak'],
                 'jangka_waktu'          => $input['jangka_waktu'],
                 'date_join'             => $input['date_join'],
@@ -66,9 +69,10 @@ class AdmProjectController extends Controller
     public function edit(int $id)
     {
         $entitas    = Entitas::all();
+        $gudang     = Outlet::all();
         $data       = Project::where('id', $id)->first();
         try {
-            return view('pages.project.edit', compact('data', 'entitas'));
+            return view('pages.project.edit', compact('data', 'entitas', 'gudang'));
         } catch (\Throwable $th) {
             return redirect()->back()->with('error', "Error: " . $th->getMessage());
         }
@@ -82,6 +86,7 @@ class AdmProjectController extends Controller
             DB::beginTransaction();
             $data->name              = $input['name'];
             $data->entitas_id        = $input['entitas_id'];
+            $data->werehouse_id      = $input['werehouse_id'];
             $data->no_kontrak        = $input['no_kontrak'];
             $data->jangka_waktu      = $input['jangka_waktu'];
             $data->date_join         = $input['date_join'];

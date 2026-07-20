@@ -24,12 +24,12 @@
                     </a>
                 </li>
 
-                <li class="pc-item pc-caption">
+                <li class="pc-item pc-caption pc-item-pink border-top-radius">
                     <label data-i18n="Pengadaan">Pengadaan</label>
                     <i class="ph-duotone ph-chart-pie"></i>
                 </li>
 
-                <li class="pc-item">
+                <li class="pc-item pc-item-pink border-bottom-radius">
                     <a href="{{ route('fullfillment.index') }}" class="pc-link">
                         <span class="pc-micon">
                             <i class="ph-duotone ph-cloud-check"></i>
@@ -38,12 +38,12 @@
                     </a>
                 </li>
 
-                <li class="pc-item pc-caption">
+                <li class="pc-item pc-caption pc-item-blue border-top-radius mt-3">
                     <label data-i18n="Gudang">Gudang</label>
                     <i class="ph-duotone ph-chart-pie"></i>
                 </li>
 
-                <li class="pc-item pc-hasmenu">
+                <li class="pc-item pc-hasmenu pc-item-blue">
                     <a href="javascript:void(0);" class="pc-link active">
                         <span class="pc-micon">
                             <i class="ph-duotone ph-monitor"></i>
@@ -60,7 +60,7 @@
                         <li class="pc-item"><a class="pc-link" href="" data-i18n="Opnam">Opnam</a></li>
                     </ul>
                 </li>
-                <li class="pc-item pc-hasmenu">
+                <li class="pc-item pc-hasmenu pc-item-blue">
                     <a href="javascript:void(0);" class="pc-link active">
                         <span class="pc-micon">
                             <i class="ph-duotone ph-arrows-left-right"></i>
@@ -73,14 +73,14 @@
                                 data-i18n="Stock In">Stock In</a></li>
                         <li class="pc-item"><a class="pc-link" href="{{ route('stockout.index') }}"
                                 data-i18n="Stock Out">Stock Out</a></li>
-                        <li class="pc-item"><a class="pc-link" href="" data-i18n="Transfer">Transfer</a></li>
+                        <li class="pc-item"><a class="pc-link" href="{{ route('stocktransfer.index') }}"
+                                data-i18n="Transfer">Transfer</a></li>
                         <li class="pc-item"><a class="pc-link" href="{{ route('stockinit.index') }}"
                                 data-i18n="Initation">Initation</a></li>
                     </ul>
                 </li>
-
                 <li
-                    class="pc-item pc-hasmenu 
+                    class="pc-item pc-hasmenu pc-item-blue border-bottom-radius
                     {{ request()->is('category*') || request()->is('satuan*') || request()->is('vendor*') || request()->is('item*') ? 'active pc-trigger' : '' }}">
                     <a href="javascript:void(0);" class="pc-link active">
                         <span class="pc-micon">
@@ -121,7 +121,7 @@
                         <li class="pc-item {{ request()->is('entitas*') ? 'active' : '' }}"><a class="pc-link"
                                 href="{{ route('entitas.index') }}" data-i18n="Entity">Entity</a></li>
                         <li class="pc-item {{ request()->is('project*') ? 'active' : '' }}"><a class="pc-link"
-                                href="{{ route('project.index') }}" data-i18n="Projects">Projects</a>
+                                href="{{ route('project.index') }}" data-i18n="Client Projects">Client Projects</a>
                         </li>
                         <li class="pc-item {{ request()->is('bank-account*') ? 'active' : '' }}"><a class="pc-link"
                                 href="{{ route('bank-account.index') }}" data-i18n="Bank Accounts">Bank Accounts</a>

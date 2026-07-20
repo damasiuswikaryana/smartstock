@@ -14,7 +14,7 @@
 
     <section class="">
         <div class="row">
-            <div class="col-12 mb-4">
+            <div class="col-6 mb-4">
                 <div class="row g-4">
                     <div class="col-md-12">
                         <ol class="list-group">
@@ -79,7 +79,7 @@
                 </div>
             </div>
 
-            <div class="col-5">
+            <div class="col-6">
                 <div class="card">
                     <div class="card-header py-3">
                         <h4 class="mb-0">Add More Items</h4>
@@ -90,8 +90,8 @@
                             @csrf
                             @method('POST')
                             <div class="mb-3 row">
-                                <label class="col-lg-3 col-form-label">Category:</label>
-                                <div class="col-lg-9">
+                                <label class="col-lg-4 col-form-label">Category:</label>
+                                <div class="col-lg-8">
                                     <div class="">
                                         <select class="form-control" name="category_id" id="category_id" required>
                                             <option value="" disabled selected>-- Selecet Category --</option>
@@ -104,8 +104,8 @@
                                 </div>
                             </div>
                             <div class="mb-3 row">
-                                <label class="col-lg-3 col-form-label">Items:</label>
-                                <div class="col-lg-9">
+                                <label class="col-lg-4 col-form-label">Items:</label>
+                                <div class="col-lg-8">
                                     <div class="">
                                         <select class="form-control" name="item_master_id" id="item_master_id" required>
                                             <option value="">-- Selecet Category --</option>
@@ -114,20 +114,29 @@
                                 </div>
                             </div>
                             <div class="mb-3 row">
-                                <label class="col-lg-3 col-form-label">Quantity:</label>
-                                <div class="col-lg-9">
+                                <label class="col-lg-4 col-form-label">Quantity:</label>
+                                <div class="col-lg-8">
                                     <div class="">
                                         <input type="number" class="form-control" placeholder="Quantity" name="qty"
                                             required />
                                     </div>
                                 </div>
                             </div>
-                            <div class="mb-0 row">
-                                <label class="col-lg-3 col-form-label">Value:</label>
-                                <div class="col-lg-9">
+                            <div class="mb-3 row">
+                                <label class="col-lg-4 col-form-label">Contract Value:</label>
+                                <div class="col-lg-8">
                                     <div class="">
                                         <input type="text" class="form-control number-separator"
                                             placeholder="Value per item (in rupiah)" name="harga" required />
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="mb-0 row">
+                                <label class="col-lg-4 col-form-label">Company Value:</label>
+                                <div class="col-lg-8">
+                                    <div class="">
+                                        <input type="text" class="form-control number-separator"
+                                            placeholder="Value per item (in rupiah)" name="harga_company" required />
                                     </div>
                                 </div>
                             </div>
@@ -139,7 +148,7 @@
                 </div>
             </div>
 
-            <div class="col-7">
+            <div class="col-12">
                 <div class="card table-card">
                     <div class="card-header d-flex align-items-center justify-content-between py-3">
                         <h4 class="mb-0">Item Requirements</h4>
@@ -159,16 +168,24 @@
                                                 </div>
                                             </td>
                                             <td>
-                                                <code class="mb-0">x {{ $item->req_qty }}</code>
+                                                <code style="font-size:13px;" class="mb-0">x
+                                                    {{ $item->req_qty }}</code>
+                                            </td>
+                                            @php
+                                                $subtotalContract = $item->req_qty * $item->req_nominal;
+                                                $subtotalCompany = $item->req_qty * $item->req_nominal_company;
+                                            @endphp
+                                            <td>
+                                                <p class="mb-0">{{ rupiah($subtotalContract) }}</p>
                                                 <p class="mb-0 text-muted">
                                                     <small>{{ '@' . rupiah($item->req_nominal) }}</small>
                                                 </p>
                                             </td>
-                                            @php
-                                                $subtotal = $item->req_qty * $item->req_nominal;
-                                            @endphp
                                             <td>
-                                                <p class="mb-0">{{ rupiah($subtotal) }}</p>
+                                                <p class="mb-0">{{ rupiah($subtotalCompany) }}</p>
+                                                <p class="mb-0 text-muted">
+                                                    <small>{{ '@' . rupiah($item->req_nominal_company) }}</small>
+                                                </p>
                                             </td>
                                             <td class="text-end">
                                                 <button class="btn avtar avtar-xs btn-light-danger"><i
@@ -193,7 +210,12 @@
                                             <p class="text-danger fw-bold mb-0">{{ $totalQty }}</p>
                                         </td>
                                         <td>
-                                            <p class="mb-0 fw-bold">{{ rupiah($grandTotal) }}</p>
+                                            <p class="mb-0 fw-bold">{{ rupiah($grandTotalContract) }}</p>
+                                            <p class="mb-0">Total Budget Contract</p>
+                                        </td>
+                                        <td>
+                                            <p class="mb-0 fw-bold">{{ rupiah($grandTotalCompany) }}</p>
+                                            <p class="mb-0">Total Budget Company</p>
                                         </td>
                                         <td class="text-end"></td>
                                     </tr>

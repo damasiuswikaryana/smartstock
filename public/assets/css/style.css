@@ -33622,6 +33622,21 @@ table.dataTable tbody tr > .dtfc-fixed-end {
     display: none;
 }
 
+.pc-item-pink {
+    background-color: #ffedfc !important;
+}
+
+.pc-item-blue {
+    background-color: #e8f1ff !important;
+}
+
+.border-top-radius {
+    border-radius: var(--bs-border-radius) var(--bs-border-radius) 0px 0px;
+}
+
+.border-bottom-radius {
+    border-radius: 0px 0px var(--bs-border-radius) var(--bs-border-radius);
+}
 /**  =====================
   36. Customizer css end
 ==========================  **/

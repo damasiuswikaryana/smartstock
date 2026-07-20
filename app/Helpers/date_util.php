@@ -2,91 +2,91 @@
 
 use Carbon\Carbon;
 
-function getDay($date)
+function getDay(string $date)
 {
     return Carbon::parse($date)->locale('id')->isoFormat('dddd');
 }
-function tanggalIndo($date)
+function tanggalIndo(string $date)
 {
     return Carbon::parse($date)->locale('id')->isoFormat('dddd, LL');
 }
-function tanggalIndo2($date)
+function tanggalIndo2(string $date)
 {
     return Carbon::parse($date)->locale('id')->isoFormat('dddd, ll');
 }
-function tanggalIndoWaktu($date)
+function tanggalIndoWaktu(string $date)
 {
     return Carbon::parse($date)->locale('id')->isoFormat('ll HH:mm');
 }
-function tanggalIndoWaktu2($date)
+function tanggalIndoWaktu2(string $date)
 {
     return Carbon::parse($date)->locale('id')->isoFormat('dddd, ll HH:mm');
 }
-function tanggalIndoWaktu3($date)
+function tanggalIndoWaktu3(string $date)
 {
     return Carbon::parse($date)->locale('id')->isoFormat('LL HH:mm');
 }
-function tanggalIndoWaktuLidgkap($date)
+function tanggalIndoWaktuLidgkap(string $date)
 {
     return Carbon::parse($date)->locale('id')->isoFormat('dddd, LL HH:mm');
 }
-function tglIndo2($date)
+function tglIndo2(string $date)
 {
     return Carbon::parse($date)->locale('id')->isoFormat('L');
 }
-function tanggalIndo3($date)
+function tanggalIndo3(string $date)
 {
     return Carbon::parse($date)->locale('id')->isoFormat('ll');
 }
-function tanggalIndo6($date)
+function tanggalIndo6(string $date)
 {
     return Carbon::parse($date)->locale('id')->isoFormat('dddd, ll');
 }
-function tglIndo4($date)
+function tglIndo4(string $date)
 {
     return Carbon::parse($date)->locale('id')->isoFormat('LL');
 }
-function tglIndo5($date)
+function tglIndo5(string $date)
 {
     $datetime = new DateTime($date);
     $newdate = $datetime->format(' d M Y ');
     return $newdate;
 }
-function TampilJamMidit($date)
+function TampilJamMidit(string $date)
 {
     return Carbon::parse($date)->locale('id')->isoFormat('HH:mm');
 }
-function TampilTanggal($date)
+function TampilTanggal(string $date)
 {
     return Carbon::parse($date)->locale('id')->format('Y-m-d');
 }
-function TanggalBulan($date)
+function TanggalBulan(string $date)
 {
     return Carbon::parse($date)->locale('id')->isoFormat('D MMM');
 }
-function BulanTahun($date)
+function BulanTahun(string $date)
 {
     return Carbon::parse($date)->locale('id')->isoFormat('MMMM Y');
 }
-function TanggalOnly($date)
+function TanggalOnly(string $date)
 {
     $tanggal = Carbon::parse($date)->locale('id')->format('d');
     $tgl = ltrim($tanggal, '0');
     return $tgl;
 }
-function BulanOnly($date)
+function BulanOnly(string $date)
 {
     return Carbon::parse($date)->locale('id')->isoFormat('MMM');
 }
-function BulanOnlyAngka($date)
+function BulanOnlyAngka(string $date)
 {
     return Carbon::parse($date)->locale('id')->isoFormat('M');
 }
-function ago($date)
+function ago(string $date)
 {
     return Carbon::createFromTimeStamp(strtotime($date))->diffForHumans();
 }
-function hoursandmins($time, $format = '%02d:%02d')
+function hoursandmins(string $time, $format = '%02d:%02d')
 {
     if ($time < 1) {
         return;
@@ -96,7 +96,7 @@ function hoursandmins($time, $format = '%02d:%02d')
     return sprintf($format, $hours, $minutes);
 }
 
-function JamOnly($date)
+function JamOnly(string $date)
 {
     if ($date != null) {
         $jam = Carbon::parse($date)->locale('id')->isoFormat('HH');
@@ -106,17 +106,17 @@ function JamOnly($date)
     }
     return $jam2;
 }
-function Bulan($date)
+function Bulan(string $date)
 {
     $dateObj = DateTime::createFromFormat('!m', $date);
     return Carbon::parse($dateObj)->locale('id')->isoFormat('MMMM');
 }
-function Bulanidg($date)
+function Bulanidg(string $date)
 {
     $dateObj = DateTime::createFromFormat('!m', $date);
     return Carbon::parse($dateObj)->isoFormat('MMMM');
 }
-function converttanggal($date)
+function converttanggal(string $date)
 {
     $temp = explode("-", $date);
     $tahun = $temp[0];
@@ -125,7 +125,7 @@ function converttanggal($date)
     $waktu = $bl . "/" . $tanggal . "/" . $tahun;
     return $waktu;
 }
-function inverttanggal($date)
+function inverttanggal(string $date)
 {
     if ($date == "") {
         $tgl_ukur_bider = "0000-00-00";
@@ -138,12 +138,12 @@ function inverttanggal($date)
     }
     return str_replace(' ', '', $tgl_ukur_bider);
 }
-function ubahKeTanggal($datetime)
+function ubahKeTanggal(string $datetime)
 {
     $tanggal = date("Y-m-d", strtotime($datetime));
     return $tanggal;
 }
-function cvtdMYtoYmd($hari)
+function cvtdMYtoYmd(string $hari)
 {
     $dates = DateTime::createFromFormat('d M Y', $hari);
     $dama = $dates->format('Y-m-d');
