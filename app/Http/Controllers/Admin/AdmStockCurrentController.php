@@ -11,6 +11,9 @@ use App\Models\Entitas;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Yajra\DataTables\DataTables;
+use Barryvdh\DomPDF\Facade\Pdf;
+
+use App\Services\StockReportService;
 
 class AdmStockCurrentController extends Controller
 {
@@ -77,5 +80,20 @@ class AdmStockCurrentController extends Controller
                 ->make(true);
         }
         return view('pages.stock.current.index', compact('allGudang', 'allCategory', 'allEntitas'));
+    }
+
+    public function downloadReport($whid, $cat, $entitas, StockReportService $reportService)
+    {
+        // dd($stocks);
+        // $customPaper    = [0, 0, 220, 425];
+        $pdf    = $reportService->generatePdf($whid, $cat, $entitas);
+        if ($whid != "all") {
+            $werehouse = namaLokasi($whid);
+        } else {
+            $werehouse = "Semua Gudang";
+        }
+        $waktu          = tanggalIndoWaktu(date('Y-m-d H:i:s'));
+        $filename       = 'Stock Report - ' . $werehouse . ' - ' . $waktu . '.pdf';
+        return $pdf->stream($filename);
     }
 }

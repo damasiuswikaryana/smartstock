@@ -99,6 +99,13 @@ class AdmFullfillmentController extends Controller
                         ) AS reality_qty,
                         SUM(
                             CASE
+                                WHEN stock_mutations.tipe = 'Keluar' AND stock_mutations.target_id = ?
+                                THEN stock_mutations.jumlah
+                                ELSE 0
+                            END
+                        ) AS reality_qty_out,
+                        SUM(
+                            CASE
                                 WHEN (stock_mutations.tipe = 'Masuk' AND stock_mutations.target_id = ?)
                                 OR (stock_mutations.tipe = 'Transfer' AND stock_mutations.target_id = ?)
                                 THEN stock_mutations.jumlah * item_varian.nilai

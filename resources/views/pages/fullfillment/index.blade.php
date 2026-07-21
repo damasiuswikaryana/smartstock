@@ -59,11 +59,12 @@
                                     <div class="d-flex align-items-center">
                                         <div class="flex-grow-1">
                                             <div class="row g-1">
-                                                <div class="col-6">
-                                                    <h6 class="mb-0">Reality</h6>
-                                                    <p class="text-muted mb-0"><small>All items in</small></p>
+                                                <div class="col-10">
+                                                    <h6 class="mb-0">Items In</h6>
+                                                    <p class="text-muted mb-0"><small>All items in to werehouse as
+                                                            stock</small></p>
                                                 </div>
-                                                <div class="col-6 text-end">
+                                                <div class="col-2 text-end">
                                                     <h6 class="mb-1">
                                                         @php
                                                             $realityQty =
@@ -71,26 +72,69 @@
                                                         @endphp
                                                         {{ $realityQty }}</h6>
                                                 </div>
+                                                <div class="col-12">
+                                                    @php
+                                                        $percentage =
+                                                            $totalQty > 0 ? round(($realityQty / $totalQty) * 100) : 0;
+                                                    @endphp
+                                                    <div class="d-flex align-items-center">
+                                                        <div class="flex-grow-1 me-2">
+                                                            <div class="progress" style="height: 8px">
+                                                                <div class="progress-bar bg-primary"
+                                                                    style="width: {{ $percentage }}%"></div>
+                                                            </div>
+                                                        </div>
+                                                        <div class="flex-shrink-0">
+                                                            <h6 class="mb-0">{{ $percentage }}%</h6>
+                                                        </div>
+                                                    </div>
+                                                </div>
                                             </div>
                                         </div>
                                     </div>
                                 </li>
-                                <div class="saprator my-3">
-                                    <span>Item completed</span>
-                                </div>
-                                @php
-                                    $percentage = $totalQty > 0 ? round(($realityQty / $totalQty) * 100) : 0;
-                                @endphp
-                                <div class="d-flex align-items-center">
-                                    <div class="flex-grow-1 me-2">
-                                        <div class="progress" style="height: 8px">
-                                            <div class="progress-bar bg-primary" style="width: {{ $percentage }}%"></div>
+
+                                <li class="list-group-item px-0">
+                                    <div class="d-flex align-items-center">
+                                        <div class="flex-grow-1">
+                                            <div class="row g-1">
+                                                <div class="col-10">
+                                                    <h6 class="mb-0">Items Completed</h6>
+                                                    <p class="text-muted mb-0"><small>All items issued and distributed to
+                                                            employee</small></p>
+                                                </div>
+                                                <div class="col-2 text-end">
+                                                    <h6 class="mb-1">
+                                                        @php
+                                                            $realityQty_out =
+                                                                $stockSummary->get($data->id)?->reality_qty_out ?? 0;
+                                                        @endphp
+                                                        {{ $realityQty_out }}</h6>
+                                                </div>
+                                                <div class="col-12">
+                                                    @php
+                                                        $percentage =
+                                                            $totalQty > 0
+                                                                ? round(($realityQty_out / $totalQty) * 100)
+                                                                : 0;
+                                                    @endphp
+                                                    <div class="d-flex align-items-center">
+                                                        <div class="flex-grow-1 me-2">
+                                                            <div class="progress" style="height: 8px">
+                                                                <div class="progress-bar bg-success"
+                                                                    style="width: {{ $percentage }}%"></div>
+                                                            </div>
+                                                        </div>
+                                                        <div class="flex-shrink-0">
+                                                            <h6 class="mb-0">{{ $percentage }}%</h6>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
                                         </div>
                                     </div>
-                                    <div class="flex-shrink-0">
-                                        <h6 class="mb-0">{{ $percentage }}%</h6>
-                                    </div>
-                                </div>
+                                </li>
+
                                 <li class="list-group-item px-0 pb-0">
                                     <a href="{{ route('fullfillment.add', $data->id) }}"
                                         class="btn btn-light-primary w-100 mb-0">Add Items</a>

@@ -11,14 +11,17 @@
     </x-page-header>
 
     <div class="d-flex justify-content-between align-items-center mb-4 mt-3">
-        <div class="col-4 text-start">
+        <div class="text-start">
             <button class="btn btn-light-primary d-flex align-items-center" type="button" data-bs-toggle="collapse"
                 data-bs-target="#collapseExample" aria-expanded="false" aria-controls="collapseExample">
                 <i class="ph-duotone ph-funnel icon-search me-2"></i>
                 <span>Data Filter</span>
                 <i data-feather="chevron-down" class="icon-search ms-3"></i></button>
         </div>
-        <div class="col-4 text-end">
+        <div class="text-end d-flex justify-content-between align-items-center">
+            <button id="btnDownload" class="btn btn-light-secondary d-flex align-items-center me-3" type="button">
+                <i class="ph-duotone ph-download icon-search me-2"></i>
+                <span>Download Data</span></button>
             <div class="form-search">
                 <i class="ph-duotone ph-magnifying-glass icon-search"></i>
                 <input type="search" id="search" class="form-control" placeholder="Search here...">
@@ -163,6 +166,22 @@
             tooltipTriggerList1.map(function(tooltipTriggerEl) {
                 return new bootstrap.Tooltip(tooltipTriggerEl);
             });
+        });
+
+        $('#btnDownload').on('click', function() {
+            let warehouse = $('#fl_werehouse').val() || 'all';
+            let category = $('#fl_category').val() || 'all';
+            let entitas = $('#fl_entitas').val() || 'all';
+
+            let url =
+                "{{ route('stockCurrent.downloadReport', ['whid' => ':whid', 'cat' => ':cat', 'entitas' => ':entitas']) }}"
+                .replace(':whid', warehouse).replace(':cat', category).replace(':entitas', entitas);
+
+            const link = document.createElement('a');
+            link.href = url;
+            link.target = '_blank';
+            link.rel = 'noopener noreferrer';
+            link.click();
         });
     </script>
 @endpush
