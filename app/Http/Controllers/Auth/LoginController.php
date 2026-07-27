@@ -38,8 +38,10 @@ class LoginController extends Controller
             return redirect()->intended('/')->withSuccess('Welcome Admin');
         } elseif (Auth::attempt($credentials) && $user->roles[0]->name == "admin_cabang") {
             return redirect()->intended('/')->withSuccess('Welcome Branch Admin');
-        } elseif (Auth::attempt($credentials) && $user->roles[0]->name == "admin") {
-            return redirect()->intended('/')->withSuccess('Welcome Keuangan');
+        } elseif (Auth::attempt($credentials) && $user->roles[0]->name == "pengadaan") {
+            return redirect()->intended('/')->withSuccess('Welcome Pengadaan');
+        } elseif (Auth::attempt($credentials) && $user->roles[0]->name == "gudang") {
+            return redirect()->intended('/')->withSuccess('Welcome Gudang');
         } else {
             return redirect("login")->with('error', 'Wrong username or password.');
         }

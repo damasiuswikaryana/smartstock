@@ -24,6 +24,7 @@ Route::group(['middleware' => ['isAdmin', 'auth']], function () {
     Route::post('profile/{id}/upload-foto', [HomeController::class, 'storeFoto'])->name('upload-foto');
     Route::post('change-mode',              [HomeController::class, 'change_mode'])->name('change_mode');
     Route::get('log-activity',              [HomeController::class, 'logActivity'])->name('log-activity');
+    Route::post('save-fcm-token',           [HomeController::class, 'saveFcmToken'])->name('saveFcmToken');
 
     // ajax
     Route::get('get-item-variant/{id}',                 [AjaxController::class, 'getVariants'])->name('getVariants');
@@ -54,4 +55,5 @@ Route::group(['middleware' => ['isAdmin', 'auth']], function () {
     require __DIR__ . '/admin/master/entitas.php';
     require __DIR__ . '/admin/master/project.php';
     require __DIR__ . '/admin/user/user.php';
+    require __DIR__ . '/admin/user/roles.php';
 });

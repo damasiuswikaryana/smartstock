@@ -128,6 +128,7 @@ class AdmFullfillmentController extends Controller
                     $gudang_koneksi,
                     $gudang_koneksi,
                     $gudang_koneksi,
+                    $gudang_koneksi,
                 ]
             )
             ->where('pekerjaan_id', $id)

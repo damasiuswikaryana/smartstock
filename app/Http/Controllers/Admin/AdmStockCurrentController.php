@@ -24,11 +24,15 @@ class AdmStockCurrentController extends Controller
         $allEntitas     = Entitas::all();
 
         $lokasi         = Auth::user()->loc_id;
-        // jika yang login adalah masteradmin
-        if (Auth::user()->roles[0]->name == "masteradmin") {
+        // jika yang login adalah roles berikut
+        if (
+            Auth::user()->roles[0]->name == "masteradmin"
+            || Auth::user()->roles[0]->name == "pengadaan"
+            || Auth::user()->roles[0]->name == "gudang"
+        ) {
             $data       = Stock::query();
         } else {
-            $data       = Stock::where('lokasi_id', $lokasi)->get();
+            $data       = Stock::where('lokasi_id', $lokasi);
         }
 
         if ($request->ajax()) {

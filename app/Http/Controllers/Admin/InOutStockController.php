@@ -13,6 +13,7 @@ use App\Models\StockInChild;
 use App\Models\Stock;
 use App\Models\Outlet;
 use App\Models\Project;
+use App\Models\User;
 
 use Illuminate\Http\Request;
 use Yajra\DataTables\DataTables;
@@ -20,6 +21,8 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Auth;
+
+use App\Services\FirebaseNotificationService;
 
 class InOutStockController extends Controller
 {
@@ -33,6 +36,12 @@ class InOutStockController extends Controller
         $gudang     = Outlet::all();
 
         if ($request->ajax()) {
+            // filter werehouse
+            if ($request->gudang) {
+                $gudang_id  = $request->gudang;
+                $data       = $data->where('werehouse_id', $gudang_id);
+            }
+            $data = $data->get();
             return DataTables::of($data)
                 ->addIndexColumn()
                 ->addColumn('action', function ($row) {
@@ -75,8 +84,8 @@ class InOutStockController extends Controller
                 ->addColumn('vendor', function ($row) {
                     return $row->vendor->nama;
                 })
-                ->addColumn('po_number', function ($row) {
-                    return $row->po_number;
+                ->addColumn('ptw_number', function ($row) {
+                    return "<code>" . $row->ptw_number . "</code>";
                 })
                 ->addColumn('items', function ($row) {
                     return $row->child->count();
@@ -88,13 +97,13 @@ class InOutStockController extends Controller
                         return '<span class="badge bg-light-success">Approval</span>';
                     }
                 })
-                ->rawColumns(['action', 'updated_at', 'si_number', 'entitas', 'date', 'werehouse', 'vendor', 'po_number', 'status'])
+                ->rawColumns(['action', 'updated_at', 'si_number', 'entitas', 'date', 'werehouse', 'vendor', 'ptw_number', 'status'])
                 ->make(true);
         }
         return view('pages.stock.in.index', compact('vendor', 'items', 'entitas', 'pekerjaan', 'gudang'));
     }
 
-    public function store(Request $request)
+    public function store(Request $request, FirebaseNotificationService $firebase)
     {
         $input  = $request->all();
         try {
@@ -106,7 +115,7 @@ class InOutStockController extends Controller
                 'entitas_id'        => $input['entitas_id'],
                 'werehouse_id'      => $input['werehouse_id'],
                 'pekerjaan_id'      => $input['pekerjaan_id'],
-                'po_number'         => $input['po_number'],
+                'ptw_number'        => $input['ptw_number'],
                 'note'              => $input['notes'],
                 'status'            => "Pending",
                 'created_by'        => Auth::user()->id,
@@ -127,6 +136,17 @@ class InOutStockController extends Controller
                     }
                 }
             }
+
+            $targetToken    = User::role('masteradmin')->select('device_token')->first();
+            $dataNumber     = $stock_master->stock_in_number;
+            $idRequestData  = $stock_master->id;
+            $firebase->send(
+                $targetToken->device_token,
+                'BUTUH APPROVAL',
+                '[Stock In] - ' . $dataNumber . ' telah diinput. Butuh approval Anda. Lihat pada dashboard Smartwarehouse.',
+                ['url' => '/stock/in/' . $idRequestData . '/detail']
+            );
+
             return response()->json(['success' => true]);
         } catch (\Throwable $th) {
             DB::rollback();
@@ -177,7 +197,7 @@ class InOutStockController extends Controller
             $data->entitas_id       = $input['entitas_id'];
             $data->werehouse_id     = $input['werehouse_id'];
             $data->pekerjaan_id     = $input['pekerjaan_id'];
-            $data->po_number        = $input['po_number'];
+            $data->ptw_number       = $input['ptw_number'];
             $data->note             = $input['notes'];
             $data->save();
             DB::commit();

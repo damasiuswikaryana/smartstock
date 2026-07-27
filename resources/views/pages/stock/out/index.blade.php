@@ -11,15 +11,24 @@
     </x-page-header>
 
     <div class="d-flex justify-content-between align-items-center mb-4 mt-3">
-        <div class="col-6">
+        <div class="">
             <button type="button" class="btn btn-shadow btn-light-primary me-2 d-flex align-items-center"
                 data-bs-toggle="modal" data-bs-target="#exampleModalCenter"><i
                     class="ph-duotone ph-plus-circle icon-search me-2"></i> Add Stock Out</button>
         </div>
-        <div class="col-6 text-end">
+        <div class="d-flex justify-content-start text-end">
+            <div class="form-search me-2">
+                <i class="ph-duotone ph-house icon-search"></i>
+                <select class="form-control" id="fl_werehouse">
+                    <option value="">All Werehouses</option>
+                    @foreach ($allGudang as $g)
+                        <option value="{{ $g->id }}">{{ $g->nama }}</option>
+                    @endforeach
+                </select>
+            </div>
             <div class="form-search">
                 <i class="ph-duotone ph-magnifying-glass icon-search"></i>
-                <input type="search" id="search" class="form-control" placeholder="Search here...">
+                <input type="search" id="search" class="form-control w-100" placeholder="Search here...">
             </div>
         </div>
     </div>
@@ -137,7 +146,12 @@
         let table = $('#myTable').DataTable({
             processing: true,
             serverSide: true,
-            ajax: "{{ route('stockout.index') }}",
+            ajax: {
+                url: "{{ route('stockout.index') }}",
+                data: function(d) {
+                    d.gudang = $('#fl_werehouse').val();
+                }
+            },
             scrollY: true,
             scrollX: true,
             scrollCollapse: true,
@@ -168,7 +182,7 @@
                 {
                     data: 'werehouse',
                     name: 'werehouse',
-                    class: 'py-1',
+                    class: 'py-1 text-center',
                 },
                 {
                     data: 'items',
@@ -193,6 +207,10 @@
 
         $('#search').keyup(function() {
             table.search($(this).val()).draw();
+        });
+
+        $('#fl_werehouse').on('change', function() {
+            table.ajax.reload();
         });
 
         table.on('draw', function() {

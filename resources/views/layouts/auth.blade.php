@@ -67,10 +67,12 @@
                 @method('POST')
                 <div class="card my-4 mx-3">
                     <div class="card-body">
-                        <div class="d-flex justify-content-center align-items-center mb-4 text-center">
-                            <img src="{{ asset('assets/images/logo/logo_rnd_color.png') }}" class="img-fluid"
-                                alt="images" width="70%" />
+                        <div class="d-flex justify-content-center align-items-center mb-1 text-center">
+                            <img src="{{ asset('assets/images/logo/logo_smartwarehouse_color.png') }}"
+                                class="img-fluid" alt="images" width="80%" />
                         </div>
+                        <p class="text-center mb-4 text-muted opacity-50">Procurement System and Warehouse Efficiency
+                        </p>
                         <div class="mb-4">
                             <input type="text"
                                 class="form-control @error('username')

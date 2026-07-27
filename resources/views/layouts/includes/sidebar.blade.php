@@ -1,135 +1,108 @@
+@php
+    $menus = \App\Helpers\MenuHeader::getMenu();
+    $lastScope = null;
+    $classWarna = null;
+    $scopeIndex = [];
+    foreach ($menus as $menu) {
+        if (!empty($menu['scope'])) {
+            $scopeCounts[$menu['scope']] = ($scopeCounts[$menu['scope']] ?? 0) + 1;
+        }
+    }
+@endphp
 <nav class="pc-sidebar">
     <div class="navbar-wrapper">
         <div class="m-header">
-            <a href="{{ route('dashboard') }}" class="b-brand text-primary">
+            <a href="{{ route('dashboard') }}"
+                class="b-brand text-primary d-flex flex-column align-items-center justify-content-between">
                 @if (auth()->user()->mode_style == 'light')
-                    <img src="{{ asset('assets/images/logo/logo_rnd_color.png') }}" alt="logo image" class="logo-lg mt-2"
-                        height="40" />
+                    <img src="{{ asset('assets/images/logo/logo_smartwarehouse_color.png') }}" alt="logo image"
+                        class="logo-lg mt-0" height="27" />
                 @else
-                    <img src="{{ asset('assets/images/logo/logo_rnd_white.png') }}" alt="logo image" class="logo-lg mt-2"
-                        height="40" />
+                    <img src="{{ asset('assets/images/logo/logo_smartwarehouse_white.png') }}" alt="logo image"
+                        class="logo-lg mt-0" height="27" />
                 @endif
-                <span class="badge bg-brand-color-2 rounded-pill ms-1 theme-version">v1.3.0</span>
+                <span class="badge bg-brand-color-2 rounded-pill ms-1 theme-version">v1.2.0</span>
             </a>
         </div>
         <div class="navbar-content">
             <ul class="pc-navbar mt-2">
-
-                <li class="pc-item {{ request()->is('/') ? 'active' : '' }}">
-                    <a href="{{ route('dashboard') }}" class="pc-link">
-                        <span class="pc-micon">
-                            <i class="ph-duotone ph-house-line"></i>
-                        </span>
-                        <span class="pc-mtext" data-i18n="Dashboard">Dashboard</span>
-                    </a>
-                </li>
-
-                <li class="pc-item pc-caption pc-item-pink border-top-radius">
-                    <label data-i18n="Pengadaan">Pengadaan</label>
-                    <i class="ph-duotone ph-chart-pie"></i>
-                </li>
-
-                <li class="pc-item pc-item-pink border-bottom-radius">
-                    <a href="{{ route('fullfillment.index') }}" class="pc-link">
-                        <span class="pc-micon">
-                            <i class="ph-duotone ph-cloud-check"></i>
-                        </span>
-                        <span class="pc-mtext" data-i18n="Contract Fulfillment">Contract Fulfillment</span>
-                    </a>
-                </li>
-
-                <li class="pc-item pc-caption pc-item-blue border-top-radius mt-3">
-                    <label data-i18n="Gudang">Gudang</label>
-                    <i class="ph-duotone ph-chart-pie"></i>
-                </li>
-
-                <li class="pc-item pc-hasmenu pc-item-blue">
-                    <a href="javascript:void(0);" class="pc-link active">
-                        <span class="pc-micon">
-                            <i class="ph-duotone ph-monitor"></i>
-                        </span>
-                        <span class="pc-mtext" data-i18n="Stock Monitor">Stock Monitor</span>
-                        <span class="pc-arrow"><i data-feather="chevron-right"></i></span>
-                    </a>
-                    <ul class="pc-submenu">
-                        <li class="pc-item"><a class="pc-link" href="{{ route('stockCurrent.index') }}"
-                                data-i18n="Current Stock">Current Stock</a>
+                @foreach ($menus as $menu)
+                    @php
+                        if ($menu['scope'] == 'pengadaan') {
+                            $classWarna = 'pc-item-pink';
+                        } elseif ($menu['scope'] == 'gudang') {
+                            $classWarna = 'pc-item-blue';
+                        } else {
+                            $classWarna = '';
+                        }
+                    @endphp
+                    @if (!empty($menu['scope']) && $lastScope != $menu['scope'])
+                        @php
+                            if ($menu['scope'] == 'pengadaan') {
+                                $titleMenu = 'Pengadaan';
+                            } elseif ($menu['scope'] == 'gudang') {
+                                $titleMenu = 'Gudang';
+                            } elseif ($menu['scope'] == 'masterdata') {
+                                $titleMenu = 'Master Data';
+                            } else {
+                                $titleMenu = '';
+                            }
+                        @endphp
+                        <li class="pc-item pc-caption {{ $classWarna }} border-top-radius mt-1">
+                            <label data-i18n="{{ $titleMenu }}">
+                                {{ $titleMenu }}
+                            </label>
+                            <i class="ph-duotone ph-chart-pie"></i>
                         </li>
-                        <li class="pc-item"><a class="pc-link" href="{{ route('stockMutation.index') }}"
-                                data-i18n="Mutation">Mutation</a></li>
-                        <li class="pc-item"><a class="pc-link" href="" data-i18n="Opnam">Opnam</a></li>
-                    </ul>
-                </li>
-                <li class="pc-item pc-hasmenu pc-item-blue">
-                    <a href="javascript:void(0);" class="pc-link active">
-                        <span class="pc-micon">
-                            <i class="ph-duotone ph-arrows-left-right"></i>
-                        </span>
-                        <span class="pc-mtext" data-i18n="In Out Stock">In Out Stock</span>
-                        <span class="pc-arrow"><i data-feather="chevron-right"></i></span>
-                    </a>
-                    <ul class="pc-submenu">
-                        <li class="pc-item"><a class="pc-link" href="{{ route('stockin.index') }}"
-                                data-i18n="Stock In">Stock In</a></li>
-                        <li class="pc-item"><a class="pc-link" href="{{ route('stockout.index') }}"
-                                data-i18n="Stock Out">Stock Out</a></li>
-                        <li class="pc-item"><a class="pc-link" href="{{ route('stocktransfer.index') }}"
-                                data-i18n="Transfer">Transfer</a></li>
-                        <li class="pc-item"><a class="pc-link" href="{{ route('stockinit.index') }}"
-                                data-i18n="Initation">Initation</a></li>
-                    </ul>
-                </li>
-                <li
-                    class="pc-item pc-hasmenu pc-item-blue border-bottom-radius
-                    {{ request()->is('category*') || request()->is('satuan*') || request()->is('vendor*') || request()->is('item*') ? 'active pc-trigger' : '' }}">
-                    <a href="javascript:void(0);" class="pc-link active">
-                        <span class="pc-micon">
-                            <i class="ph-duotone ph-package"></i>
-                        </span>
-                        <span class="pc-mtext" data-i18n="Item Master">Item Master</span>
-                        <span class="pc-arrow"><i data-feather="chevron-right"></i></span>
-                    </a>
-                    <ul class="pc-submenu">
-                        <li class="pc-item {{ request()->is('category*') ? 'active' : '' }}"><a class="pc-link"
-                                href="{{ route('category.index') }}" data-i18n="Category">Category</a></li>
-                        <li class="pc-item {{ request()->is('satuan*') ? 'active' : '' }}"><a class="pc-link"
-                                href="{{ route('satuan.index') }}" data-i18n="Satuan">Satuan</a></li>
-                        <li class="pc-item {{ request()->is('vendor*') ? 'active' : '' }}"><a class="pc-link"
-                                href="{{ route('vendor.index') }}" data-i18n="Vendor">Vendor</a></li>
-                        <li class="pc-item {{ request()->is('item*') ? 'active' : '' }}"><a class="pc-link"
-                                href="{{ route('item.index') }}" data-i18n="Item">Item</a></li>
-                    </ul>
-                </li>
-
-                <li class="pc-item pc-caption">
-                    <label data-i18n="Master Data">Master Data</label>
-                    <i class="ph-duotone ph-chart-pie"></i>
-                </li>
-
-                <li
-                    class="pc-item pc-hasmenu {{ request()->is('outlet*') || request()->is('bank-account*') || request()->is('user*') ? 'active pc-trigger' : '' }}">
-                    <a href="javascript:void(0);" class="pc-link active">
-                        <span class="pc-micon">
-                            <i class="ph-duotone ph-database"></i>
-                        </span>
-                        <span class="pc-mtext" data-i18n="Data Master">Data Master</span>
-                        <span class="pc-arrow"><i data-feather="chevron-right"></i></span>
-                    </a>
-                    <ul class="pc-submenu">
-                        <li class="pc-item {{ request()->is('outlet*') ? 'active' : '' }}"><a class="pc-link"
-                                href="{{ route('outlet.index') }}" data-i18n="Werehouse">Werehouse</a></li>
-                        <li class="pc-item {{ request()->is('entitas*') ? 'active' : '' }}"><a class="pc-link"
-                                href="{{ route('entitas.index') }}" data-i18n="Entity">Entity</a></li>
-                        <li class="pc-item {{ request()->is('project*') ? 'active' : '' }}"><a class="pc-link"
-                                href="{{ route('project.index') }}" data-i18n="Client Projects">Client Projects</a>
+                        @php
+                            $lastScope = $menu['scope'];
+                            if (!isset($scopeIndex[$menu['scope']])) {
+                                $scopeIndex[$menu['scope']] = 0;
+                            }
+                        @endphp
+                    @endif
+                    @php
+                        $classBorderBottom = '';
+                        if (!empty($menu['scope'])) {
+                            $scopeIndex[$menu['scope']]++;
+                            if (
+                                $scopeCounts[$menu['scope']] > 0 &&
+                                $scopeIndex[$menu['scope']] == $scopeCounts[$menu['scope']]
+                            ) {
+                                $classBorderBottom = 'border-bottom-radius mb-2';
+                            }
+                        }
+                    @endphp
+                    @if (isset($menu['children']))
+                        <li class="pc-item pc-hasmenu {{ $classWarna . ' ' . $classBorderBottom }}">
+                            <a href="javascript:void(0);"
+                                class="pc-link @if (Request::segment(1) == $menu['segment']) active show @endif">
+                                <span class="pc-micon">
+                                    <i class="{{ $menu['icon'] }}"></i>
+                                </span>
+                                <span class="pc-mtext" data-i18n="{{ $menu['title'] }}">{{ $menu['title'] }}</span>
+                                <span class="pc-arrow"><i data-feather="chevron-right"></i></span>
+                            </a>
+                            <ul class="pc-submenu">
+                                @foreach ($menu['children'] as $subchild)
+                                    <li class="pc-item @if (Request::is(ltrim($menu['uri'], '/'))) active @endif"><a
+                                            class="pc-link" href="{{ url($subchild['uri']) }}"
+                                            data-i18n="{{ $subchild['title'] }}">{{ $subchild['title'] }}</a></li>
+                                @endforeach
+                            </ul>
                         </li>
-                        <li class="pc-item {{ request()->is('bank-account*') ? 'active' : '' }}"><a class="pc-link"
-                                href="{{ route('bank-account.index') }}" data-i18n="Bank Accounts">Bank Accounts</a>
+                    @else
+                        <li
+                            class="pc-item {{ $classWarna . ' ' . $classBorderBottom }} @if (Request::segment(1) == $menu['segment']) active @endif">
+                            <a href="{{ url($menu['uri']) }}" class="pc-link">
+                                <span class="pc-micon">
+                                    <i class="{{ $menu['icon'] }}"></i>
+                                </span>
+                                <span class="pc-mtext" data-i18n="{{ $menu['title'] }}">{{ $menu['title'] }}</span>
+                            </a>
                         </li>
-                        <li class="pc-item {{ request()->is('user*') ? 'active' : '' }}"><a class="pc-link"
-                                href="{{ route('user.index') }}" data-i18n="System Users">System Users</a></li>
-                    </ul>
-                </li>
+                    @endif
+                @endforeach
             </ul>
         </div>
 

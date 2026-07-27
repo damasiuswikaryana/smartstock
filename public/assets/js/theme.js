@@ -105,7 +105,7 @@ function layout_sidebar_change(value) {
                 .querySelector(".pc-sidebar .m-header .logo-lg")
                 .setAttribute(
                     "src",
-                    "https://demo-sruuput.legalty.id/img/logo/logo_wide.png",
+                    "https://smartstock.smartwork.id/assets/images/logo/logo_wide.png",
                 );
         }
 
@@ -134,7 +134,7 @@ function layout_sidebar_change(value) {
                 .querySelector(".pc-sidebar .m-header .logo-lg")
                 .setAttribute(
                     "src",
-                    "https://demo-sruuput.legalty.id/img/logo/logo_wide.png",
+                    "https://smartstock.smartwork.id/assets/images/logo/logo_wide.png",
                 );
         }
 
@@ -251,30 +251,45 @@ function layout_change(layout) {
                     ) {
                         document
                             .querySelector(".pc-sidebar .m-header .logo-lg")
-                            .setAttribute("src", "img/logo/logo_rnd_white.png");
+                            .setAttribute(
+                                "src",
+                                "assets/images/logo/logo_smartwarehouse_white.png",
+                            );
                     }
 
                     if (document.querySelector(".navbar-brand .logo-lg")) {
                         document
                             .querySelector(".navbar-brand .logo-lg")
-                            .setAttribute("src", "img/logo/logo_rnd_white.png");
+                            .setAttribute(
+                                "src",
+                                "assets/images/logo/logo_smartwarehouse_white.png",
+                            );
                     }
                     if (document.querySelector(".landing-logo")) {
                         document
                             .querySelector(".landing-logo")
-                            .setAttribute("src", "img/logo/logo_rnd_white.png");
+                            .setAttribute(
+                                "src",
+                                "assets/images/logo/logo_smartwarehouse_white.png",
+                            );
                     }
                     if (
                         document.querySelector(".auth-main.v1 .auth-sidefooter")
                     ) {
                         document
                             .querySelector(".auth-main.v1 .auth-sidefooter img")
-                            .setAttribute("src", "img/logo/logo_rnd_white.png");
+                            .setAttribute(
+                                "src",
+                                "assets/images/logo/logo_smartwarehouse_white.png",
+                            );
                     }
                     if (document.querySelector(".footer-top .footer-logo")) {
                         document
                             .querySelector(".footer-top .footer-logo")
-                            .setAttribute("src", "img/logo/logo_rnd_white.png");
+                            .setAttribute(
+                                "src",
+                                "assets/images/logo/logo_smartwarehouse_white.png",
+                            );
                     }
                     var control = document.querySelector(
                         ".theme-layout .btn.active",
@@ -296,30 +311,45 @@ function layout_change(layout) {
                     ) {
                         document
                             .querySelector(".pc-sidebar .m-header .logo-lg")
-                            .setAttribute("src", "img/logo/logo_rnd_color.png");
+                            .setAttribute(
+                                "src",
+                                "assets/images/logo/logo_smartwarehouse_color.png",
+                            );
                     }
                     if (document.querySelector(".navbar-brand .logo-lg")) {
                         document
                             .querySelector(".navbar-brand .logo-lg")
-                            .setAttribute("src", "img/logo/logo_rnd_color.png");
+                            .setAttribute(
+                                "src",
+                                "assets/images/logo/logo_smartwarehouse_color.png",
+                            );
                     }
 
                     if (document.querySelector(".landing-logo")) {
                         document
                             .querySelector(".landing-logo")
-                            .setAttribute("src", "assets/images/logo-dark.svg");
+                            .setAttribute(
+                                "src",
+                                "assets/images/logo/logo_smartwarehouse_color",
+                            );
                     }
                     if (
                         document.querySelector(".auth-main.v1 .auth-sidefooter")
                     ) {
                         document
                             .querySelector(".auth-main.v1 .auth-sidefooter img")
-                            .setAttribute("src", "img/logo/logo_rnd_color.png");
+                            .setAttribute(
+                                "src",
+                                "assets/images/logo/logo_smartwarehouse_color.png",
+                            );
                     }
                     if (document.querySelector(".footer-top .footer-logo")) {
                         document
                             .querySelector(".footer-top .footer-logo")
-                            .setAttribute("src", "img/logo/logo_rnd_color.png");
+                            .setAttribute(
+                                "src",
+                                "assets/images/logo/logo_smartwarehouse_color.png",
+                            );
                     }
                     var control = document.querySelector(
                         ".theme-layout .btn.active",

@@ -11,21 +11,30 @@
     </x-page-header>
 
     <div class="d-flex justify-content-between align-items-center mb-4 mt-3">
-        <div class="col-6">
+        <div class="">
             <button type="button" class="btn btn-shadow btn-light-primary me-2 d-flex align-items-center"
                 data-bs-toggle="modal" data-bs-target="#exampleModalCenter"><i
                     class="ph-duotone ph-plus-circle icon-search me-2"></i> Add Stock In</button>
         </div>
-        <div class="col-6 text-end">
+        <div class="d-flex justify-content-start text-end">
+            <div class="form-search me-2">
+                <i class="ph-duotone ph-house icon-search"></i>
+                <select class="form-control" id="fl_werehouse">
+                    <option value="">All Werehouses</option>
+                    @foreach ($gudang as $g)
+                        <option value="{{ $g->id }}">{{ $g->nama }}</option>
+                    @endforeach
+                </select>
+            </div>
             <div class="form-search">
                 <i class="ph-duotone ph-magnifying-glass icon-search"></i>
-                <input type="search" id="search" class="form-control" placeholder="Search here...">
+                <input type="search" id="search" class="form-control w-100" placeholder="Search here...">
             </div>
         </div>
     </div>
 
     @php
-        $thead = ['Number', 'Project', 'Date', 'Werehouse', 'Vendor', 'PO', 'Items', 'Status', 'Options'];
+        $thead = ['Number', 'Project', 'Date', 'Werehouse', 'Vendor', 'PTW No', 'Items', 'Status', 'Options'];
     @endphp
     <x-datatable :thead=$thead :filter="null">
     </x-datatable>
@@ -74,10 +83,10 @@
                                     </div>
                                 </div>
                                 <div class="mb-3 row">
-                                    <label class="col-lg-4 col-form-label">PO Number:</label>
+                                    <label class="col-lg-4 col-form-label">PTW Number:</label>
                                     <div class="col-lg-8">
-                                        <input type="text" class="form-control" placeholder="Input PO Number"
-                                            name="po_number" value="">
+                                        <input type="text" class="form-control" placeholder="Input PTW Number"
+                                            name="ptw_number" value="">
                                     </div>
                                 </div>
                             </div>
@@ -167,7 +176,12 @@
         let table = $('#myTable').DataTable({
             processing: true,
             serverSide: true,
-            ajax: "{{ route('stockin.index') }}",
+            ajax: {
+                url: "{{ route('stockin.index') }}",
+                data: function(d) {
+                    d.gudang = $('#fl_werehouse').val();
+                }
+            },
             scrollY: true,
             scrollX: true,
             scrollCollapse: true,
@@ -206,8 +220,8 @@
                     class: 'py-1',
                 },
                 {
-                    data: 'po_number',
-                    name: 'po_number',
+                    data: 'ptw_number',
+                    name: 'ptw_number',
                     class: 'py-1',
                 },
                 {
@@ -233,6 +247,10 @@
 
         $('#search').keyup(function() {
             table.search($(this).val()).draw();
+        });
+
+        $('#fl_werehouse').on('change', function() {
+            table.ajax.reload();
         });
 
         table.on('draw', function() {
@@ -265,9 +283,9 @@
                         showToastError(response.message);
                     }
                 },
-                error: function(xhr) {
+                error: function(xhr, status, error) {
                     hideLoader();
-                    showToastError("Error while adding data");
+                    showToastError("Error: " + xhr.responseText);
                 }
             });
         });

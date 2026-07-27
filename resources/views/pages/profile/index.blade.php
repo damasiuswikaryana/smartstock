@@ -112,6 +112,20 @@
                                 <button type="submit" class="btn btn-light-primary w-100">Update Profile</button>
                             </div>
                         </form>
+
+                        <a class="text-dark" href="javascript:void(0);" onclick="initFirebaseNotification()">
+                            <div class="d-flex align-items-center justify-content-between px-3">
+                                <div class="d-flex align-items-center">
+                                    <i class="bx bxs-bell icon-profil text-danger fs-1"></i>
+                                    <span class="ms-1">Aktifkan Notifikasi</span>
+                                    <span
+                                        class="f-10 text-muted ms-1">{{ auth()->user()->device_token ? '(Aktif)' : '(Tidak Aktif)' }}</span>
+                                </div>
+                                <div class="d-flex align-items-center">
+                                    <span><i class="fa fa-chevron-right"></i></span>
+                                </div>
+                            </div>
+                        </a>
                     </div>
                 </div>
 

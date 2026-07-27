@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Models\Entitas;
+use App\Models\Outlet;
 use App\Models\Project;
 use App\Models\ItemMaster;
 use App\Models\ItemVarian;
@@ -26,6 +27,7 @@ class OutStockController extends Controller
         $gudang     = Auth::user()->loc_id;
         $pekerjaan  = Project::all();
         $entitas    = Entitas::all();
+        $allGudang  = Outlet::all();
 
         $stockav    = Stock::where('lokasi_id', $gudang)->get();
         $items      =
@@ -46,6 +48,12 @@ class OutStockController extends Controller
         $data       = StockOutMaster::with('child');
 
         if ($request->ajax()) {
+            // filter werehouse
+            if ($request->gudang) {
+                $gudang_id  = $request->gudang;
+                $data       = $data->where('werehouse_id', $gudang_id);
+            }
+            $data = $data->get();
             return DataTables::of($data)
                 ->addIndexColumn()
                 ->addColumn('action', function ($row) {
@@ -98,7 +106,7 @@ class OutStockController extends Controller
                 ->rawColumns(['action', 'updated_at', 'so_number', 'date', 'werehouse', 'entitas', 'status'])
                 ->make(true);
         }
-        return view('pages.stock.out.index', compact('gudang', 'pekerjaan', 'items', 'entitas', 'stockav'));
+        return view('pages.stock.out.index', compact('gudang', 'pekerjaan', 'items', 'entitas', 'stockav', 'allGudang'));
     }
 
     public function store(Request $request)

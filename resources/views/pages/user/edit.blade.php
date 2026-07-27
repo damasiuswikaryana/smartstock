@@ -12,7 +12,7 @@
             <label class="col-lg-4 col-form-label">Employee ID:</label>
             <div class="col-lg-8">
                 <input type="text" class="form-control" placeholder="Enter employee ID" name="emp_id"
-                    value="{{ $data->emp_id }}">
+                    value="{{ $data->emp_id }}" required>
             </div>
         </div>
         <div class="mb-3 row">
@@ -20,12 +20,12 @@
             <div class="col-lg-8 row me-0 pe-0">
                 <div class="col-12 col-lg-6">
                     <input type="text" class="form-control" placeholder="First Name" name="firstname"
-                        value="{{ $data->firstname }}">
+                        value="{{ $data->firstname }}" required>
 
                 </div>
                 <div class="col-12 col-lg-6 pe-0">
                     <input type="text" class="form-control" placeholder="Last Name" name="lastname"
-                        value="{{ $data->lastname }}">
+                        value="{{ $data->lastname }}" required>
 
                 </div>
             </div>
@@ -34,21 +34,21 @@
             <label class="col-lg-4 col-form-label">Username:</label>
             <div class="col-lg-8">
                 <input type="text" class="form-control" placeholder="Enter username" name="username"
-                    value="{{ $data->username }}">
+                    value="{{ $data->username }}" required>
             </div>
         </div>
         <div class="mb-3 row">
             <label class="col-lg-4 col-form-label">Email:</label>
             <div class="col-lg-8">
                 <input type="email" class="form-control" placeholder="Enter email" name="email"
-                    value="{{ $data->email }}">
+                    value="{{ $data->email }}" required>
             </div>
         </div>
         <div class="mb-3 row">
             <label class="col-lg-4 col-form-label">Phone Number:</label>
             <div class="col-lg-8">
                 <input type="text" class="form-control" placeholder="Enter phone number" name="phone"
-                    value="{{ $data->phone }}">
+                    value="{{ $data->phone }}" required>
             </div>
         </div>
         <div class="mb-3 row">
@@ -69,7 +69,7 @@
         <div class="mb-3 row">
             <label class="col-lg-4 col-form-label">Job Placement:</label>
             <div class="col-lg-8">
-                <select class="form-select" id="loc_id" name="loc_id">
+                <select class="form-select" id="loc_id" name="loc_id" required>
                     <option selected disabled>Choose werehouse</option>
                     @forelse ($outlet as $item)
                         <option @if ($data->loc_id == $item->id) selected @endif value="{{ $item->id }}">
@@ -83,7 +83,7 @@
         <div class="mb-3 row">
             <label class="col-lg-4 col-form-label">Roles:</label>
             <div class="col-lg-8">
-                <select class="form-select" id="roles" name="roles">
+                <select class="form-select" id="roles" name="roles" required>
                     @foreach ($roles as $role)
                         <option @if ($data->roles->first()?->id == $role->id) selected @endif value="{{ $role->id }}">
                             {{ $role->name }}</option>
@@ -95,7 +95,7 @@
         <div class="mb-3 row">
             <label class="col-lg-4 col-form-label">Status:</label>
             <div class="col-lg-8">
-                <select class="form-select" id="status" name="status">
+                <select class="form-select" id="status" name="status" required>
                     <option @if ($data->status == 'Active') selected @endif value="Active">Active</option>
                     <option @if ($data->status == 'Inactive') selected @endif value="Inactive">Inactive</option>
                 </select>
@@ -127,10 +127,15 @@
             data: $(this).serialize(),
             beforeSend: showLoader(),
             success: function(res) {
-                $('#modalEdit').modal('hide');
-                table.ajax.reload(null, false);
-                hideLoader();
-                showToastSuccess("Data has been updated");
+                if (res.success) {
+                    $('#modalEdit').modal('hide');
+                    table.ajax.reload(null, false);
+                    hideLoader();
+                    showToastSuccess("Data has been updated");
+                } else {
+                    hideLoader();
+                    showToastError(res.message);
+                }
             },
             error: function() {
                 hideLoader();

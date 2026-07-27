@@ -141,4 +141,21 @@ class HomeController extends Controller
             return response()->json(['success' => false, 'message' => "Error: " . $th->getMessage()]);
         }
     }
+
+    public function saveFcmToken(Request $request)
+    {
+        $input      = $request->all();
+        $id_user    = Auth::user()->id;
+        $data       = User::where('id', $id_user)->first();
+        try {
+            DB::beginTransaction();
+            $data->device_token  = $input['token'];
+            $data->save();
+            DB::commit();
+            return response()->json(['success' => true]);
+        } catch (\Throwable $th) {
+            DB::rollback();
+            return response()->json(['success' => false, 'message' => "Error: " . $th->getMessage()]);
+        }
+    }
 }

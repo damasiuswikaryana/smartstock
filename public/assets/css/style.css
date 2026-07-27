@@ -33637,6 +33637,10 @@ table.dataTable tbody tr > .dtfc-fixed-end {
 .border-bottom-radius {
     border-radius: 0px 0px var(--bs-border-radius) var(--bs-border-radius);
 }
+
+.text-green {
+    color: #007e42;
+}
 /**  =====================
   36. Customizer css end
 ==========================  **/

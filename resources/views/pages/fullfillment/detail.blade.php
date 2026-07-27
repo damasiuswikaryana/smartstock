@@ -100,7 +100,32 @@
                                                 </p>
                                             </td>
                                             <td>
-                                                <p class="mb-0">{{ rupiah($stock?->purchase_cost ?? 0) }}</p>
+                                                @php
+                                                    if ($stock?->purchase_cost < $subtotalBudgetCompany) {
+                                                        $warna = 'text-green';
+                                                        $hematPersen =
+                                                            $subtotalBudgetCompany > 0
+                                                                ? max(
+                                                                    0,
+                                                                    round(
+                                                                        (($subtotalBudgetCompany -
+                                                                            ($stock?->purchase_cost ?? 0)) /
+                                                                            $subtotalBudgetCompany) *
+                                                                            100,
+                                                                    ),
+                                                                )
+                                                                : 0;
+                                                    } else {
+                                                        $warna = 'text-danger';
+                                                    }
+                                                @endphp
+                                                <p class="mb-0 {{ $warna }}">
+                                                    {{ rupiah($stock?->purchase_cost ?? 0) }}</p>
+                                                @if ($stock?->purchase_cost < $subtotalBudgetCompany)
+                                                    <p class="mb-0 text-green">
+                                                        <small>Hemat {{ $hematPersen }}%</small>
+                                                    </p>
+                                                @endif
                                             </td>
                                         </tr>
                                     @empty

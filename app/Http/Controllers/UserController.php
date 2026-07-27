@@ -109,6 +109,7 @@ class UserController extends Controller
     public function update(Request $request, int $id)
     {
         $data   = User::where('id', $id)->first();
+
         $input  = $request->all();
         try {
             DB::beginTransaction();
@@ -122,7 +123,7 @@ class UserController extends Controller
             $data->status       = $input['status'];
             $data->save();
             DB::commit();
-            $role = Role::findOrFail($input['roles']);
+            $role               = Role::findOrFail($input['roles']);
             $data->syncRoles($role);
             return response()->json(['success' => true]);
         } catch (\Throwable $th) {

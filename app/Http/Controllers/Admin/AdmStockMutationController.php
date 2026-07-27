@@ -4,8 +4,9 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Models\StockMutation;
-use App\Models\StockInMasterPhoto;
-use App\Models\StockInChild;
+use App\Models\Outlet;
+use App\Models\Category;
+use App\Models\Entitas;
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -15,10 +16,57 @@ class AdmStockMutationController extends Controller
 {
     public function index(Request $request)
     {
+        $allGudang      = Outlet::all();
+        $allCategory    = Category::all();
+        $allEntitas     = Entitas::all();
+
         $lokasi     = Auth::user()->loc_id;
-        $data       = StockMutation::where('source_id', $lokasi)->orWhere('target_id', $lokasi)->get();
+
+        if (
+            Auth::user()->roles[0]->name == "masteradmin"
+            || Auth::user()->roles[0]->name == "pengadaan"
+            || Auth::user()->roles[0]->name == "gudang"
+        ) {
+            $data       = StockMutation::query();
+        } else {
+            $data       = StockMutation::where('source_id', $lokasi)->orWhere('target_id', $lokasi);
+        }
 
         if ($request->ajax()) {
+            // filter source
+            if ($request->source) {
+                $gudang_id  = $request->source;
+                if ($gudang_id != "External") {
+                    $data       = $data->where('source_id', $gudang_id);
+                } else {
+                    $data       = $data->where('source_type', $gudang_id);
+                }
+            }
+            // filter target
+            if ($request->target) {
+                $gudang_id  = $request->target;
+                if ($gudang_id != "External") {
+                    $data       = $data->where('target_id', $gudang_id);
+                } else {
+                    $data       = $data->where('target_type', $gudang_id);
+                }
+            }
+            // filter category
+            if ($request->category) {
+                $cat_id     = $request->category;
+                $data->whereHas('item_varian.itemMaster', function ($q) use ($cat_id) {
+                    $q->where('category_id', $cat_id);
+                });
+            }
+            // filter entitas
+            if ($request->tipe) {
+                $tipe       = $request->tipe;
+                $data       = $data->where('tipe', $tipe);
+            }
+
+            // get data
+            $data = $data->get();
+
             return DataTables::of($data)
                 ->addIndexColumn()
                 ->addColumn('action', function ($row) {
@@ -33,40 +81,39 @@ class AdmStockMutationController extends Controller
                 })
                 ->addColumn('source_type', function ($row) {
                     if ($row->source_type == 'External') {
-                        return '<span class="badge bg-light-secondary">External</span>';
-                    } elseif ($row->source_type == 'Central') {
-                        return '<span class="badge bg-light-primary">Central</span>';
+                        return '<p class="text-dark mb-0">External</p>';
                     } else {
-                        return '<span class="badge bg-light-danger">Cabang</span>';
+                        return '<p class="text-dark mb-0">' . $row->gudangAsal->nama . '</p>';
                     }
                 })
                 ->addColumn('target_type', function ($row) {
                     if ($row->target_type == 'External') {
-                        return '<span class="badge bg-light-secondary">External</span>';
-                    } elseif ($row->target_type == 'Central') {
-                        return '<span class="badge bg-light-primary">Central</span>';
+                        return '<p class="text-dark mb-0">External</p>';
                     } else {
-                        return '<span class="badge bg-light-danger">Cabang</span>';
+                        return '<p class="text-dark mb-0">' . $row->gudangTarget->nama . '</p>';
                     }
                 })
                 ->addColumn('item', function ($row) {
-                    return $row->item_varian->name_varian;
+                    return '<p class="mb-0 fw-bold">' . $row->item_varian->itemMaster->nama . '</p><p class="text-muted mb-0">[' . $row->item_varian->sku_varian . ']</p>';
+                })
+                ->addColumn('variant', function ($row) {
+                    return '<code>' . $row->item_varian->kode_varian . '</code>';
                 })
                 ->addColumn('tipe', function ($row) {
                     if ($row->tipe == 'Masuk') {
-                        return '<span class="badge bg-light-success" style="color:#036342;"><i class="ti ti-arrow-bar-to-right"></i> Masuk</span>';
+                        return '<p class="text-green mb-0"><i class="ti ti-arrow-bar-to-right"></i> Masuk</p>';
                     } elseif ($row->tipe == 'Keluar') {
-                        return '<span class="badge bg-light-danger"><i class="ti ti-arrow-bar-left"></i> Keluar</span>';
+                        return '<p class="text-danger mb-0"><i class="ti ti-arrow-bar-left"></i> Keluar</p>';
                     } elseif ($row->tipe == 'Transfer') {
-                        return '<span class="badge bg-light-primary"><i class="ti ti-arrows-right-left"></i> Transfer</span>';
+                        return '<p class="text-primary mb-0"><i class="ti ti-arrows-right-left"></i> Transfer</p>';
                     } else {
-                        return '<span class="badge bg-light-secondary"><i class="ti ti-circle-x"></i> Broken</span>';
+                        return '<p class="text-dark mb-0"><i class="ti ti-circle-x"></i> Broken</p>';
                     }
                 })
-                ->rawColumns(['action', 'updated_at', 'source_type', 'target_type', 'item', 'tipe'])
+                ->rawColumns(['action', 'updated_at', 'source_type', 'target_type', 'item', 'variant', 'tipe'])
                 ->make(true);
         }
-        return view('pages.stock.mutation.index');
+        return view('pages.stock.mutation.index', compact('allGudang', 'allCategory', 'allEntitas'));
     }
 
     public function detail(int $id)

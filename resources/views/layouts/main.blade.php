@@ -7,6 +7,7 @@
 <html lang="id">
 
 <head>
+    @include('layouts.includes.meta')
     @include('layouts.includes.style')
     @stack('css')
 </head>

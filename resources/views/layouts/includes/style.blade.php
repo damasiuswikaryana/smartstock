@@ -8,16 +8,16 @@
 <meta name="csrf-token" content="{{ csrf_token() }}">
 
 <!-- [Favicon] icon -->
-<link rel="icon" href="{{ asset('img/logo/logo_sruuput.png') }}" type="image/x-icon" />
+<link rel="icon" href="{{ asset('assets/images/icons/icon-1000x1000.jpg') }}" type="image/x-icon" />
 
 <link href="https://fonts.googleapis.com/css2?family=Public+Sans:wght@400;500;600;700&amp;display=swap"
     rel="stylesheet" />
 
 <link rel="stylesheet" type="text/css" href="{{ asset('assets/css/plugins/animate.min.css') }}" />
 <link rel="stylesheet" type="text/css" href="{{ asset('assets/fonts/phosphor/duotone/style.css') }}" />
-<link rel="stylesheet" type="text/css" href="{{ asset('assets/fonts/tabler-icons.min.css ') }}">
-<link rel="stylesheet" type="text/css" href="{{ asset('assets/fonts/feather.css ') }}">
-<link rel="stylesheet" type="text/css" href="{{ asset('assets/fonts/fontawesome.css ') }}">
+<link rel="stylesheet" type="text/css" href="{{ asset('assets/fonts/tabler-icons.min.css') }}">
+<link rel="stylesheet" type="text/css" href="{{ asset('assets/fonts/feather.css') }}">
+<link rel="stylesheet" type="text/css" href="{{ asset('assets/fonts/fontawesome.css') }}">
 <link rel="stylesheet" type="text/css" href="{{ asset('assets/fonts/material.css') }}">
 
 <!-- [Template CSS Files] -->

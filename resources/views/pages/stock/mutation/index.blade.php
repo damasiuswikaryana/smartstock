@@ -11,7 +11,14 @@
     </x-page-header>
 
     <div class="d-flex justify-content-between align-items-center mb-4 mt-3">
-        <div class="col-12 text-end">
+        <div class="text-start">
+            <button class="btn btn-light-primary d-flex align-items-center" type="button" data-bs-toggle="collapse"
+                data-bs-target="#collapseExample" aria-expanded="false" aria-controls="collapseExample">
+                <i class="ph-duotone ph-funnel icon-search me-2"></i>
+                <span>Data Filter</span>
+                <i data-feather="chevron-down" class="icon-search ms-3"></i></button>
+        </div>
+        <div class="text-end d-flex justify-content-between align-items-center">
             <div class="form-search">
                 <i class="ph-duotone ph-magnifying-glass icon-search"></i>
                 <input type="search" id="search" class="form-control" placeholder="Search here...">
@@ -19,8 +26,61 @@
         </div>
     </div>
 
+    <div class="border-0 mb-3">
+        <div class="collapse" id="collapseExample">
+            <div class="row">
+                <div class="col-3 text-start">
+                    <div class="form-search w-100">
+                        <i class="ph-duotone ph-star icon-search"></i>
+                        <select class="form-control w-100" id="fl_tipe">
+                            <option value="">All Type</option>
+                            <option value="Masuk">Masuk</option>
+                            <option value="Keluar">Keluar</option>
+                            <option value="Transfer">Transfer</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="col-3 text-start">
+                    <div class="form-search w-100">
+                        <i class="ph-duotone ph-house icon-search"></i>
+                        <select class="form-control w-100" id="fl_source">
+                            <option value="">All Source</option>
+                            <option value="External">External</option>
+                            @foreach ($allGudang as $g)
+                                <option value="{{ $g->id }}">{{ $g->nama }}</option>
+                            @endforeach
+                        </select>
+                    </div>
+                </div>
+                <div class="col-3 text-start">
+                    <div class="form-search w-100">
+                        <i class="ph-duotone ph-house icon-search"></i>
+                        <select class="form-control w-100" id="fl_target">
+                            <option value="">All Target</option>
+                            <option value="External">External</option>
+                            @foreach ($allGudang as $g)
+                                <option value="{{ $g->id }}">{{ $g->nama }}</option>
+                            @endforeach
+                        </select>
+                    </div>
+                </div>
+                <div class="col-3 text-start">
+                    <div class="form-search w-100">
+                        <i class="ph-duotone ph-package icon-search"></i>
+                        <select class="form-control w-100" id="fl_category">
+                            <option value="">All Categories</option>
+                            @foreach ($allCategory as $c)
+                                <option value="{{ $c->id }}">{{ $c->title }}</option>
+                            @endforeach
+                        </select>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
     @php
-        $thead = ['No', 'Type', 'Source', 'Destination', 'Item', 'Qty', 'Options'];
+        $thead = ['No', 'Type', 'Source', 'Target', 'Item', 'Variant', 'Qty', 'Options'];
     @endphp
     <x-datatable :thead=$thead :filter="null">
     </x-datatable>
@@ -44,7 +104,15 @@
         let table = $('#myTable').DataTable({
             processing: true,
             serverSide: true,
-            ajax: "{{ route('stockMutation.index') }}",
+            ajax: {
+                url: "{{ route('stockMutation.index') }}",
+                data: function(d) {
+                    d.tipe = $('#fl_tipe').val();
+                    d.source = $('#fl_source').val();
+                    d.target = $('#fl_target').val();
+                    d.category = $('#fl_category').val();
+                }
+            },
             scrollY: true,
             scrollX: true,
             scrollCollapse: true,
@@ -70,7 +138,7 @@
                 {
                     data: 'tipe',
                     name: 'tipe',
-                    class: 'py-0 fw-bold text-center',
+                    class: 'py-0 text-center',
                 },
                 {
                     data: 'source_type',
@@ -85,6 +153,11 @@
                 {
                     data: 'item',
                     name: 'item',
+                    class: 'py-0 text-start',
+                },
+                {
+                    data: 'variant',
+                    name: 'variant',
                     class: 'py-0 text-center',
                 },
                 {
@@ -105,6 +178,10 @@
 
         $('#search').keyup(function() {
             table.search($(this).val()).draw();
+        });
+
+        $('#fl_source, #fl_target, #fl_category, #fl_tipe').on('change', function() {
+            table.ajax.reload();
         });
 
         table.on('draw', function() {

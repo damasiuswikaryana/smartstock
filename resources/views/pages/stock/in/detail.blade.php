@@ -25,7 +25,10 @@
         <div class="col-12">
             <div class="card">
                 <div class="card-header py-3">
-                    <h4 class="mb-0">#{{ $data->stock_in_number }}</h4>
+                    <h4 class="mb-0 d-flex align-items-center">
+                        <i class="me-3 ph-duotone ph-arrow-fat-lines-right text-green"></i>
+                        <code class="text-green">IN : {{ $data->stock_in_number }}</code>
+                    </h4>
                 </div>
                 <div class="card-body">
                     <div class="row g-4">
@@ -41,10 +44,10 @@
                                 </li>
                                 <li class="list-group-item d-flex justify-content-between align-items-start">
                                     <div class="ms-0 me-auto col-6">
-                                        PO Number
+                                        PTW Number
                                     </div>
                                     <div class="ms-0 me-auto fw-bold col-6">
-                                        {{ $data->po_number }}
+                                        <code>{{ $data->ptw_number }}</code>
                                     </div>
                                 </li>
                                 <li class="list-group-item d-flex justify-content-between align-items-start">

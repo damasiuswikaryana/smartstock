@@ -26,8 +26,8 @@
             <div class="card">
                 <div class="card-header py-3">
                     <h4 class="mb-0 d-flex align-items-center">
-                        <code>TRANSFER : {{ $data->stock_transfer_number }}</code>
-                        <i class="ms-3 ph-duotone ph-arrow-fat-lines-right text-danger"></i>
+                        <code class="text-primary">TRANSFER : {{ $data->stock_transfer_number }}</code>
+                        <i class="ms-3 ph-duotone ph-arrows-left-right text-primary"></i>
                     </h4>
                 </div>
                 <div class="card-body">

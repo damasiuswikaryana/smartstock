@@ -40,10 +40,10 @@
                 </div>
 
                 <div class="mb-3 row">
-                    <label class="col-lg-4 col-form-label">PO Number:</label>
+                    <label class="col-lg-4 col-form-label">PTW Number:</label>
                     <div class="col-lg-8">
-                        <input type="text" class="form-control" placeholder="Input PO Number" name="po_number"
-                            value="{{ $data->po_number }}">
+                        <input type="text" class="form-control" placeholder="Input PTW Number" name="ptw_number"
+                            value="{{ $data->ptw_number }}">
                     </div>
                 </div>
             </div>
