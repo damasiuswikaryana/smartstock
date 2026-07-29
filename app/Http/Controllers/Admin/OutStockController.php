@@ -117,6 +117,7 @@ class OutStockController extends Controller
             DB::beginTransaction();
             $stock_master = StockOutMaster::create([
                 'stock_out_number'  => $input['stock_out_number'],
+                'out_srf'           => $input['stock_out_srf'],
                 'out_date'          => $input['out_date'],
                 'werehouse_id'      => $gudang,
                 'entitas_id'        => $input['entitas_id'],
@@ -199,6 +200,7 @@ class OutStockController extends Controller
         try {
             DB::beginTransaction();
             $data->stock_out_number = $input['stock_out_number'];
+            $data->out_srf          = $input['stock_out_srf'];
             $data->out_date         = $input['out_date'];
             $data->werehouse_id     = $gudang;
             $data->entitas_id       = $input['entitas_id'];

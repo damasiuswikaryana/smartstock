@@ -7,9 +7,9 @@
         @csrf
         @method('PUT')
         <div class="mb-3 row">
-            <label class="col-lg-4 col-form-label">Bank:</label>
+            <label class="col-lg-4 col-form-label">Bank: <span class="text-danger">*</span></label>
             <div class="col-lg-8">
-                <select class="form-control" name="id_bank">
+                <select class="form-control" name="id_bank" required>
                     @foreach ($banks as $b)
                         <option {{ $b->id == $data->id_bank ? 'selected' : '' }} value="{{ $b->id }}">
                             {{ $b->bank_name }}</option>
@@ -18,18 +18,23 @@
             </div>
         </div>
         <div class="mb-3 row">
-            <label class="col-lg-4 col-form-label">Account Name:</label>
+            <label class="col-lg-4 col-form-label">Account Name: <span class="text-danger">*</span></label>
             <div class="col-lg-8">
                 <input type="text" class="form-control" placeholder="Account Name" name="bank_account_name"
-                    value="{{ $data->bank_account_name }}" />
+                    value="{{ $data->bank_account_name }}" required />
             </div>
         </div>
         <div class="mb-3 row">
-            <label class="col-lg-4 col-form-label">Account Number:</label>
+            <label class="col-lg-4 col-form-label">Account Number: <span class="text-danger">*</span></label>
             <div class="col-lg-8">
                 <input type="text" class="form-control" placeholder="Account Number" name="bank_account_number"
-                    value="{{ $data->bank_account_number }}" />
+                    value="{{ $data->bank_account_number }}" required />
             </div>
+        </div>
+        <div class="mb-0">
+            <p class="mb-0 text-muted"><b>Important</b>: <span class="text-danger">*</span> fields
+                are
+                required.</p>
         </div>
     </div>
 </form>

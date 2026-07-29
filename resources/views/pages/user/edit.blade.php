@@ -9,14 +9,14 @@
         @csrf
         @method('POST')
         <div class="mb-3 row">
-            <label class="col-lg-4 col-form-label">Employee ID:</label>
+            <label class="col-lg-4 col-form-label">Employee ID: <span class="text-danger">*</span></label>
             <div class="col-lg-8">
                 <input type="text" class="form-control" placeholder="Enter employee ID" name="emp_id"
                     value="{{ $data->emp_id }}" required>
             </div>
         </div>
         <div class="mb-3 row">
-            <label class="col-lg-4 col-form-label">Name:</label>
+            <label class="col-lg-4 col-form-label">Name: <span class="text-danger">*</span></label>
             <div class="col-lg-8 row me-0 pe-0">
                 <div class="col-12 col-lg-6">
                     <input type="text" class="form-control" placeholder="First Name" name="firstname"
@@ -31,21 +31,21 @@
             </div>
         </div>
         <div class="mb-3 row">
-            <label class="col-lg-4 col-form-label">Username:</label>
+            <label class="col-lg-4 col-form-label">Username: <span class="text-danger">*</span></label>
             <div class="col-lg-8">
                 <input type="text" class="form-control" placeholder="Enter username" name="username"
                     value="{{ $data->username }}" required>
             </div>
         </div>
         <div class="mb-3 row">
-            <label class="col-lg-4 col-form-label">Email:</label>
+            <label class="col-lg-4 col-form-label">Email: <span class="text-danger">*</span></label>
             <div class="col-lg-8">
                 <input type="email" class="form-control" placeholder="Enter email" name="email"
                     value="{{ $data->email }}" required>
             </div>
         </div>
         <div class="mb-3 row">
-            <label class="col-lg-4 col-form-label">Phone Number:</label>
+            <label class="col-lg-4 col-form-label">Phone Number: <span class="text-danger">*</span></label>
             <div class="col-lg-8">
                 <input type="text" class="form-control" placeholder="Enter phone number" name="phone"
                     value="{{ $data->phone }}" required>
@@ -67,7 +67,7 @@
         </div>
         <hr />
         <div class="mb-3 row">
-            <label class="col-lg-4 col-form-label">Job Placement:</label>
+            <label class="col-lg-4 col-form-label">Job Placement: <span class="text-danger">*</span></label>
             <div class="col-lg-8">
                 <select class="form-select" id="loc_id" name="loc_id" required>
                     <option selected disabled>Choose werehouse</option>
@@ -81,7 +81,7 @@
         </div>
 
         <div class="mb-3 row">
-            <label class="col-lg-4 col-form-label">Roles:</label>
+            <label class="col-lg-4 col-form-label">Roles: <span class="text-danger">*</span></label>
             <div class="col-lg-8">
                 <select class="form-select" id="roles" name="roles" required>
                     @foreach ($roles as $role)
@@ -93,13 +93,18 @@
         </div>
 
         <div class="mb-3 row">
-            <label class="col-lg-4 col-form-label">Status:</label>
+            <label class="col-lg-4 col-form-label">Status: <span class="text-danger">*</span></label>
             <div class="col-lg-8">
                 <select class="form-select" id="status" name="status" required>
                     <option @if ($data->status == 'Active') selected @endif value="Active">Active</option>
                     <option @if ($data->status == 'Inactive') selected @endif value="Inactive">Inactive</option>
                 </select>
             </div>
+        </div>
+        <div class="mb-0">
+            <p class="mb-0 text-muted"><b>Important</b>: <span class="text-danger">*</span> fields
+                are
+                required.</p>
         </div>
     </div>
 </form>

@@ -11,18 +11,19 @@
             @method('POST')
             <div class="col-12">
                 <div class="mb-3 row">
-                    <label class="col-lg-12 col-form-label pt-0">Stock In Number:</label>
+                    <label class="col-lg-12 col-form-label pt-0">Stock In Number: <span
+                            class="text-danger">*</span></label>
                     <div class="col-lg-12">
                         <input type="text" class="form-control" placeholder="ASTA/XXX/XXX" name="stock_in_number"
-                            value="{{ $data->stock_in_number }}">
+                            value="{{ $data->stock_in_number }}" required>
                     </div>
                 </div>
             </div>
             <div class="col-6">
                 <div class="mb-3 row">
-                    <label class="col-lg-4 col-form-label">Werehouse:</label>
+                    <label class="col-lg-4 col-form-label">Werehouse: <span class="text-danger">*</span></label>
                     <div class="col-lg-8">
-                        <select class="form-control" name="werehouse_id">
+                        <select class="form-control" name="werehouse_id" required>
                             @foreach ($gudang as $wh)
                                 <option @if ($data->werehouse_id == $wh->id) selected @endif value="{{ $wh->id }}">
                                     {{ $wh->nama }}</option>
@@ -32,10 +33,10 @@
                 </div>
 
                 <div class="mb-3 row">
-                    <label class="col-lg-4 col-form-label">Date:</label>
+                    <label class="col-lg-4 col-form-label">Date: <span class="text-danger">*</span></label>
                     <div class="col-lg-8">
                         <input type="date" class="form-control" placeholder="Date stock in" name="in_date"
-                            value="{{ $data->in_date }}">
+                            value="{{ $data->in_date }}" required>
                     </div>
                 </div>
 
@@ -49,11 +50,10 @@
             </div>
 
             <div class="col-6">
-                <h4 class="fw-bold mb-3">Vendor</h4>
                 <div class="mb-3 row">
-                    <label class="col-lg-4 col-form-label">Vendor:</label>
+                    <label class="col-lg-4 col-form-label">Vendor: <span class="text-danger">*</span></label>
                     <div class="col-lg-8">
-                        <select class="form-control" name="vendor_id">
+                        <select class="form-control" name="vendor_id" required>
                             @foreach ($vendor as $vd)
                                 <option @if ($data->vendor_id == $vd->id) selected @endif value="{{ $vd->id }}">
                                     {{ $vd->nama }}</option>
@@ -62,9 +62,9 @@
                     </div>
                 </div>
                 <div class="mb-3 row">
-                    <label class="col-lg-4 col-form-label">Project:</label>
+                    <label class="col-lg-4 col-form-label">Project: <span class="text-danger">*</span></label>
                     <div class="col-lg-8">
-                        <select class="form-control" name="pekerjaan_id">
+                        <select class="form-control" name="pekerjaan_id" required>
                             @foreach ($pekerjaan as $pr)
                                 <option @if ($data->pekerjaan_id == $pr->id) selected @endif value="{{ $pr->id }}">
                                     {{ $pr->name }}</option>
@@ -73,9 +73,9 @@
                     </div>
                 </div>
                 <div class="mb-3 row">
-                    <label class="col-lg-4 col-form-label">Entity:</label>
+                    <label class="col-lg-4 col-form-label">Entity: <span class="text-danger">*</span></label>
                     <div class="col-lg-8">
-                        <select class="form-control" name="entitas_id">
+                        <select class="form-control" name="entitas_id" required>
                             @foreach ($entitas as $et)
                                 <option @if ($data->entitas_id == $et->id) selected @endif value="{{ $et->id }}">
                                     {{ $et->entitas_name }}</option>
@@ -138,14 +138,18 @@
                 </div>
             </div>
 
-            <div class="col-12">
+            <div class="col-12 mb-3">
                 <h4 class="fw-bold mb-3">Notes and Documentation</h4>
                 <div class="mb-1 row">
                     <div class="col-lg-12">
-                        <label class="col-form-label">Notes:</label>
-                        <textarea type="text" class="form-control" name="notes">{{ $data->note }}</textarea>
+                        <label class="col-form-label">Notes: <span class="text-danger">*</span></label>
+                        <textarea type="text" class="form-control" name="notes" required>{{ $data->note }}</textarea>
                     </div>
                 </div>
+            </div>
+            <div class="col-12">
+                <p class="mb-0 text-muted"><b>Important</b>: <span class="text-danger">*</span> fields are
+                    required.</p>
             </div>
         </form>
 

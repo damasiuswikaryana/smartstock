@@ -44,27 +44,30 @@
                         @csrf
                         @method('POST')
                         <div class="mb-3 row">
-                            <label class="col-lg-4 col-form-label">Werehouse Name:</label>
+                            <label class="col-lg-4 col-form-label">Werehouse Name: <span
+                                    class="text-danger">*</span></label>
                             <div class="col-lg-8">
-                                <input type="text" class="form-control" placeholder="Input werehouse name"
-                                    name="nama">
+                                <input type="text" class="form-control" placeholder="Input werehouse name" name="nama"
+                                    required>
                             </div>
                         </div>
                         <div class="mb-3 row">
-                            <label class="col-lg-4 col-form-label">Address:</label>
+                            <label class="col-lg-4 col-form-label">Address: <span class="text-danger">*</span></label>
                             <div class="col-lg-8">
                                 <input type="text" class="form-control" placeholder="Input werehouse address"
-                                    name="alamat">
+                                    name="alamat" required>
                             </div>
                         </div>
                         <div class="mb-3 row">
-                            <label class="col-lg-4 col-form-label">Area:</label>
+                            <label class="col-lg-4 col-form-label">Area: <span class="text-danger">*</span></label>
                             <div class="col-lg-8 row">
                                 <div class="col-12 col-lg-6">
-                                    <input type="text" class="form-control" placeholder="Kabupaten" name="kabupaten" />
+                                    <input type="text" class="form-control" placeholder="Kabupaten" name="kabupaten"
+                                        required />
                                 </div>
                                 <div class="col-12 col-lg-6 pe-0">
-                                    <input type="text" class="form-control" placeholder="Provinsi" name="provinsi" />
+                                    <input type="text" class="form-control" placeholder="Provinsi" name="provinsi"
+                                        required />
                                 </div>
                             </div>
                         </div>
@@ -78,6 +81,11 @@
                                     <input type="text" class="form-control" placeholder="Longitude" name="long" />
                                 </div>
                             </div>
+                        </div>
+                        <div class="mb-0">
+                            <p class="mb-0 text-muted"><b>Important</b>: <span class="text-danger">*</span> fields
+                                are
+                                required.</p>
                         </div>
 
                     </div>

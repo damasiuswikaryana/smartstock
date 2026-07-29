@@ -52,30 +52,39 @@
                         @csrf
                         @method('POST')
                         <div class="row">
-                            <div class="col-6">
-                                <h4 class="fw-bold mb-3">Stock Info</h4>
+                            <div class="col-12">
                                 <div class="mb-3 row">
-                                    <label class="col-lg-4 col-form-label">Stock Out Number:</label>
+                                    <label class="col-lg-12 col-form-label mb-0">Stock Out Number: <span
+                                            class="text-danger">*</span></label>
+                                    <div class="col-lg-12">
+                                        <input type="text" class="form-control" placeholder="ASTA/XXX/XXX"
+                                            name="stock_out_number" value="" required>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-6">
+                                <div class="mb-3 row">
+                                    <label class="col-lg-4 col-form-label">Date: <span class="text-danger">*</span></label>
                                     <div class="col-lg-8">
-                                        <input type="text" class="form-control" placeholder="ASTA/xxx/xxx"
-                                            name="stock_out_number" value="">
+                                        <input type="date" class="form-control" placeholder="Date stock in"
+                                            name="out_date" value="" required>
                                     </div>
                                 </div>
                                 <div class="mb-3 row">
-                                    <label class="col-lg-4 col-form-label">Date:</label>
+                                    <label class="col-lg-4 col-form-label">SRF Number: </label>
                                     <div class="col-lg-8">
-                                        <input type="date" class="form-control" placeholder="Date stock in"
-                                            name="out_date" value="">
+                                        <input type="text" class="form-control" placeholder="SRF Number"
+                                            name="stock_out_srf" value="">
                                     </div>
                                 </div>
                             </div>
 
                             <div class="col-6">
-                                <h4 class="fw-bold mb-3">Project</h4>
                                 <div class="mb-3 row">
-                                    <label class="col-lg-4 col-form-label">Project:</label>
+                                    <label class="col-lg-4 col-form-label">Project: <span
+                                            class="text-danger">*</span></label>
                                     <div class="col-lg-8">
-                                        <select class="form-control" name="pekerjaan_id">
+                                        <select class="form-control" name="pekerjaan_id" required>
                                             @foreach ($pekerjaan as $pr)
                                                 <option value="{{ $pr->id }}">{{ $pr->name }}</option>
                                             @endforeach
@@ -83,9 +92,10 @@
                                     </div>
                                 </div>
                                 <div class="mb-3 row">
-                                    <label class="col-lg-4 col-form-label">Entity:</label>
+                                    <label class="col-lg-4 col-form-label">Entity: <span
+                                            class="text-danger">*</span></label>
                                     <div class="col-lg-8">
-                                        <select class="form-control" name="entitas_id">
+                                        <select class="form-control" name="entitas_id" required>
                                             @foreach ($entitas as $et)
                                                 <option value="{{ $et->id }}">{{ $et->entitas_name }}</option>
                                             @endforeach
@@ -97,7 +107,6 @@
                             <div class="col-12 mb-4">
                                 <h4 class="fw-bold mb-3">Items</h4>
                                 <div id="produk-container">
-
                                 </div>
                                 <div class="row mb-0 p-2">
                                     <a href="#" id="btn-add-product"
@@ -108,14 +117,18 @@
                                 </div>
                             </div>
 
-                            <div class="col-12">
+                            <div class="col-12 mb-3">
                                 <h4 class="fw-bold mb-3">Notes and Documentation</h4>
                                 <div class="mb-1 row">
                                     <div class="col-lg-12">
-                                        <label class="col-form-label">Notes:</label>
-                                        <textarea type="text" class="form-control" name="notes"></textarea>
+                                        <label class="col-form-label">Notes: <span class="text-danger">*</span></label>
+                                        <textarea type="text" class="form-control" name="notes" required></textarea>
                                     </div>
                                 </div>
+                            </div>
+                            <div class="col-12">
+                                <p class="mb-0 text-muted"><b>Important</b>: <span class="text-danger">*</span> fields are
+                                    required.</p>
                             </div>
                         </div>
                     </div>

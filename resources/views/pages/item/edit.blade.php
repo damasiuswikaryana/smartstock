@@ -55,26 +55,29 @@
                             <input type="hidden" name="tipe" value="general" />
                             <div class="col-12">
                                 <div class="mb-3 row">
-                                    <label class="col-lg-4 col-form-label">Item Code:</label>
+                                    <label class="col-lg-4 col-form-label">Item Code: <span
+                                            class="text-danger">*</span></label>
                                     <div class="col-lg-8">
                                         <input type="text" class="form-control"
                                             placeholder="Item Code (3 characters only)" name="kode" maxlength="3"
-                                            value="{{ $data->kode }}" />
+                                            value="{{ $data->kode }}" required />
                                     </div>
                                 </div>
 
                                 <div class="mb-3 row">
-                                    <label class="col-lg-4 col-form-label">Item Name:</label>
+                                    <label class="col-lg-4 col-form-label">Item Name: <span
+                                            class="text-danger">*</span></label>
                                     <div class="col-lg-8">
                                         <input type="text" class="form-control" placeholder="Item Name" name="nama"
-                                            value="{{ $data->nama }}" />
+                                            value="{{ $data->nama }}" required />
                                     </div>
                                 </div>
 
                                 <div class="mb-3 row">
-                                    <label class="col-lg-4 col-form-label">Vendor:</label>
+                                    <label class="col-lg-4 col-form-label">Vendor: <span
+                                            class="text-danger">*</span></label>
                                     <div class="col-lg-8">
-                                        <select class="form-control" name="vendor_id">
+                                        <select class="form-control" name="vendor_id" required>
                                             @foreach ($vendor as $v)
                                                 <option @if ($data->vendor_id == $v->id) selected @endif
                                                     value="{{ $v->id }}">
@@ -85,9 +88,10 @@
                                 </div>
 
                                 <div class="mb-0 row">
-                                    <label class="col-lg-4 col-form-label">Category:</label>
+                                    <label class="col-lg-4 col-form-label">Category: <span
+                                            class="text-danger">*</span></label>
                                     <div class="col-lg-8">
-                                        <select class="form-control" name="category_id">
+                                        <select class="form-control" name="category_id" required>
                                             @foreach ($category as $c)
                                                 <option @if ($data->category_id == $c->id) selected @endif
                                                     value="{{ $c->id }}">
@@ -125,11 +129,16 @@
                                         <textarea class="form-control" name="description">{{ $data->deskripsi }}</textarea>
                                     </div>
                                 </div>
-                                <div class="mb-0 row">
+                                <div class="mb-3 row">
                                     <label class="col-lg-2 col-form-label">Note:</label>
                                     <div class="col-lg-10">
                                         <textarea class="form-control" name="catatan">{{ $data->catatan }}</textarea>
                                     </div>
+                                </div>
+                                <div class="mb-0">
+                                    <p class="mb-0 text-muted"><b>Important</b>: <span class="text-danger">*</span> fields
+                                        are
+                                        required.</p>
                                 </div>
                             </div>
                         </div>
@@ -170,40 +179,47 @@
                         @method('POST')
                         @csrf
                         <div class="mb-3 row">
-                            <label class="col-lg-4 col-form-label">Variant SKU:</label>
+                            <label class="col-lg-4 col-form-label">Variant SKU: <span class="text-danger">*</span></label>
                             <div class="col-lg-8">
                                 <div class="">
                                     <input type="text" class="form-control" placeholder="Input SKU" name="sku_varian"
-                                        maxlength="20" />
+                                        maxlength="20" required />
                                 </div>
                             </div>
                         </div>
                         <div class="mb-3 row">
-                            <label class="col-lg-4 col-form-label">Variant Name:</label>
+                            <label class="col-lg-4 col-form-label">Variant Name: <span
+                                    class="text-danger">*</span></label>
                             <div class="col-lg-8">
                                 <div class="">
                                     <input type="text" class="form-control" placeholder="Variant Name"
-                                        name="name_varian" />
+                                        name="name_varian" required />
                                 </div>
                             </div>
                         </div>
                         <div class="mb-3 row">
-                            <label class="col-lg-4 col-form-label">Variant Code:</label>
+                            <label class="col-lg-4 col-form-label">Variant Code: <span
+                                    class="text-danger">*</span></label>
                             <div class="col-lg-8">
                                 <div class="">
                                     <input type="text" class="form-control" placeholder="Variant Code (3 Characters)"
-                                        name="kode_varian" maxlength="3" />
+                                        name="kode_varian" maxlength="3" required />
                                 </div>
                             </div>
                         </div>
                         <div class="mb-3 row">
-                            <label class="col-lg-4 col-form-label">Value:</label>
+                            <label class="col-lg-4 col-form-label">Value: <span class="text-danger">*</span></label>
                             <div class="col-lg-8">
                                 <div class="">
                                     <input type="text" class="form-control number-separator"
-                                        placeholder="Value in rupiah" name="nilai" />
+                                        placeholder="Value in rupiah" name="nilai" required />
                                 </div>
                             </div>
+                        </div>
+                        <div class="mb-0">
+                            <p class="mb-0 text-muted"><b>Important</b>: <span class="text-danger">*</span> fields
+                                are
+                                required.</p>
                         </div>
                     </div>
                 </form>

@@ -9,29 +9,29 @@
         @csrf
         @method('POST')
         <div class="mb-3 row">
-            <label class="col-lg-4 col-form-label">Werehouse Name:</label>
+            <label class="col-lg-4 col-form-label">Werehouse Name: <span class="text-danger">*</span></label>
             <div class="col-lg-8">
                 <input type="text" class="form-control" placeholder="Masukan nama outlet" name="nama"
-                    value="{{ $data->nama }}">
+                    value="{{ $data->nama }}" required>
             </div>
         </div>
         <div class="mb-3 row">
-            <label class="col-lg-4 col-form-label">Address:</label>
+            <label class="col-lg-4 col-form-label">Address: <span class="text-danger">*</span></label>
             <div class="col-lg-8">
                 <input type="text" class="form-control" placeholder="Masukan alamat outlet" name="alamat"
-                    value="{{ $data->alamat }}">
+                    value="{{ $data->alamat }}" required>
             </div>
         </div>
         <div class="mb-3 row">
-            <label class="col-lg-4 col-form-label">Area:</label>
+            <label class="col-lg-4 col-form-label">Area: <span class="text-danger">*</span></label>
             <div class="col-lg-8 row">
                 <div class="col-12 col-lg-6">
                     <input type="text" class="form-control" placeholder="Kabupaten" name="kabupaten"
-                        value="{{ $data->kabupaten }}" />
+                        value="{{ $data->kabupaten }}" required />
                 </div>
                 <div class="col-12 col-lg-6 pe-0">
                     <input type="text" class="form-control" placeholder="Provinsi" name="provinsi"
-                        value="{{ $data->provinsi }}" />
+                        value="{{ $data->provinsi }}" required />
                 </div>
             </div>
         </div>
@@ -60,6 +60,11 @@
                     <span class="text-danger f-10 mt-1"><b>Note:</b> Upload new photo to replace previous photo</span>
                 @endif
             </div>
+        </div>
+        <div class="mb-0">
+            <p class="mb-0 text-muted"><b>Important</b>: <span class="text-danger">*</span> fields
+                are
+                required.</p>
         </div>
 
     </div>

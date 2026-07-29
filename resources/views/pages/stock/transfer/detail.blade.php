@@ -36,6 +36,14 @@
                             <ol class="list-group">
                                 <li class="list-group-item d-flex justify-content-between align-items-start">
                                     <div class="ms-0 me-auto col-6">
+                                        SRF Number
+                                    </div>
+                                    <div class="ms-0 me-auto fw-bold col-6">
+                                        <code>{{ $data->transfer_srf }}</code>
+                                    </div>
+                                </li>
+                                <li class="list-group-item d-flex justify-content-between align-items-start">
+                                    <div class="ms-0 me-auto col-6">
                                         Date
                                     </div>
                                     <div class="ms-0 me-auto fw-bold col-6">

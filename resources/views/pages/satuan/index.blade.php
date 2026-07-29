@@ -43,10 +43,15 @@
                         @csrf
                         @method('POST')
                         <div class="mb-3 row">
-                            <label class="col-lg-4 col-form-label">Satuan Name:</label>
+                            <label class="col-lg-4 col-form-label">Satuan Name: <span class="text-danger">*</span></label>
                             <div class="col-lg-8">
-                                <input type="text" class="form-control" placeholder="Satuan Name" name="satuan" />
+                                <input type="text" class="form-control" placeholder="Satuan Name" name="satuan"
+                                    required />
                             </div>
+                        </div>
+                        <div class="mb-0">
+                            <p class="mb-0 text-muted"><b>Important</b>: <span class="text-danger">*</span> fields are
+                                required.</p>
                         </div>
                     </div>
                 </form>

@@ -46,66 +46,74 @@
                             <div class="col-6">
                                 <h4 class="fw-bold mb-3">Vendor Info</h4>
                                 <div class="mb-3 row">
-                                    <label class="col-lg-4 col-form-label">Name:</label>
+                                    <label class="col-lg-4 col-form-label">Name: <span class="text-danger">*</span></label>
                                     <div class="col-lg-8">
                                         <input type="text" class="form-control" placeholder="Vendor name" name="nama"
-                                            value="">
+                                            value="" required>
                                     </div>
                                 </div>
                                 <div class="mb-3 row">
-                                    <label class="col-lg-4 col-form-label">Code:</label>
+                                    <label class="col-lg-4 col-form-label">Code: <span class="text-danger">*</span></label>
                                     <div class="col-lg-8">
                                         <input type="text" class="form-control" placeholder="Vendor code" name="kode"
-                                            value="">
+                                            value="" required>
                                     </div>
                                 </div>
                                 <div class="mb-3 row">
-                                    <label class="col-lg-4 col-form-label">Address:</label>
+                                    <label class="col-lg-4 col-form-label">Address: <span
+                                            class="text-danger">*</span></label>
                                     <div class="col-lg-8">
                                         <input type="text" class="form-control" placeholder="Vendor address"
-                                            name="alamat" value="">
+                                            name="alamat" value="" required>
                                     </div>
                                 </div>
                                 <div class="mb-3 row">
-                                    <label class="col-lg-4 col-form-label">Postal Code:</label>
+                                    <label class="col-lg-4 col-form-label">Postal Code: <span
+                                            class="text-danger">*</span></label>
                                     <div class="col-lg-8">
                                         <input type="text" class="form-control" placeholder="Postal code" name="kode_pos"
-                                            value="">
+                                            value="" required>
                                     </div>
                                 </div>
                                 <div class="mb-3 row">
-                                    <label class="col-lg-4 col-form-label">Kabupaten:</label>
+                                    <label class="col-lg-4 col-form-label">Kabupaten: <span
+                                            class="text-danger">*</span></label>
                                     <div class="col-lg-8">
                                         <input type="text" class="form-control" placeholder="Kabupaten" name="kabupaten"
-                                            value="">
+                                            value="" required>
                                     </div>
                                 </div>
                                 <div class="mb-3 row">
-                                    <label class="col-lg-4 col-form-label">Province:</label>
+                                    <label class="col-lg-4 col-form-label">Province: <span
+                                            class="text-danger">*</span></label>
                                     <div class="col-lg-8">
                                         <input type="text" class="form-control" placeholder="Province" name="provinsi"
-                                            value="">
+                                            value="" required>
                                     </div>
                                 </div>
                                 <div class="mb-3 row">
-                                    <label class="col-lg-4 col-form-label">Country:</label>
+                                    <label class="col-lg-4 col-form-label">Country: <span
+                                            class="text-danger">*</span></label>
                                     <div class="col-lg-8">
                                         <input type="text" class="form-control" placeholder="Country" name="negara"
-                                            value="">
+                                            value="" required>
                                     </div>
                                 </div>
                                 <div class="mb-3 row">
-                                    <label class="col-lg-4 col-form-label">Phone:</label>
+                                    <label class="col-lg-4 col-form-label">Phone: <span
+                                            class="text-danger">*</span></label>
                                     <div class="col-lg-8">
                                         <input type="text" class="form-control"
-                                            placeholder="Vendor phone number / Whatsapp" name="phone" value="">
+                                            placeholder="Vendor phone number / Whatsapp" name="phone" value=""
+                                            required>
                                     </div>
                                 </div>
                                 <div class="mb-3 row">
-                                    <label class="col-lg-4 col-form-label">Email:</label>
+                                    <label class="col-lg-4 col-form-label">Email: <span
+                                            class="text-danger">*</span></label>
                                     <div class="col-lg-8">
                                         <input type="email" class="form-control" placeholder="Vendor email"
-                                            name="email" value="">
+                                            name="email" value="" required>
                                     </div>
                                 </div>
                                 <div class="mb-3 row">
@@ -116,9 +124,10 @@
                                     </div>
                                 </div>
                                 <div class="mb-3 row">
-                                    <label class="col-lg-4 col-form-label">Status:</label>
+                                    <label class="col-lg-4 col-form-label">Status: <span
+                                            class="text-danger">*</span></label>
                                     <div class="col-lg-8">
-                                        <select class="form-control" name="status">
+                                        <select class="form-control" name="status" required>
                                             <option value="Active">Active</option>
                                             <option value="Inactive">Incative
                                             </option>
@@ -137,9 +146,10 @@
                                     </div>
                                 </div>
                                 <div class="mb-3 row">
-                                    <label class="col-lg-4 col-form-label">Bank:</label>
+                                    <label class="col-lg-4 col-form-label">Bank: <span
+                                            class="text-danger">*</span></label>
                                     <div class="col-lg-8">
-                                        <select class="form-control" name="bank_id">
+                                        <select class="form-control" name="bank_id" required>
                                             @foreach ($bank as $b)
                                                 <option value="{{ $b->id }}">
                                                     {{ $b->bank_name }}</option>
@@ -148,42 +158,47 @@
                                     </div>
                                 </div>
                                 <div class="mb-3 row">
-                                    <label class="col-lg-4 col-form-label">Bank Account Number:</label>
+                                    <label class="col-lg-4 col-form-label">Bank Account Number: <span
+                                            class="text-danger">*</span></label>
                                     <div class="col-lg-8">
                                         <input type="text" class="form-control" placeholder="Bank Account Number"
-                                            name="bank_account_number" value="">
+                                            name="bank_account_number" value="" required>
                                     </div>
                                 </div>
                                 <div class="mb-3 row">
-                                    <label class="col-lg-4 col-form-label">Bank Account Name:</label>
+                                    <label class="col-lg-4 col-form-label">Bank Account Name: <span
+                                            class="text-danger">*</span></label>
                                     <div class="col-lg-8">
                                         <input type="text" class="form-control" placeholder="Bank Account Name"
-                                            name="bank_account_name" value="">
+                                            name="bank_account_name" value="" required>
                                     </div>
                                 </div>
                                 <div class="mb-3 row">
-                                    <label class="col-lg-4 col-form-label">DP Availibility:</label>
+                                    <label class="col-lg-4 col-form-label">DP Availibility: <span
+                                            class="text-danger">*</span></label>
                                     <div class="col-lg-8">
-                                        <select class="form-control" name="is_dp">
+                                        <select class="form-control" name="is_dp" required>
                                             <option value="1">Yes</option>
                                             <option value="0">No</option>
                                         </select>
                                     </div>
                                 </div>
                                 <div class="mb-5 row">
-                                    <label class="col-lg-4 col-form-label">Terms of Payment:</label>
+                                    <label class="col-lg-4 col-form-label">Terms of Payment: <span
+                                            class="text-danger">*</span></label>
                                     <div class="col-lg-8">
                                         <input type="number" class="form-control" placeholder="Ex: 30 (in days)"
-                                            name="termin_pembayaran" value="">
+                                            name="termin_pembayaran" value="" required>
                                     </div>
                                 </div>
 
                                 <h4 class="fw-bold mb-3">Person in Charge Info</h4>
                                 <div class="mb-3 row">
-                                    <label class="col-lg-4 col-form-label">PIC Name:</label>
+                                    <label class="col-lg-4 col-form-label">PIC Name: <span
+                                            class="text-danger">*</span></label>
                                     <div class="col-lg-8">
                                         <input type="text" class="form-control" placeholder="PIC Name"
-                                            name="pic_name" value="">
+                                            name="pic_name" value="" required>
                                     </div>
                                 </div>
                                 <div class="mb-3 row">
@@ -201,6 +216,11 @@
                                     <div class="col-lg-12">
                                         <textarea class="form-control" name="catatan"></textarea>
                                     </div>
+                                </div>
+                                <div class="mb-0">
+                                    <p class="mb-0 text-muted"><b>Important</b>: <span class="text-danger">*</span> fields
+                                        are
+                                        required.</p>
                                 </div>
                             </div>
                         </div>

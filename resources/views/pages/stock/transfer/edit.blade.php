@@ -12,17 +12,25 @@
             <div class="col-6">
                 <h4 class="fw-bold mb-3">Stock Info</h4>
                 <div class="mb-3 row">
-                    <label class="col-lg-4 col-form-label">Stock Transfer Number:</label>
+                    <label class="col-lg-4 col-form-label">Stock Transfer Number: <span
+                            class="text-danger">*</span></label>
                     <div class="col-lg-8">
                         <input type="text" class="form-control" placeholder="Number" name="stock_transfer_number"
-                            value="{{ $data->stock_transfer_number }}">
+                            value="{{ $data->stock_transfer_number }}" required>
                     </div>
                 </div>
                 <div class="mb-3 row">
-                    <label class="col-lg-4 col-form-label">Date:</label>
+                    <label class="col-lg-4 col-form-label">Date: <span class="text-danger">*</span></label>
                     <div class="col-lg-8">
                         <input type="date" class="form-control" placeholder="Date stock transfer"
-                            name="transfer_date" value="{{ $data->transfer_date }}">
+                            name="transfer_date" value="{{ $data->transfer_date }}" required>
+                    </div>
+                </div>
+                <div class="mb-3 row">
+                    <label class="col-lg-4 col-form-label">SRF Number: </label>
+                    <div class="col-lg-8">
+                        <input type="text" class="form-control" placeholder="SRF Number" name="transfer_srf"
+                            value="{{ $data->transfer_srf }}">
                     </div>
                 </div>
             </div>
@@ -30,9 +38,9 @@
             <div class="col-6">
                 <h4 class="fw-bold mb-3">Project</h4>
                 <div class="mb-3 row">
-                    <label class="col-lg-4 col-form-label">Project:</label>
+                    <label class="col-lg-4 col-form-label">Project: <span class="text-danger">*</span></label>
                     <div class="col-lg-8">
-                        <select class="form-control" name="pekerjaan_id">
+                        <select class="form-control" name="pekerjaan_id" required>
                             @foreach ($pekerjaan as $pr)
                                 <option @if ($data->pekerjaan_id == $pr->id) selected @endif value="{{ $pr->id }}">
                                     {{ $pr->name }}</option>
@@ -41,9 +49,9 @@
                     </div>
                 </div>
                 <div class="mb-3 row">
-                    <label class="col-lg-4 col-form-label">Entity:</label>
+                    <label class="col-lg-4 col-form-label">Entity: <span class="text-danger">*</span></label>
                     <div class="col-lg-8">
-                        <select class="form-control" name="entitas_id">
+                        <select class="form-control" name="entitas_id" required>
                             @foreach ($entitas as $et)
                                 <option @if ($data->entitas_id == $et->id) selected @endif value="{{ $et->id }}">
                                     {{ $et->entitas_name }}</option>
@@ -52,9 +60,9 @@
                     </div>
                 </div>
                 <div class="mb-3 row">
-                    <label class="col-lg-4 col-form-label">Target:</label>
+                    <label class="col-lg-4 col-form-label">Target: <span class="text-danger">*</span></label>
                     <div class="col-lg-8">
-                        <select class="form-control" name="werehouse_target_id">
+                        <select class="form-control" name="werehouse_target_id" required>
                             @foreach ($dataGudang as $gd)
                                 <option @if ($data->werehouse_target_id == $gd->id) selected @endif value="{{ $gd->id }}">
                                     {{ $gd->nama }}</option>
@@ -129,11 +137,16 @@
 
             <div class="col-12">
                 <h4 class="fw-bold mb-3">Notes and Documentation</h4>
-                <div class="mb-1 row">
+                <div class="mb-3 row">
                     <div class="col-lg-12">
-                        <label class="col-form-label">Notes:</label>
-                        <textarea type="text" class="form-control" name="notes">{{ $data->note }}</textarea>
+                        <label class="col-form-label">Notes: <span class="text-danger">*</span></label>
+                        <textarea type="text" class="form-control" name="notes" required>{{ $data->note }}</textarea>
                     </div>
+                </div>
+                <div class="mb-0">
+                    <p class="mb-0 text-muted"><b>Important</b>: <span class="text-danger">*</span> fields
+                        are
+                        required.</p>
                 </div>
             </div>
         </form>

@@ -43,10 +43,11 @@
                     <div class="px-4">
                         @csrf
                         <div class="mb-3 row">
-                            <label class="col-lg-4 col-form-label">Category:</label>
+                            <label class="col-lg-4 col-form-label">Category: <span class="text-danger">*</span></label>
                             <div class="col-lg-8">
                                 <div class="">
-                                    <input type="text" class="form-control" placeholder="Category Name" name="title" />
+                                    <input type="text" class="form-control" placeholder="Category Name" name="title"
+                                        required />
                                 </div>
                             </div>
                         </div>
@@ -57,6 +58,10 @@
                                     <textarea class="form-control" rows="5" name="description"></textarea>
                                 </div>
                             </div>
+                        </div>
+                        <div class="mb-0">
+                            <p class="mb-0 text-muted"><b>Important</b>: <span class="text-danger">*</span> fields are
+                                required.</p>
                         </div>
                     </div>
                 </form>

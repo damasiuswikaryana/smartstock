@@ -118,6 +118,7 @@ class TransferStockController extends Controller
             DB::beginTransaction();
             $stock_master = StockTransferMaster::create([
                 'stock_transfer_number'     => $input['stock_transfer_number'],
+                'transfer_srf'              => $input['transfer_srf'],
                 'transfer_date'             => $input['transfer_date'],
                 'werehouse_source_id'       => $gudang,
                 'werehouse_target_id'       => $input['werehouse_target_id'],
@@ -201,6 +202,7 @@ class TransferStockController extends Controller
         try {
             DB::beginTransaction();
             $data->stock_transfer_number    = $input['stock_transfer_number'];
+            $data->transfer_srf             = $input['transfer_srf'];
             $data->out_date                 = $input['out_date'];
             $data->werehouse_source_id      = $gudang;
             $data->werehouse_target_id      = $input['werehouse_target_id'];;

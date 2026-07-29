@@ -9,38 +9,38 @@
         @method('POST')
         @csrf
         <div class="mb-3 row">
-            <label class="col-lg-4 col-form-label">Variant SKU:</label>
+            <label class="col-lg-4 col-form-label">Variant SKU: <span class="text-danger">*</span></label>
             <div class="col-lg-8">
                 <div class="">
                     <input type="text" class="form-control" placeholder="Input SKU" name="sku_varian" maxlength="20"
-                        value="{{ $data->sku_varian }}" />
+                        value="{{ $data->sku_varian }}" required />
                 </div>
             </div>
         </div>
         <div class="mb-3 row">
-            <label class="col-lg-4 col-form-label">Variant Name:</label>
+            <label class="col-lg-4 col-form-label">Variant Name: <span class="text-danger">*</span></label>
             <div class="col-lg-8">
                 <div class="">
                     <input type="text" class="form-control" placeholder="Variant Name" name="name_varian"
-                        value="{{ $data->name_varian }}" />
+                        value="{{ $data->name_varian }}" required />
                 </div>
             </div>
         </div>
         <div class="mb-3 row">
-            <label class="col-lg-4 col-form-label">Variant Code:</label>
+            <label class="col-lg-4 col-form-label">Variant Code: <span class="text-danger">*</span></label>
             <div class="col-lg-8">
                 <div class="">
                     <input type="text" class="form-control" placeholder="Variant Code (3 Characters)"
-                        name="kode_varian" maxlength="3" value="{{ $data->kode_varian }}" />
+                        name="kode_varian" maxlength="3" value="{{ $data->kode_varian }}" required />
                 </div>
             </div>
         </div>
         <div class="mb-3 row">
-            <label class="col-lg-4 col-form-label">Value:</label>
+            <label class="col-lg-4 col-form-label">Value: <span class="text-danger">*</span></label>
             <div class="col-lg-8">
                 <div class="">
                     <input type="text" class="form-control number-separator" placeholder="Value in rupiah"
-                        name="nilai" value="{{ pecahTanpaRp($data->nilai) }}" />
+                        name="nilai" value="{{ pecahTanpaRp($data->nilai) }}" required />
                 </div>
             </div>
         </div>

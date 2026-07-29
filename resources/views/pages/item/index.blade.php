@@ -45,26 +45,27 @@
                         @method('POST')
                         <div class="col-6">
                             <div class="mb-3 row">
-                                <label class="col-lg-4 col-form-label">Item Code:</label>
+                                <label class="col-lg-4 col-form-label">Item Code: <span class="text-danger">*</span></label>
                                 <div class="col-lg-8">
                                     <input type="text" class="form-control" placeholder="Item Code (3 characters only)"
-                                        name="kode" maxlength="3" />
+                                        name="kode" maxlength="3" required />
                                 </div>
                             </div>
 
                             <div class="mb-3 row">
-                                <label class="col-lg-4 col-form-label">Item Name:</label>
+                                <label class="col-lg-4 col-form-label">Item Name: <span class="text-danger">*</span></label>
                                 <div class="col-lg-8">
-                                    <input type="text" class="form-control" placeholder="Item Name" name="nama" />
+                                    <input type="text" class="form-control" placeholder="Item Name" name="nama"
+                                        required />
                                 </div>
                             </div>
                         </div>
 
                         <div class="col-6">
                             <div class="mb-3 row">
-                                <label class="col-lg-4 col-form-label">Vendor:</label>
+                                <label class="col-lg-4 col-form-label">Vendor: <span class="text-danger">*</span></label>
                                 <div class="col-lg-8">
-                                    <select class="form-control" name="vendor_id">
+                                    <select class="form-control" name="vendor_id" required>
                                         @foreach ($vendor as $v)
                                             <option value="{{ $v->id }}">
                                                 {{ $v->nama }}</option>
@@ -74,9 +75,9 @@
                             </div>
 
                             <div class="mb-3 row">
-                                <label class="col-lg-4 col-form-label">Category:</label>
+                                <label class="col-lg-4 col-form-label">Category: <span class="text-danger">*</span></label>
                                 <div class="col-lg-8">
-                                    <select class="form-control" name="category_id">
+                                    <select class="form-control" name="category_id" required>
                                         @foreach ($category as $c)
                                             <option value="{{ $c->id }}">
                                                 {{ $c->title }}</option>
@@ -99,6 +100,11 @@
                                 <div class="col-lg-10">
                                     <textarea class="form-control" name="catatan"></textarea>
                                 </div>
+                            </div>
+                            <div class="mb-0">
+                                <p class="mb-0 text-muted"><b>Important</b>: <span class="text-danger">*</span> fields
+                                    are
+                                    required.</p>
                             </div>
                         </div>
                     </div>
