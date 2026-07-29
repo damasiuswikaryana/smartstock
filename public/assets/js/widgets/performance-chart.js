@@ -1,69 +1,89 @@
-'use strict';
-document.addEventListener('DOMContentLoaded', function () {
-  setTimeout(function () {
-    var options_performance = {
-      chart: {
-        height: 250,
-        type: 'donut'
-      },
-      series: [27, 23, 20, 17],
-      colors: ['#04A9F5', '#F4C22B', '#1DE9B6', '#04A9F5'],
-      labels: ['Total income', 'Total rent', 'Download', 'Views'],
-      fill: {
-        opacity: [1, 1, 1, 0.3]
-      },
-      legend: {
-        show: false
-      },
-      plotOptions: {
-        pie: {
-          donut: {
-            size: '65%',
-            labels: {
-              show: true,
-              name: {
-                show: true
-              },
-              value: {
-                show: true
-              }
-            }
-          }
-        }
-      },
-      dataLabels: {
-        enabled: false
-      },
-      responsive: [
-        {
-          breakpoint: 575,
-          options: {
-            chart: {
-              height: 250
-            },
-            plotOptions: {
-              pie: {
-                donut: {
-                  size: '65%',
-                  labels: {
-                    show: false
-                  }
-                }
-              }
-            }
-          }
+"use strict";
+var chartCategories;
+const chartColorsCategory = [
+    "#F44236",
+    "#04A9F5",
+    "#673AB7",
+    "#4CAF50",
+    "#FFC107",
+    "#FF9800",
+    "#26C6DA",
+    "#EC407A",
+    "#8BC34A",
+    "#7E57C2",
+    "#FF7043",
+    "#78909C",
+];
+document.addEventListener("DOMContentLoaded", function () {
+    var options = {
+        chart: {
+            height: 200,
+            type: "donut",
         },
-        {
-          breakpoint: 1182,
-          options: {
-            chart: {
-              height: 190
-            }
-          }
-        }
-      ]
+        series: [],
+        labels: [],
+        colors: chartColorsCategory,
+        fill: {
+            opacity: 1,
+        },
+        legend: {
+            show: false,
+        },
+        plotOptions: {
+            pie: {
+                donut: {
+                    size: "65%",
+                    labels: {
+                        show: true,
+                        name: {
+                            show: true,
+                        },
+                        value: {
+                            show: true,
+                        },
+                        total: {
+                            show: true,
+                            label: "Total",
+                        },
+                    },
+                },
+            },
+        },
+        dataLabels: {
+            enabled: false,
+        },
+        responsive: [
+            {
+                breakpoint: 575,
+                options: {
+                    chart: {
+                        height: 250,
+                    },
+                    plotOptions: {
+                        pie: {
+                            donut: {
+                                size: "65%",
+                                labels: {
+                                    show: false,
+                                },
+                            },
+                        },
+                    },
+                },
+            },
+            {
+                breakpoint: 1182,
+                options: {
+                    chart: {
+                        height: 190,
+                    },
+                },
+            },
+        ],
     };
-    var chart_performance = new ApexCharts(document.querySelector('#performance-chart'), options_performance);
-    chart_performance.render();
-  }, 500);
+    chartCategories = new ApexCharts(
+        document.querySelector("#categories-chart"),
+        options,
+    );
+    chartCategories.render();
 });

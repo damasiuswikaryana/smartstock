@@ -1,30 +1,46 @@
-'use strict';
-document.addEventListener('DOMContentLoaded', function () {
-  setTimeout(function () {
-    var options_overview_bar = {
-      chart: { type: 'bar', height: 150, sparkline: { enabled: true } },
-      colors: ['#F44236', '#04A9F5', '#673ab7', '#1DE9B6', '#F4C22B', '#3EBFEA'],
-      plotOptions: { bar: { borderRadius: 2, columnWidth: '80%', distributed: true } },
-      series: [
-        {
-          data: [10, 30, 40, 20, 60, 50]
-        }
-      ],
-      xaxis: { crosshairs: { width: 1 } },
-      tooltip: {
-        fixed: { enabled: false },
-        x: { show: false },
-        y: {
-          title: {
-            formatter: function (seriesName) {
-              return '';
-            }
-          }
-        },
-        marker: { show: false }
-      }
-    };
-    var chart_overview_bar = new ApexCharts(document.querySelector('#overview-bar-chart'), options_overview_bar);
-    chart_overview_bar.render();
-  }, 500);
+"use strict";
+var chartTopItems;
+const chartColors = [
+    "#F44236", // merah
+    "#04A9F5", // biru
+    "#673AB7", // ungu
+    "#4CAF50", // hijau
+    "#FFC107", // kuning
+];
+document.addEventListener("DOMContentLoaded", function () {
+    setTimeout(function () {
+        var options_itemMost = {
+            chart: { type: "bar", height: 150, sparkline: { enabled: true } },
+            colors: chartColors,
+            plotOptions: {
+                bar: { borderRadius: 2, columnWidth: "80%", distributed: true },
+            },
+            series: [
+                {
+                    data: [],
+                },
+            ],
+            xaxis: {
+                categories: [],
+            },
+            tooltip: {
+                fixed: { enabled: false },
+                x: { show: false },
+                y: {
+                    title: {
+                        formatter: function (seriesName) {
+                            return "";
+                        },
+                    },
+                },
+                marker: { show: false },
+            },
+        };
+        chartTopItems = new ApexCharts(
+            document.querySelector("#overview-bar-chart"),
+            options_itemMost,
+        );
+        chartTopItems.render();
+        loadTopItems();
+    }, 500);
 });

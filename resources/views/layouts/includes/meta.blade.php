@@ -9,7 +9,8 @@
 <meta name="mobile-web-app-capable"
     content="{{ config('laravelpwa.manifest.display') == 'standalone' ? 'yes' : 'no' }}">
 <meta name="application-name" content="{{ config('laravelpwa.manifest.short_name') }}">
-<link rel="icon" sizes="" href="{{ config('laravelpwa.manifest.icons["72x72"]["path"]') }}">
+<link rel="icon" sizes="72x72" href="{{ config('laravelpwa.manifest.icons["72x72"]["path"]') }}">
+<link rel="icon" sizes="192x192" href="{{ config('laravelpwa.manifest.icons["192x192"]["path"]') }}">
 
 <!-- Add to homescreen for Safari on iOS -->
 <meta name="apple-mobile-web-app-capable"

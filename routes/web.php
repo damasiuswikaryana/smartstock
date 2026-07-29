@@ -6,7 +6,7 @@ use App\Http\Controllers\AjaxController;
 use App\Http\Controllers\Auth\LoginController;
 
 Route::get('/login',        [LoginController::class, 'index'])->name('login');
-Route::post('post-login',   [LoginController::class, 'postLogin'])->name('login.post');
+Route::post('post-login',   [LoginController::class, 'postLogin'])->middleware('throttle:5,1')->name('login.post');
 Route::post('logout',       [LoginController::class, 'logout'])->middleware('auth')->name('logout');
 
 Route::get('storage-link', function () {
@@ -25,12 +25,18 @@ Route::group(['middleware' => ['isAdmin', 'auth']], function () {
     Route::post('change-mode',              [HomeController::class, 'change_mode'])->name('change_mode');
     Route::get('log-activity',              [HomeController::class, 'logActivity'])->name('log-activity');
     Route::post('save-fcm-token',           [HomeController::class, 'saveFcmToken'])->name('saveFcmToken');
-
     // ajax
     Route::get('get-item-variant/{id}',                 [AjaxController::class, 'getVariants'])->name('getVariants');
     Route::get('get-item-variant-stocks/{id}/{whid}',   [AjaxController::class, 'getVariantStocks'])->name('getVariantStocks');
     Route::get('get-item-by-category/{id}',             [AjaxController::class, 'getItembyCategory'])->name('getItembyCategory');
-
+    // ajax dashboard
+    Route::get('dashboard-get-stock-in',                [AjaxController::class, 'getStockIn'])->name('getDashboardStockIn');
+    Route::get('dashboard-get-stock-out',               [AjaxController::class, 'getStockOut'])->name('getDashboardStockOut');
+    Route::get('dashboard-get-stock-trf',               [AjaxController::class, 'getStockTrf'])->name('getDashboardStockTrf');
+    Route::get('dashboard-get-contract-fullfillment',   [AjaxController::class, 'getContractFullfillment'])->name('getDashboardContractFullfillment');
+    Route::get('dashboard-get-clients',                 [AjaxController::class, 'getClients'])->name('getDashboardClients');
+    Route::get('dashboard-top-items',                   [AjaxController::class, 'topItems'])->name('topItems');
+    Route::get('dashboard-categories',                  [AjaxController::class, 'categories'])->name('getDashboardCategories');
     // PENGADAAN
     require __DIR__ . '/admin/pengadaan/fullfillment.php';
 

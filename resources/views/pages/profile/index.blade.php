@@ -34,22 +34,28 @@
                 </div>
                 <div class="nav flex-column nav-pills list-group list-group-flush account-pills mb-0" id="user-set-tab"
                     role="tablist" aria-orientation="vertical">
-                    <a class="nav-link list-group-item list-group-item-action" id="user-set-profile-tab"
+                    <a class="nav-link list-group-item list-group-item-action active" id="user-set-profile-tab"
                         data-bs-toggle="pill" href="#user-set-profile" role="tab" aria-controls="user-set-profile"
                         aria-selected="false" tabindex="-1"><span class="f-w-500"><i
                                 class="ph-duotone ph-user-circle m-r-10"></i>Personal Information</span>
                     </a>
-                    <a class="nav-link list-group-item list-group-item-action active" id="user-set-passwort-tab"
+                    <a class="nav-link list-group-item list-group-item-action" id="user-set-passwort-tab"
                         data-bs-toggle="pill" href="#user-set-passwort" role="tab" aria-controls="user-set-passwort"
                         aria-selected="true"><span class="f-w-500"><i class="ph-duotone ph-key m-r-10"></i>Change
                             Password</span>
+                    </a>
+                    <a class="nav-link list-group-item list-group-item-action" id="user-set-notification-tab"
+                        data-bs-toggle="pill" href="#user-set-notification" role="tab"
+                        aria-controls="user-set-notification" aria-selected="true"><span class="f-w-500"><i
+                                class="ph-duotone ph-notification m-r-10"></i>Notification</span>
                     </a>
                 </div>
             </div>
         </div>
         <div class="col-lg-7 col-xxl-9">
             <div class="tab-content" id="user-set-tabContent">
-                <div class="tab-pane fade" id="user-set-profile" role="tabpanel" aria-labelledby="user-set-profile-tab">
+                <div class="tab-pane fade active show" id="user-set-profile" role="tabpanel"
+                    aria-labelledby="user-set-profile-tab">
                     <div class="card">
                         <form action="#" method="POST" id="form-profile">
                             @csrf
@@ -112,24 +118,10 @@
                                 <button type="submit" class="btn btn-light-primary w-100">Update Profile</button>
                             </div>
                         </form>
-
-                        <a class="text-dark" href="javascript:void(0);" onclick="initFirebaseNotification()">
-                            <div class="d-flex align-items-center justify-content-between px-3">
-                                <div class="d-flex align-items-center">
-                                    <i class="bx bxs-bell icon-profil text-danger fs-1"></i>
-                                    <span class="ms-1">Aktifkan Notifikasi</span>
-                                    <span
-                                        class="f-10 text-muted ms-1">{{ auth()->user()->device_token ? '(Aktif)' : '(Tidak Aktif)' }}</span>
-                                </div>
-                                <div class="d-flex align-items-center">
-                                    <span><i class="fa fa-chevron-right"></i></span>
-                                </div>
-                            </div>
-                        </a>
                     </div>
                 </div>
 
-                <div class="tab-pane fade active show" id="user-set-passwort" role="tabpanel"
+                <div class="tab-pane fade" id="user-set-passwort" role="tabpanel"
                     aria-labelledby="user-set-passwort-tab">
                     <div class="card">
                         <form action="#" method="POST" id="form-password">
@@ -171,6 +163,29 @@
                         </form>
                     </div>
                 </div>
+
+                <div class="tab-pane fade" id="user-set-notification" role="tabpanel"
+                    aria-labelledby="user-set-notification-tab">
+                    <div class="card">
+                        <div class="card-header">
+                            <h5>Notification</h5>
+                        </div>
+                        <div class="card-body">
+                            <div class="d-flex align-items-center justify-content-between">
+                                <div>
+                                    <p class="mb-0">Set Notifikaction</p>
+                                    <label class="form-check-label text-muted"
+                                        for="customswitchlightv1-1">{{ auth()->user()->device_token ? 'Active' : 'Not Active' }}</label>
+                                </div>
+                                <div class="form-check form-switch custom-switch-v1 mb-2 switch-lg">
+                                    <input id="notificationSwitch" type="checkbox"
+                                        class="form-check-input input-light-primary" id="customswitchlightv1-1"
+                                        {{ auth()->user()->device_token ? 'checked' : '' }} />
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
     </div>
@@ -186,6 +201,12 @@
             $('a[data-bs-toggle="pill"], a[data-bs-toggle="tab"]').on('shown.bs.tab', function(e) {
                 localStorage.setItem('activeTab', $(e.target).attr('href'));
             });
+        });
+
+        $('#notificationSwitch').on('change', function() {
+            if (this.checked) {
+                initFirebaseNotification();
+            }
         });
 
         $('#form-profile').on('submit', function(e) {

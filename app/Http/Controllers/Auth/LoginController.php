@@ -25,28 +25,73 @@ class LoginController extends Controller
     public function postLogin(Request $request)
     {
         $request->validate([
-            'username' => 'required',
-            'password' => 'required',
+            'username'  => ['required', 'string'],
+            'password'  => ['required', 'string'],
         ]);
 
-        $user                   = User::where('username', $request->username)->first();
-        $credentials            = $request->only('username', 'password');
+        $credentials = [
+            'username' => $request->username,
+            'password' => $request->password,
+            'status'   => 'Active',
+        ];
 
-        if (Auth::attempt($credentials) && $user->roles[0]->name == "masteradmin") {
-            return redirect()->intended('/')->withSuccess('Welcome');
-        } elseif (Auth::attempt($credentials) && $user->roles[0]->name == "admin") {
-            return redirect()->intended('/')->withSuccess('Welcome Admin');
-        } elseif (Auth::attempt($credentials) && $user->roles[0]->name == "admin_cabang") {
-            return redirect()->intended('/')->withSuccess('Welcome Branch Admin');
-        } elseif (Auth::attempt($credentials) && $user->roles[0]->name == "pengadaan") {
-            return redirect()->intended('/')->withSuccess('Welcome Pengadaan');
-        } elseif (Auth::attempt($credentials) && $user->roles[0]->name == "gudang") {
-            return redirect()->intended('/')->withSuccess('Welcome Gudang');
-        } else {
-            return redirect("login")->with('error', 'Wrong username or password.');
+        if (!Auth::attempt($credentials, $request->boolean('remember'))) {
+            return response()->json([
+                'status'  => false,
+                'message' => 'Wrong username or password.',
+            ], 401);
         }
 
-        // return redirect("login")->with('error', 'Akun tidak terdaftar!');
+        // Hindari Session Fixation
+        $request->session()->regenerate();
+        /** @var \App\Models\User $user */
+        $user = Auth::user();
+
+        if ($user->status != "Active") {
+            Auth::logout();
+            return response()->json([
+                'status' => false,
+                'message' => 'Your account has been deactivated.'
+            ], 403);
+        }
+
+        // Pastikan memiliki role yang diizinkan
+        if (!$user->hasAnyRole([
+            'masteradmin',
+            'admin',
+            'admin_cabang',
+            'pengadaan',
+            'gudang',
+        ])) {
+            Auth::logout();
+            $request->session()->invalidate();
+            $request->session()->regenerateToken();
+            return response()->json([
+                'status'  => false,
+                'message' => 'Unauthorized access.',
+            ], 403);
+        }
+
+        // Pesan berdasarkan role
+        if ($user->hasRole('masteradmin')) {
+            $message = 'Success Login as Master Admin';
+        } elseif ($user->hasRole('admin')) {
+            $message = 'Success Login as Admin';
+        } elseif ($user->hasRole('admin_cabang')) {
+            $message = 'Success Login as Branch Admin';
+        } elseif ($user->hasRole('pengadaan')) {
+            $message = 'Success Login as Procurement';
+        } elseif ($user->hasRole('gudang')) {
+            $message = 'Success Login as Warehouse';
+        } else {
+            $message = 'Welcome guest';
+        }
+
+        return response()->json([
+            'status'   => true,
+            'message'  => $message,
+            'redirect' => route('dashboard'),
+        ]);
     }
 
     public function logout()

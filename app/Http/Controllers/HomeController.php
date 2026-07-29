@@ -3,6 +3,8 @@
 namespace App\Http\Controllers;
 
 use App\Models\User;
+use App\Models\Outlet;
+use App\Models\Entitas;
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
@@ -13,10 +15,24 @@ use Illuminate\Support\Facades\Storage;
 
 class HomeController extends Controller
 {
-    public function dashboard(Request $request)
+    public function dashboard()
     {
+        $bulan          = date("m");
+        $tahun          = date("Y");
+        $lokasi         = Auth::user()->loc_id;
+        if (
+            Auth::user()->roles[0]->name == "masteradmin"
+            || Auth::user()->roles[0]->name == "pengadaan"
+            || Auth::user()->roles[0]->name == "gudang"
+        ) {
+            $gudang     = Outlet::all();
+        } else {
+            $gudang     = Outlet::where('id', $lokasi)->first();
+        }
+        $entitas        = Entitas::all();
+
         if (Auth::check()) {
-            return view('home', []);
+            return view('home', compact('gudang', 'entitas', 'bulan', 'tahun'));
         }
         return redirect("login")->withSuccess('Oops! You do not have access');
     }

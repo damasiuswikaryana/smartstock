@@ -13,19 +13,19 @@ return [
         'status_bar' => 'black-translucent',
         'icons' => [
             '72x72' => [
-                'path' => '/assets/images/icons/icon-1000x1000.jpg',
+                'path' => '/assets/images/icons/icon-72x72.jpg',
                 'purpose' => 'any'
             ],
             '96x96' => [
-                'path' => '/assets/images/icons/icon-1000x1000.jpg',
+                'path' => '/assets/images/icons/icon-96x96.jpg',
                 'purpose' => 'any'
             ],
             '144x144' => [
-                'path' => '/assets/images/icons/icon-1000x1000.jpg',
+                'path' => '/assets/images/icons/icon-144x144.jpg',
                 'purpose' => 'any'
             ],
             '192x192' => [
-                'path' => '/assets/images/icons/icon-1000x1000.jpg',
+                'path' => '/assets/images/icons/icon-192x192.jpg',
                 'purpose' => 'any'
             ],
         ],

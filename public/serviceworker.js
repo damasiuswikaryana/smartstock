@@ -31,7 +31,7 @@ self.addEventListener("push", function (event) {
     const payload = event.data.json();
     self.registration.showNotification(payload.data.title, {
         body: payload.data.body,
-        icon: "/assets/images/icons/1000x1000.png",
+        icon: "/assets/images/icons/icon-192x192.jpg",
         data: {
             url: payload.data.url,
         },

@@ -35,8 +35,8 @@
     <div class="loader">
         <div class="p-4 text-center">
             <div class="custom-loader"></div>
-            <h2 class="my-3 f-w-400">Memproses Data ...</h2>
-            <p class="mb-0">Mohon tunggu, sedang memproses data ...</p>
+            <h2 class="my-3 f-w-400">Processing ...</h2>
+            <p class="mb-0">Please wait, processing data for you...</p>
         </div>
     </div>
 
