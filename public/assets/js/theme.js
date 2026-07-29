@@ -105,7 +105,7 @@ function layout_sidebar_change(value) {
                 .querySelector(".pc-sidebar .m-header .logo-lg")
                 .setAttribute(
                     "src",
-                    "https://smartstock.smartwork.id/assets/images/logo/logo_wide.png",
+                    "https://smartstock.smartwork.id/assets/images/logo/logo_smartwarehouse_color.png",
                 );
         }
 
@@ -134,7 +134,7 @@ function layout_sidebar_change(value) {
                 .querySelector(".pc-sidebar .m-header .logo-lg")
                 .setAttribute(
                     "src",
-                    "https://smartstock.smartwork.id/assets/images/logo/logo_wide.png",
+                    "https://smartstock.smartwork.id/assets/images/logo/logo_smartwarehouse_color.png",
                 );
         }
 
@@ -253,7 +253,7 @@ function layout_change(layout) {
                             .querySelector(".pc-sidebar .m-header .logo-lg")
                             .setAttribute(
                                 "src",
-                                "assets/images/logo/logo_smartwarehouse_white.png",
+                                "/assets/images/logo/logo_smartwarehouse_white.png",
                             );
                     }
 
@@ -262,7 +262,7 @@ function layout_change(layout) {
                             .querySelector(".navbar-brand .logo-lg")
                             .setAttribute(
                                 "src",
-                                "assets/images/logo/logo_smartwarehouse_white.png",
+                                "/assets/images/logo/logo_smartwarehouse_white.png",
                             );
                     }
                     if (document.querySelector(".landing-logo")) {
@@ -270,7 +270,7 @@ function layout_change(layout) {
                             .querySelector(".landing-logo")
                             .setAttribute(
                                 "src",
-                                "assets/images/logo/logo_smartwarehouse_white.png",
+                                "/assets/images/logo/logo_smartwarehouse_white.png",
                             );
                     }
                     if (
@@ -280,7 +280,7 @@ function layout_change(layout) {
                             .querySelector(".auth-main.v1 .auth-sidefooter img")
                             .setAttribute(
                                 "src",
-                                "assets/images/logo/logo_smartwarehouse_white.png",
+                                "/assets/images/logo/logo_smartwarehouse_white.png",
                             );
                     }
                     if (document.querySelector(".footer-top .footer-logo")) {
@@ -288,7 +288,7 @@ function layout_change(layout) {
                             .querySelector(".footer-top .footer-logo")
                             .setAttribute(
                                 "src",
-                                "assets/images/logo/logo_smartwarehouse_white.png",
+                                "/assets/images/logo/logo_smartwarehouse_white.png",
                             );
                     }
                     var control = document.querySelector(
@@ -313,7 +313,7 @@ function layout_change(layout) {
                             .querySelector(".pc-sidebar .m-header .logo-lg")
                             .setAttribute(
                                 "src",
-                                "assets/images/logo/logo_smartwarehouse_color.png",
+                                "/assets/images/logo/logo_smartwarehouse_color.png",
                             );
                     }
                     if (document.querySelector(".navbar-brand .logo-lg")) {
@@ -321,7 +321,7 @@ function layout_change(layout) {
                             .querySelector(".navbar-brand .logo-lg")
                             .setAttribute(
                                 "src",
-                                "assets/images/logo/logo_smartwarehouse_color.png",
+                                "/assets/images/logo/logo_smartwarehouse_color.png",
                             );
                     }
 
@@ -330,7 +330,7 @@ function layout_change(layout) {
                             .querySelector(".landing-logo")
                             .setAttribute(
                                 "src",
-                                "assets/images/logo/logo_smartwarehouse_color",
+                                "/assets/images/logo/logo_smartwarehouse_color",
                             );
                     }
                     if (
@@ -340,7 +340,7 @@ function layout_change(layout) {
                             .querySelector(".auth-main.v1 .auth-sidefooter img")
                             .setAttribute(
                                 "src",
-                                "assets/images/logo/logo_smartwarehouse_color.png",
+                                "/assets/images/logo/logo_smartwarehouse_color.png",
                             );
                     }
                     if (document.querySelector(".footer-top .footer-logo")) {
@@ -348,7 +348,7 @@ function layout_change(layout) {
                             .querySelector(".footer-top .footer-logo")
                             .setAttribute(
                                 "src",
-                                "assets/images/logo/logo_smartwarehouse_color.png",
+                                "/assets/images/logo/logo_smartwarehouse_color.png",
                             );
                     }
                     var control = document.querySelector(

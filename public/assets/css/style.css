@@ -64,6 +64,8 @@ File: style.css
     --pc-card-box-shadow: 0px 8px 24px rgba(27, 46, 94, 0.12);
     --pc-header-submenu-background: #ffffff;
     --pc-header-submenu-color: #39465f;
+    --pc-menu-pink: #ffedfc;
+    --pc-menu-blue: #e8f1ff;
 }
 
 [data-pc-sidebar-theme="dark"] {
@@ -72,6 +74,8 @@ File: style.css
     --pc-sidebar-color-rgb: 255, 255, 255;
     --pc-sidebar-submenu-border-color: var(--bs-gray-600);
     --pc-sidebar-caption-color: #748892;
+    --pc-menu-pink: #2e0036;
+    --pc-menu-blue: #13102e;
 }
 
 [class="layout-3"],
@@ -33623,11 +33627,11 @@ table.dataTable tbody tr > .dtfc-fixed-end {
 }
 
 .pc-item-pink {
-    background-color: #ffedfc !important;
+    background-color: var(--pc-menu-pink);
 }
 
 .pc-item-blue {
-    background-color: #e8f1ff !important;
+    background-color: var(--pc-menu-blue);
 }
 
 .border-top-radius {
