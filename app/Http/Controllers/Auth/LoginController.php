@@ -75,22 +75,28 @@ class LoginController extends Controller
         // Pesan berdasarkan role
         if ($user->hasRole('masteradmin')) {
             $message = 'Success Login as Master Admin';
+            $redirect = route('dashboard');
         } elseif ($user->hasRole('admin')) {
             $message = 'Success Login as Admin';
+            $redirect = route('dashboard');
         } elseif ($user->hasRole('admin_cabang')) {
             $message = 'Success Login as Branch Admin';
+            $redirect = route('stockCurrent.index');
         } elseif ($user->hasRole('pengadaan')) {
             $message = 'Success Login as Procurement';
+            $redirect = route('dashboard');
         } elseif ($user->hasRole('gudang')) {
             $message = 'Success Login as Warehouse';
+            $redirect = route('dashboard');
         } else {
             $message = 'Welcome guest';
+            $redirect = route('dashboard');
         }
 
         return response()->json([
             'status'   => true,
             'message'  => $message,
-            'redirect' => route('dashboard'),
+            'redirect' => $redirect,
         ]);
     }
 

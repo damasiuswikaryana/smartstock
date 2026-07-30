@@ -26560,7 +26560,6 @@ select[data-multiselectsplitter-secondselect-selector].dataTable-input {
     border-radius: var(--bs-border-radius);
     padding: 0.62rem 2.6rem;
     width: 100%;
-    max-width: 240px;
 }
 @media (max-width: 1399.98px) {
     .form-search .form-control,

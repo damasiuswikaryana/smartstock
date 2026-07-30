@@ -50,3 +50,86 @@
     min-height: auto;
     height: auto;
 }
+
+@media (max-width: 767px) {
+    .card-table {
+        background-color: transparent !important;
+    }
+    /* Sembunyikan header dan footer tabel bawaan */
+    table.data-table thead,
+    table.data-table tfoot {
+        display: none;
+    }
+
+    /* Ubah elemen tabel menjadi blok */
+    table.data-table,
+    table.data-table tbody,
+    table.data-table tr,
+    table.data-table td {
+        display: block;
+        width: 100%;
+        box-sizing: border-box;
+    }
+
+    /* Styling Kartu (Card Item) */
+    table.data-table tr {
+        margin-bottom: 16px;
+        background-color: var(--bs-card-bg) !important;
+        border: 1px solid #e2e8f0;
+        border-radius: 12px;
+        padding: 8px;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.04);
+    }
+
+    /* Styling Baris Data (Row Inside Card) */
+    table.data-table td {
+        display: flex;
+        align-items: center;
+        text-align: left;
+        padding: 10px 16px !important;
+        font-size: 14px;
+        background-color: var(--bs-card-bg) !important;
+        border-top: 0px !important;
+    }
+
+    /* Hapus garis bawah pada elemen terakhir */
+    table.data-table td:last-child {
+        border-bottom: none;
+    }
+
+    /* MENAMPILKAN HEADER / LABEL DI SEBELAH KIRI */
+    table.data-table td::before {
+        content: attr(data-label); /* Mengambil teks dari atribut data-label */
+        font-weight: 600;
+        color: #64748b; /* Warna teks label */
+        text-align: left;
+        padding-right: 15px;
+        white-space: nowrap;
+        width: 50%;
+    }
+
+    /* Opsional: Merapikan UI bawaan DataTables Controls */
+    div.dt-container div.dt-search,
+    div.dt-container div.dt-length {
+        width: 100%;
+        text-align: left !important;
+    }
+
+    div.dt-container div.dt-search input {
+        width: 100% !important;
+        margin-left: 0 !important;
+    }
+
+    .dt-info {
+        text-align: center;
+        margin-bottom: 8px;
+        font-size: 13px;
+        color: #64748b;
+    }
+
+    .dt-paging {
+        display: flex;
+        justify-content: center;
+        margin-top: 12px;
+    }
+}

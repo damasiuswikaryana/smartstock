@@ -75,8 +75,10 @@ class InOutStockController extends Controller
                     return $row->gudang->nama;
                 })
                 ->addColumn('entitas', function ($row) {
-                    return '<p class="fw-bold mb-0">' . $row->pekerjaan->name . '</p>
-                        <p class="f-10 mb-0">' . $row->entitas->entitas_name . '</p>';
+                    return '<div class="d-flex flex-column">
+                        <p class="fw-bold mb-0">' . $row->pekerjaan->name . '</p>
+                        <p class="f-10 mb-0">' . $row->entitas->entitas_name . '</p>
+                    </div>';
                 })
                 ->addColumn('date', function ($row) {
                     return tanggalIndo($row->in_date);
