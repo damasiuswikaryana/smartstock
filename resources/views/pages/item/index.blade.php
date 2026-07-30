@@ -26,7 +26,7 @@
     </div>
 
     @php
-        $thead = ['Code', 'Item Name', 'Vendor', 'Category', 'Last Updated', 'Options'];
+        $thead = ['Item Name', 'Vendor', 'Category', 'Last Updated', 'Options'];
     @endphp
     <x-datatable :thead=$thead :filter="null">
     </x-datatable>
@@ -43,24 +43,15 @@
                     <div class="row px-4">
                         @csrf
                         @method('POST')
-                        <div class="col-6">
+                        <div class="col-12">
                             <div class="mb-3 row">
-                                <label class="col-lg-4 col-form-label">Item Code:</label>
-                                <div class="col-lg-8">
-                                    <input type="text" class="form-control" placeholder="Item Code (3 characters only)"
-                                        name="kode" maxlength="3" />
-                                </div>
-                            </div>
-
-                            <div class="mb-3 row">
-                                <label class="col-lg-4 col-form-label">Item Name: <span class="text-danger">*</span></label>
-                                <div class="col-lg-8">
+                                <label class="col-lg-2 col-form-label">Item Name: <span class="text-danger">*</span></label>
+                                <div class="col-lg-10">
                                     <input type="text" class="form-control" placeholder="Item Name" name="nama"
                                         required />
                                 </div>
                             </div>
                         </div>
-
                         <div class="col-6">
                             <div class="mb-3 row">
                                 <label class="col-lg-4 col-form-label">Vendor: <span class="text-danger">*</span></label>
@@ -73,7 +64,9 @@
                                     </select>
                                 </div>
                             </div>
+                        </div>
 
+                        <div class="col-6">
                             <div class="mb-3 row">
                                 <label class="col-lg-4 col-form-label">Category: <span class="text-danger">*</span></label>
                                 <div class="col-lg-8">
@@ -138,11 +131,6 @@
                 [0, 'asc']
             ],
             columns: [{
-                    data: 'kode',
-                    name: 'kode',
-                    class: 'text-center py-1',
-                },
-                {
                     data: 'nama',
                     name: 'nama',
                     class: 'py-1 fw-bold',

@@ -54,7 +54,7 @@ class AdmItemController extends Controller
         try {
             DB::beginTransaction();
             ItemMaster::create([
-                'kode'          => $input['kode'],
+                'kode'          => NULL,
                 'nama'          => $input['nama'],
                 'vendor_id'     => $input['vendor_id'],
                 'category_id'   => $input['category_id'],
@@ -86,7 +86,7 @@ class AdmItemController extends Controller
         try {
             if ($input['tipe'] == "general") {
                 DB::beginTransaction();
-                $data->kode         = $input['kode'];
+                $data->kode         = NULL;
                 $data->nama         = $input['nama'];
                 $data->vendor_id    = $input['vendor_id'];
                 $data->category_id  = $input['category_id'];

@@ -95,12 +95,11 @@ class AdmStockMutationController extends Controller
                 })
                 ->addColumn('item', function ($row) {
                     return '<div class="d-flex flex-column">
-                        <p class="fw-bold mb-0">' . $row->item_varian->itemMaster->nama . '</p>
-                        <p class="text-muted mb-0">' . $row->item_varian->sku_varian . '</p>
+                        <p class="fw-bold mb-0">' . $row->item_varian->name_varian . '</p>
                     </div>';
                 })
-                ->addColumn('variant', function ($row) {
-                    return '<code>' . $row->item_varian->kode_varian . '</code>';
+                ->addColumn('sku', function ($row) {
+                    return $row->item_varian->sku_varian;
                 })
                 ->addColumn('tipe', function ($row) {
                     if ($row->tipe == 'Masuk') {
@@ -113,7 +112,7 @@ class AdmStockMutationController extends Controller
                         return '<p class="text-dark mb-0"><i class="ti ti-circle-x"></i> Broken</p>';
                     }
                 })
-                ->rawColumns(['action', 'updated_at', 'source_type', 'target_type', 'item', 'variant', 'tipe'])
+                ->rawColumns(['action', 'updated_at', 'source_type', 'target_type', 'item', 'sku', 'tipe'])
                 ->make(true);
         }
         return view('pages.stock.mutation.index', compact('allGudang', 'allCategory', 'allEntitas'));

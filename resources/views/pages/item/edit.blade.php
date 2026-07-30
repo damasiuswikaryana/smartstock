@@ -55,15 +55,6 @@
                             <input type="hidden" name="tipe" value="general" />
                             <div class="col-12">
                                 <div class="mb-3 row">
-                                    <label class="col-lg-4 col-form-label">Item Code:</label>
-                                    <div class="col-lg-8">
-                                        <input type="text" class="form-control"
-                                            placeholder="Item Code (3 characters only)" name="kode" maxlength="3"
-                                            value="{{ $data->kode }}" />
-                                    </div>
-                                </div>
-
-                                <div class="mb-3 row">
                                     <label class="col-lg-4 col-form-label">Item Name: <span
                                             class="text-danger">*</span></label>
                                     <div class="col-lg-8">

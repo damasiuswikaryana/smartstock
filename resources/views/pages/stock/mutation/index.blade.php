@@ -88,7 +88,7 @@
     </div>
 
     @php
-        $thead = ['No', 'Type', 'Source', 'Target', 'Item', 'Variant', 'Qty', 'Options'];
+        $thead = ['No', 'Type', 'Source', 'Target', 'Item', 'SKU', 'Qty', 'Options'];
     @endphp
     <x-datatable :thead=$thead :filter="null">
     </x-datatable>
@@ -136,7 +136,7 @@
             columns: [{
                     data: null,
                     name: 'no',
-                    class: 'text-center py-lg-0 py-sm-1',
+                    class: 'text-center py-lg-1 py-sm-1',
                     orderable: false,
                     searchable: false,
                     render: function(data, type, row, meta) {
@@ -146,38 +146,38 @@
                 {
                     data: 'tipe',
                     name: 'tipe',
-                    class: 'py-lg-0 py-sm-1 text-center',
+                    class: 'py-lg-1 py-sm-1 text-center',
                 },
                 {
                     data: 'source_type',
                     name: 'source_type',
-                    class: 'py-lg-0 py-sm-1 text-center',
+                    class: 'py-lg-1 py-sm-1 text-center',
                 },
                 {
                     data: 'target_type',
                     name: 'target_type',
-                    class: 'py-lg-0 py-sm-1 text-center',
+                    class: 'py-lg-1 py-sm-1 text-center',
                 },
                 {
                     data: 'item',
                     name: 'item',
-                    class: 'py-lg-0 py-sm-1 text-start',
+                    class: 'py-lg-1 py-sm-1 text-start',
                 },
                 {
-                    data: 'variant',
-                    name: 'variant',
-                    class: 'py-lg-0 py-sm-1 text-center',
+                    data: 'sku',
+                    name: 'sku',
+                    class: 'py-lg-1 py-sm-1 text-center',
                 },
                 {
                     data: 'jumlah',
                     name: 'jumlah',
                     visible: true,
-                    class: 'py-lg-0 py-sm-1 text-center',
+                    class: 'py-lg-1 py-sm-1 text-center',
                 },
                 {
                     data: 'action',
                     name: 'action',
-                    class: 'text-center py-lg-0 py-sm-1',
+                    class: 'text-center py-lg-1 py-sm-1',
                     orderable: false,
                     searchable: false,
                 },

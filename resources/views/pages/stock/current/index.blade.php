@@ -81,7 +81,7 @@
     </div>
 
     @php
-        $thead = ['No', 'Item', 'Variant', 'Category', 'Werehouse', 'Qty', 'Last Update'];
+        $thead = ['No', 'SKU', 'Item', 'Category', 'Werehouse', 'Qty', 'Last Update'];
     @endphp
     <x-datatable :thead=$thead :filter="null">
     </x-datatable>
@@ -124,14 +124,14 @@
                     }
                 },
                 {
+                    data: 'sku',
+                    name: 'sku',
+                    class: 'py-lg-0 py-sm-1 text-center',
+                },
+                {
                     data: 'item',
                     name: 'item',
                     class: 'py-lg-0 py-sm-1',
-                },
-                {
-                    data: 'variant',
-                    name: 'variant',
-                    class: 'py-lg-0 py-sm-1 text-center',
                 },
                 {
                     data: 'category',

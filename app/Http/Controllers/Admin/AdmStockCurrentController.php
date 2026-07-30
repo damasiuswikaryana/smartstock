@@ -62,10 +62,12 @@ class AdmStockCurrentController extends Controller
                 ->addColumn('last_update', function ($row) {
                     return tanggalIndoWaktuLidgkap($row->updated_at);
                 })
+                ->addColumn('sku', function ($row) {
+                    return $row->item_varian->sku_varian;
+                })
                 ->addColumn('item', function ($row) {
                     return '<div class="d-flex flex-column">
-                        <p class="fw-bold mb-0">' . $row->item_varian->itemMaster->nama . '</p>
-                        <p class="text-muted mb-0">' . $row->item_varian->sku_varian . '</p>
+                        <p class="fw-bold mb-0">' . $row->item_varian->name_varian . '</p>
                     </div>';
                 })
                 ->addColumn('variant', function ($row) {
@@ -86,7 +88,7 @@ class AdmStockCurrentController extends Controller
                 ->addColumn('qty', function ($row) {
                     return $row->jumlah;
                 })
-                ->rawColumns(['action', 'last_update', 'item', 'variant', 'werehouse', 'entity', 'category', 'qty'])
+                ->rawColumns(['action', 'last_update', 'item', 'werehouse', 'sku', 'entity', 'category', 'qty'])
                 ->make(true);
         }
         return view('pages.stock.current.index', compact('allGudang', 'allCategory', 'allEntitas'));
