@@ -19,10 +19,8 @@ class AdmStockCurrentController extends Controller
 {
     public function index(Request $request)
     {
-        $allGudang      = Outlet::all();
         $allCategory    = Category::all();
         $allEntitas     = Entitas::all();
-
         $lokasi         = Auth::user()->loc_id;
         // jika yang login adalah roles berikut
         if (
@@ -31,8 +29,10 @@ class AdmStockCurrentController extends Controller
             || Auth::user()->roles[0]->name == "gudang"
         ) {
             $data       = Stock::query();
+            $allGudang  = Outlet::all();
         } else {
             $data       = Stock::where('lokasi_id', $lokasi);
+            $allGudang  = Outlet::where('id', $lokasi)->get();
         }
 
         if ($request->ajax()) {

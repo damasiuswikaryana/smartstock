@@ -16,7 +16,6 @@ class AdmStockMutationController extends Controller
 {
     public function index(Request $request)
     {
-        $allGudang      = Outlet::all();
         $allCategory    = Category::all();
         $allEntitas     = Entitas::all();
 
@@ -28,8 +27,10 @@ class AdmStockMutationController extends Controller
             || Auth::user()->roles[0]->name == "gudang"
         ) {
             $data       = StockMutation::query();
+            $allGudang  = Outlet::all();
         } else {
             $data       = StockMutation::where('source_id', $lokasi)->orWhere('target_id', $lokasi);
+            $allGudang  = Outlet::where('id', $lokasi)->orWhere('id', 1)->get();
         }
 
         if ($request->ajax()) {

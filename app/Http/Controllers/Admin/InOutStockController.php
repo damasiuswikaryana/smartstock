@@ -30,10 +30,23 @@ class InOutStockController extends Controller
     {
         $vendor     = Vendor::all();
         $entitas    = Entitas::all();
-        $data       = StockInMaster::with('child');
         $items      = ItemMaster::all();
-        $pekerjaan  = Project::all();
-        $gudang     = Outlet::all();
+        $lokasi     = Auth::user()->loc_id;
+
+        if (
+            Auth::user()->roles[0]->name == "masteradmin"
+            || Auth::user()->roles[0]->name == "pengadaan"
+            || Auth::user()->roles[0]->name == "gudang"
+        ) {
+            $data       = StockInMaster::with('child')->query();
+            $gudang     = Outlet::all();
+            $pekerjaan  = Project::all();
+        } else {
+            $data       = StockInMaster::with('child')->where('werehouse_id', $lokasi);
+            $gudang     = Outlet::where('id', $lokasi)->get();
+            $pekerjaan  = Project::where('werehouse_id', $lokasi)->get();
+        }
+
 
         if ($request->ajax()) {
             // filter werehouse
@@ -167,12 +180,23 @@ class InOutStockController extends Controller
     {
         $vendor         = Vendor::all();
         $entitas        = Entitas::all();
-        $pekerjaan      = Project::all();
-        $gudang         = Outlet::all();
         $items          = ItemMaster::all();
+        $lokasi         = Auth::user()->loc_id;
         $data           = StockInMaster::with('child')->where('id', $id)->first();
         $document       = StockInMasterPhoto::where('stock_in_m_id', $id)->get();
         $dataVarian     = $data->child->pluck('item_varian_id')->toArray();
+
+        if (
+            Auth::user()->roles[0]->name == "masteradmin"
+            || Auth::user()->roles[0]->name == "pengadaan"
+            || Auth::user()->roles[0]->name == "gudang"
+        ) {
+            $gudang     = Outlet::all();
+            $pekerjaan  = Project::all();
+        } else {
+            $gudang     = Outlet::where('id', $lokasi)->get();
+            $pekerjaan  = Project::where('werehouse_id', $lokasi)->get();
+        }
 
         $variants           = ItemVarian::whereIn('id', $dataVarian)->with('itemMaster')->get();
         $groupedVariants    = $variants->groupBy('item_master_id');

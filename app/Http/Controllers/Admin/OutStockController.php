@@ -25,9 +25,7 @@ class OutStockController extends Controller
     public function index(Request $request)
     {
         $gudang     = Auth::user()->loc_id;
-        $pekerjaan  = Project::all();
         $entitas    = Entitas::all();
-        $allGudang  = Outlet::all();
 
         $stockav    = Stock::where('lokasi_id', $gudang)->get();
         $items      =
@@ -45,7 +43,19 @@ class OutStockController extends Controller
                 $q->where('lokasi_id', $gudang);
             })->get();
 
-        $data       = StockOutMaster::with('child');
+        if (
+            Auth::user()->roles[0]->name == "masteradmin"
+            || Auth::user()->roles[0]->name == "pengadaan"
+            || Auth::user()->roles[0]->name == "gudang"
+        ) {
+            $$data      = StockOutMaster::with('child');
+            $allGudang  = Outlet::all();
+            $pekerjaan  = Project::all();
+        } else {
+            $data       = StockOutMaster::with('child')->where('werehouse_id', $gudang);
+            $allGudang  = Outlet::where('id', $gudang)->get();
+            $pekerjaan  = Project::where('werehouse_id', $gudang)->get();
+        }
 
         if ($request->ajax()) {
             // filter werehouse

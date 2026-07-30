@@ -43,18 +43,20 @@
     <div class="border-0 mb-3">
         <div class="collapse" id="collapseExample">
             <div class="row">
-                <div class="col-12 col-lg-3 text-start mb-2 mb-lg-0">
+                <div class="col-12 col-lg-4 text-start mb-2 mb-lg-0">
                     <div class="form-search w-100">
                         <i class="ph-duotone ph-house icon-search"></i>
                         <select class="form-control w-100" id="fl_werehouse">
-                            <option value="">All Werehouses</option>
+                            @hasanyrole('masteradmin|admin|pengadaan|gudang')
+                                <option value="">All Werehouses</option>
+                            @endhasanyrole
                             @foreach ($allGudang as $g)
                                 <option value="{{ $g->id }}">{{ $g->nama }}</option>
                             @endforeach
                         </select>
                     </div>
                 </div>
-                <div class="col-12 col-lg-3 text-start mb-2 mb-lg-0">
+                <div class="col-12 col-lg-4 text-start mb-2 mb-lg-0">
                     <div class="form-search w-100">
                         <i class="ph-duotone ph-package icon-search"></i>
                         <select class="form-control w-100" id="fl_category">
@@ -65,17 +67,19 @@
                         </select>
                     </div>
                 </div>
-                <div class="col-12 col-lg-3 text-start mb-2 mb-lg-0">
-                    <div class="form-search w-100">
-                        <i class="ph-duotone ph-star icon-search"></i>
-                        <select class="form-control w-100" id="fl_entitas">
-                            <option value="">All Entities</option>
-                            @foreach ($allEntitas as $e)
-                                <option value="{{ $e->id }}">{{ $e->entitas_name }}</option>
-                            @endforeach
-                        </select>
+                @hasanyrole('masteradmin|admin|pengadaan|gudang')
+                    <div class="col-12 col-lg-4 text-start mb-2 mb-lg-0">
+                        <div class="form-search w-100">
+                            <i class="ph-duotone ph-star icon-search"></i>
+                            <select class="form-control w-100" id="fl_entitas">
+                                <option value="">All Entities</option>
+                                @foreach ($allEntitas as $e)
+                                    <option value="{{ $e->id }}">{{ $e->entitas_name }}</option>
+                                @endforeach
+                            </select>
+                        </div>
                     </div>
-                </div>
+                @endhasanyrole
             </div>
         </div>
     </div>

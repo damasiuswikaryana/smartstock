@@ -25,7 +25,9 @@
                     <div class="form-search w-100">
                         <i class="ph-duotone ph-house icon-search"></i>
                         <select class="form-control" id="fl_werehouse">
-                            <option value="">All Warehouses</option>
+                            @hasanyrole('masteradmin|admin|pengadaan|gudang')
+                                <option value="">All Werehouses</option>
+                            @endhasanyrole
                             @foreach ($gudang as $g)
                                 <option value="{{ $g->id }}">{{ $g->nama }}</option>
                             @endforeach
