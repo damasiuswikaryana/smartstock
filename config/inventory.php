@@ -1,5 +1,8 @@
 <?php
 
 return [
-    'report_email' => env('REPORT_EMAIL'),
+    'report_email' => array_map(
+        'trim',
+        explode(',', env('REPORT_EMAIL', ''))
+    ),
 ];
