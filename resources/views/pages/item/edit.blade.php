@@ -150,7 +150,7 @@
         </div>
     </div>
     @php
-        $thead = ['Code', 'Variant', 'Value', 'Options'];
+        $thead = ['SKU', 'Variant Name', 'Variant Code', 'Value', 'Options'];
     @endphp
     <x-datatable :thead=$thead :filter="null">
     </x-datatable>
@@ -317,8 +317,8 @@
                 [0, 'asc']
             ],
             columns: [{
-                    data: 'kode_varian',
-                    name: 'kode_varian',
+                    data: 'sku_varian',
+                    name: 'sku_varian',
                     class: 'text-center py-1',
                 },
                 {
@@ -327,9 +327,14 @@
                     class: 'py-1 fw-bold',
                 },
                 {
+                    data: 'kode_varian',
+                    name: 'kode_varian',
+                    class: 'py-1 fw-bold text-center',
+                },
+                {
                     data: 'nilai',
                     name: 'nilai',
-                    class: 'py-1',
+                    class: 'py-1 text-center',
                 },
                 {
                     data: 'action',
