@@ -45,10 +45,10 @@
                         @method('POST')
                         <div class="col-6">
                             <div class="mb-3 row">
-                                <label class="col-lg-4 col-form-label">Item Code: <span class="text-danger">*</span></label>
+                                <label class="col-lg-4 col-form-label">Item Code:</label>
                                 <div class="col-lg-8">
                                     <input type="text" class="form-control" placeholder="Item Code (3 characters only)"
-                                        name="kode" maxlength="3" required />
+                                        name="kode" maxlength="3" />
                                 </div>
                             </div>
 

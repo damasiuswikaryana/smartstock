@@ -94,7 +94,10 @@ class AdmStockMutationController extends Controller
                     }
                 })
                 ->addColumn('item', function ($row) {
-                    return '<p class="mb-0 fw-bold">' . $row->item_varian->itemMaster->nama . '</p><p class="text-muted mb-0">[' . $row->item_varian->sku_varian . ']</p>';
+                    return '<div class="d-flex flex-column">
+                        <p class="fw-bold mb-0">' . $row->item_varian->itemMaster->nama . '</p>
+                        <p class="text-muted mb-0">' . $row->item_varian->sku_varian . '</p>
+                    </div>';
                 })
                 ->addColumn('variant', function ($row) {
                     return '<code>' . $row->item_varian->kode_varian . '</code>';

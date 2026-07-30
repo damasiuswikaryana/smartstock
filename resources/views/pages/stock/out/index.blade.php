@@ -10,25 +10,34 @@
         <li class="breadcrumb-item">Stock Out</li>
     </x-page-header>
 
-    <div class="d-flex justify-content-between align-items-center mb-4 mt-3">
-        <div class="">
-            <button type="button" class="btn btn-shadow btn-light-primary me-2 d-flex align-items-center"
-                data-bs-toggle="modal" data-bs-target="#exampleModalCenter"><i
-                    class="ph-duotone ph-plus-circle icon-search me-2"></i> Add Stock Out</button>
+    <div class="row g-2 align-items-center mb-4 mt-3 justify-content-between p-sm-0">
+        <div class="col-12 col-lg-auto">
+            <button type="button"
+                class="btn btn-shadow btn-light-primary w-100 d-flex align-items-center justify-content-center"
+                data-bs-toggle="modal" data-bs-target="#exampleModalCenter">
+                <i class="ph-duotone ph-plus-circle me-2"></i>
+                Add Stock Out
+            </button>
         </div>
-        <div class="d-flex justify-content-start text-end">
-            <div class="form-search me-2">
-                <i class="ph-duotone ph-house icon-search"></i>
-                <select class="form-control" id="fl_werehouse">
-                    <option value="">All Werehouses</option>
-                    @foreach ($allGudang as $g)
-                        <option value="{{ $g->id }}">{{ $g->nama }}</option>
-                    @endforeach
-                </select>
-            </div>
-            <div class="form-search">
-                <i class="ph-duotone ph-magnifying-glass icon-search"></i>
-                <input type="search" id="search" class="form-control w-100" placeholder="Search here...">
+        <div class="col">
+            <div class="d-flex flex-column flex-lg-row gap-2 justify-content-end">
+                <div class="">
+                    <div class="form-search w-100">
+                        <i class="ph-duotone ph-house icon-search"></i>
+                        <select class="form-control" id="fl_werehouse">
+                            <option value="">All Warehouses</option>
+                            @foreach ($allGudang as $g)
+                                <option value="{{ $g->id }}">{{ $g->nama }}</option>
+                            @endforeach
+                        </select>
+                    </div>
+                </div>
+                <div class="">
+                    <div class="form-search w-100">
+                        <i class="ph-duotone ph-magnifying-glass icon-search"></i>
+                        <input type="search" id="search" class="form-control" placeholder="Search here...">
+                    </div>
+                </div>
             </div>
         </div>
     </div>
@@ -62,7 +71,7 @@
                                     </div>
                                 </div>
                             </div>
-                            <div class="col-6">
+                            <div class="col-12 col-lg-6">
                                 <div class="mb-3 row">
                                     <label class="col-lg-4 col-form-label">Date: <span class="text-danger">*</span></label>
                                     <div class="col-lg-8">
@@ -79,7 +88,7 @@
                                 </div>
                             </div>
 
-                            <div class="col-6">
+                            <div class="col-12 col-lg-6">
                                 <div class="mb-3 row">
                                     <label class="col-lg-4 col-form-label">Project: <span
                                             class="text-danger">*</span></label>
@@ -180,42 +189,50 @@
             columns: [{
                     data: 'so_number',
                     name: 'so_number',
-                    class: 'py-1 fw-bold',
+                    class: 'py-lg-1 py-sm-2 fw-bold',
                 },
                 {
                     data: 'entitas',
                     name: 'entitas',
-                    class: 'py-1',
+                    class: 'py-lg-1 py-sm-2',
                 },
                 {
                     data: 'date',
                     name: 'date',
-                    class: 'py-1',
+                    class: 'py-lg-1 py-sm-2',
                 },
                 {
                     data: 'werehouse',
                     name: 'werehouse',
-                    class: 'py-1 text-center',
+                    class: 'py-lg-1 py-sm-2 text-center',
                 },
                 {
                     data: 'items',
                     name: 'items',
-                    class: 'py-1 text-center',
+                    class: 'py-lg-1 py-sm-2 text-center',
                 },
                 {
                     data: 'status',
                     name: 'status',
                     visible: true,
-                    class: 'py-1 text-center',
+                    class: 'py-lg-1 py-sm-2 text-center',
                 },
                 {
                     data: 'action',
                     name: 'action',
-                    class: 'text-center py-1',
+                    class: 'text-center py-lg-1 py-sm-2',
                     orderable: false,
                     searchable: false,
                 },
-            ]
+            ],
+            createdRow: function(row, data, dataIndex) {
+                var api = this.api();
+                $('td', row).each(function(colIndex) {
+                    // Mengambil title langsung dari konfigurasi kolom DataTables
+                    var title = api.column(colIndex).header().textContent.trim();
+                    $(this).attr('data-label', title);
+                });
+            }
         });
 
         $('#search').keyup(function() {
@@ -298,7 +315,7 @@
             e.preventDefault();
             let html = `
                 <div class="row p-0 mx-0 mb-2 produk-item">
-                    <div class="col-11 col-lg-11 ps-0">
+                    <div class="col-10 col-lg-11 ps-0">
                         <select data-index="${itemMasterIndex}" class="form-control item-master" name="item[${itemMasterIndex}][id_item]" required>
                             <option value="" selected disabled>Select Item</option>
                             @foreach ($items as $item)
@@ -307,7 +324,7 @@
                         </select>
                         <div class="variant-container mt-2" id="variant-container-${itemMasterIndex}"></div>
                     </div>
-                    <div class="col-1 col-lg-1 mx-0 pe-0">
+                    <div class="col-2 col-lg-1 mx-0 pe-0">
                         <button id="btn-delete-${itemMasterIndex}" type="button" class="btn btn-rounded btn-light-danger btn-delete-produk" style="font-size:20px;">
                             <i class="ti ti-trash"></i>
                         </button>
@@ -335,16 +352,16 @@
                         <div class="col-1 text-center">
                             <i class="fs-3 ph-duotone ph-arrow-elbow-down-right"></i>
                         </div>
-                        <div class="col-2">
-                            <input type="text" class="form-control" value="${variant.sku_varian}" disabled>
-                        </div>
-                        <div class="col-5">
+                        <div class="col-12 col-lg-5">
                             <input type="text" class="form-control" value="${variant.name_varian}" disabled>
                         </div>
-                        <div class="col-2 text-center">
+                        <div class="col-6 col-lg-2">
+                            <input type="text" class="form-control" value="${variant.sku_varian}" disabled>
+                        </div>
+                        <div class="col-4 col-lg-2 text-center">
                             <input type="text" class="form-control" value="Stock: ${variant.stok}" disabled>
                         </div>
-                        <div class="col-2">
+                        <div class="col-2 col-lg-2">
                             <input type="number" min="0" max="${variant.stok}" class="form-control qty-input" data-stock="${variant.stok}" name="item[${index}][variants][${variant.id}][qty]" placeholder="Qty" value="0">
                             <input type="hidden" name="item[${index}][variants][${variant.id}][id_variant]" value="${variant.id}">
                         </div>

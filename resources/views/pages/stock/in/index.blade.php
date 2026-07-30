@@ -16,7 +16,7 @@
                 class="btn btn-shadow btn-light-primary w-100 d-flex align-items-center justify-content-center"
                 data-bs-toggle="modal" data-bs-target="#exampleModalCenter">
                 <i class="ph-duotone ph-plus-circle me-2"></i>
-                Add Stock Out
+                Add Stock In
             </button>
         </div>
         <div class="col">
@@ -386,13 +386,13 @@
                         <div class="col-1 text-center">
                             <i class="fs-3 ph-duotone ph-arrow-elbow-down-right"></i>
                         </div>
-                        <div class="col-2">
-                            <input type="text" class="form-control" value="${variant.sku_varian}" disabled>
-                        </div>
-                        <div class="col-5">
+                        <div class="col-12 col-lg-5">
                             <input type="text" class="form-control" value="${variant.name_varian}" disabled>
                         </div>
-                        <div class="col-4">
+                        <div class="col-6 col-lg-2">
+                            <input type="text" class="form-control" value="${variant.sku_varian}" disabled>
+                        </div>
+                        <div class="col-6 col-lg-4">
                             <input type="number" min="0" class="form-control" name="item[${index}][variants][${variant.id}][qty]" placeholder="Qty" value="0">
                             <input type="hidden" name="item[${index}][variants][${variant.id}][id_variant]" value="${variant.id}">
                         </div>

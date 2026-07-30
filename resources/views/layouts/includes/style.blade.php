@@ -22,5 +22,5 @@
 <!-- [Template CSS Files] -->
 <link rel="stylesheet" type="text/css" href="{{ asset('assets/css/style.css') }}?v=4" id="main-style-link">
 <link rel="stylesheet" type="text/css" href="{{ asset('assets/css/style-preset.css') }}">
-<link rel="stylesheet" type="text/css" href="{{ asset('assets/css/custom.css') }}?v=15">
+<link rel="stylesheet" type="text/css" href="{{ asset('assets/css/custom.css') }}?v=17">
 <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/toastify-js/src/toastify.min.css">

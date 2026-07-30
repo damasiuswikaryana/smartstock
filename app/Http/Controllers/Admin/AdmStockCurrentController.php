@@ -63,13 +63,19 @@ class AdmStockCurrentController extends Controller
                     return tanggalIndoWaktuLidgkap($row->updated_at);
                 })
                 ->addColumn('item', function ($row) {
-                    return '<p class="mb-0 fw-bold">' . $row->item_varian->itemMaster->nama . '</p><p class="text-muted mb-0">[' . $row->item_varian->sku_varian . ']</p>';
+                    return '<div class="d-flex flex-column">
+                        <p class="fw-bold mb-0">' . $row->item_varian->itemMaster->nama . '</p>
+                        <p class="text-muted mb-0">' . $row->item_varian->sku_varian . '</p>
+                    </div>';
                 })
                 ->addColumn('variant', function ($row) {
                     return '<code>' . $row->item_varian->kode_varian . '</code>';
                 })
                 ->addColumn('werehouse', function ($row) {
-                    return '<p class="mb-0 fw-bold">' . $row->lokasi->nama . '</p><p class="text-muted mb-0"><small>' . $row->entitas->entitas_name . '</small></p>';
+                    return '<div class="d-flex flex-column">
+                        <p class="fw-bold mb-0">' . $row->lokasi->nama . '</p>
+                        <p class="text-muted mb-0">' . $row->entitas->entitas_name . '</p>
+                    </div>';
                 })
                 ->addColumn('entity', function ($row) {
                     return $row->entitas->entitas_name;
