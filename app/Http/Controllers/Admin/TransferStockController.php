@@ -24,6 +24,8 @@ use Illuminate\Support\Str;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Auth;
 
+use App\Services\FirebaseNotificationService;
+
 class TransferStockController extends Controller
 {
     public function index(Request $request)
@@ -110,7 +112,7 @@ class TransferStockController extends Controller
         return view('pages.stock.transfer.index', compact('gudang', 'pekerjaan', 'items', 'entitas', 'stockav', 'dataGudang'));
     }
 
-    public function store(Request $request)
+    public function store(Request $request, FirebaseNotificationService $firebase)
     {
         $gudang     = Auth::user()->loc_id;
         $input      = $request->all();
@@ -143,6 +145,20 @@ class TransferStockController extends Controller
                     }
                 }
             }
+            if ($stock_master->werehouse_target_id == 1) {
+                $targetToken    = User::role('gudang')->select('device_token')->first();
+            } else {
+                $targetToken    = User::where('loc_id', $stock_master->werehouse_target_id)->select('device_token')->first();
+            }
+            $dataNumber     = $stock_master->stock_transfer_number;
+            $idRequestData  = $stock_master->id;
+            $firebase->send(
+                $targetToken->device_token,
+                'BUTUH APPROVAL',
+                '[Stock Transfer] - ' . $dataNumber . ' telah diinput. Dari : ' . namaLokasi($gudang) . ' - Ke : ' . namaLokasi($stock_master->werehouse_target_id) . ' Butuh approval Anda. Lihat pada dashboard Smartwarehouse.',
+                ['url' => '/stock/transfer/' . $idRequestData . '/detail']
+            );
+
             return response()->json(['success' => true]);
         } catch (\Throwable $th) {
             DB::rollback();

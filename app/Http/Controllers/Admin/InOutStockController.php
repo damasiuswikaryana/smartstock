@@ -152,7 +152,7 @@ class InOutStockController extends Controller
                 }
             }
 
-            $targetToken    = User::role('masteradmin')->select('device_token')->first();
+            $targetToken    = User::role('gudang')->select('device_token')->first();
             $dataNumber     = $stock_master->stock_in_number;
             $idRequestData  = $stock_master->id;
             $firebase->send(

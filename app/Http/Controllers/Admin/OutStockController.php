@@ -20,6 +20,8 @@ use Illuminate\Support\Str;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Auth;
 
+use App\Services\FirebaseNotificationService;
+
 class OutStockController extends Controller
 {
     public function index(Request $request)
@@ -121,7 +123,7 @@ class OutStockController extends Controller
         return view('pages.stock.out.index', compact('gudang', 'pekerjaan', 'items', 'entitas', 'stockav', 'allGudang'));
     }
 
-    public function store(Request $request)
+    public function store(Request $request, FirebaseNotificationService $firebase)
     {
         $gudang     = Auth::user()->loc_id;
         $input      = $request->all();
@@ -153,6 +155,16 @@ class OutStockController extends Controller
                     }
                 }
             }
+            $targetToken    = User::role('gudang')->select('device_token')->first();
+            $dataNumber     = $stock_master->stock_out_number;
+            $idRequestData  = $stock_master->id;
+            $firebase->send(
+                $targetToken->device_token,
+                'BUTUH APPROVAL',
+                '[Stock Out] - ' . $dataNumber . ' telah diinput. Butuh approval Anda. Lihat pada dashboard Smartwarehouse.',
+                ['url' => '/stock/out/' . $idRequestData . '/detail']
+            );
+
             return response()->json(['success' => true]);
         } catch (\Throwable $th) {
             DB::rollback();
