@@ -22,11 +22,13 @@ class HomeController extends Controller
         $lokasi         = Auth::user()->loc_id;
         if (
             Auth::user()->roles[0]->name == "masteradmin"
+            || Auth::user()->roles[0]->name == "admin"
             || Auth::user()->roles[0]->name == "pengadaan"
             || Auth::user()->roles[0]->name == "gudang"
         ) {
             $gudang     = Outlet::all();
         } else {
+            return redirect()->route('stockCurrent.index');
             $gudang     = Outlet::where('id', $lokasi)->first();
         }
         $entitas        = Entitas::all();
