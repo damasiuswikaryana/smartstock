@@ -50,7 +50,7 @@ class OutStockController extends Controller
             || Auth::user()->roles[0]->name == "pengadaan"
             || Auth::user()->roles[0]->name == "gudang"
         ) {
-            $$data      = StockOutMaster::with('child');
+            $data      = StockOutMaster::with('child');
             $allGudang  = Outlet::all();
             $pekerjaan  = Project::all();
         } else {

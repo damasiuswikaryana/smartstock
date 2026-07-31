@@ -38,7 +38,7 @@ class InOutStockController extends Controller
             || Auth::user()->roles[0]->name == "pengadaan"
             || Auth::user()->roles[0]->name == "gudang"
         ) {
-            $data       = StockInMaster::with('child')->query();
+            $data       = StockInMaster::with('child');
             $gudang     = Outlet::all();
             $pekerjaan  = Project::all();
         } else {
