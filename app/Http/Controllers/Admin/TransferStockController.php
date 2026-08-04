@@ -298,7 +298,7 @@ class TransferStockController extends Controller
         }
     }
 
-    public function approveOut(Request $request, int $id)
+    public function approveOut(Request $request, int $id, FirebaseNotificationService $firebase)
     {
         $data               = StockTransferMaster::where('id', $id)->first();
         $gudangAsal         = $data->werehouse_source_id;
@@ -387,6 +387,27 @@ class TransferStockController extends Controller
                 );
             }
             $des                    = tanggalIndoWaktuLidgkap($data->approved_date) . " by " . $data->approvedBy->firstname . " " . $data->approvedBy->lastname;
+
+            // kirim notif ke keuangan
+            $targetToken    = User::role('keuangan')->select('device_token')->first();
+            $dataNumber     = $data->stock_transfer_number;
+            $idRequestData  = $data->id;
+            $firebase->send(
+                $targetToken->device_token,
+                'STOK TRANSFER',
+                '[Stock Transfer] - ' . $dataNumber . ' telah diinput dan terverifikasi oleh tim gudang. Lihat pada dashboard Smartwarehouse.',
+                ['url' => '/stock/transfer/' . $idRequestData . '/detail']
+            );
+
+            // kirim juga ke source gudang
+            $targetToken2    = User::where('loc_id', $data->werehouse_source_id)->select('device_token')->first();
+            $firebase->send(
+                $targetToken2->device_token,
+                'STOK TRANSFER',
+                '[Stock Transfer] - ' . $dataNumber . ' telah diinput dan terverifikasi oleh penerima gudang. Lihat pada dashboard Smartwarehouse.',
+                ['url' => '/stock/transfer/' . $idRequestData . '/detail']
+            );
+
             return response()->json(['success' => true, 'approve' => $des]);
         } catch (\Throwable $th) {
             DB::rollback();

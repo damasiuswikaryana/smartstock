@@ -303,7 +303,7 @@ class OutStockController extends Controller
         }
     }
 
-    public function approveOut(Request $request, int $id)
+    public function approveOut(Request $request, int $id, FirebaseNotificationService $firebase)
     {
         $data   = StockOutMaster::where('id', $id)->first();
         $gudang = $data->werehouse_id;
@@ -360,6 +360,17 @@ class OutStockController extends Controller
                 );
             }
             $des                    = tanggalIndoWaktuLidgkap($data->approved_date) . " by " . $data->approvedBy->firstname . " " . $data->approvedBy->lastname;
+            // kirim notif ke keuangan
+            $targetToken    = User::role('keuangan')->select('device_token')->first();
+            $dataNumber     = $data->stock_out_number;
+            $idRequestData  = $data->id;
+            $firebase->send(
+                $targetToken->device_token,
+                'STOK KELUAR DARI GUDANG',
+                '[Stock Out] - ' . $dataNumber . ' telah diinput dan terverifikasi oleh tim gudang. Lihat pada dashboard Smartwarehouse.',
+                ['url' => '/stock/out/' . $idRequestData . '/detail']
+            );
+
             return response()->json(['success' => true, 'approve' => $des]);
         } catch (\Throwable $th) {
             DB::rollback();

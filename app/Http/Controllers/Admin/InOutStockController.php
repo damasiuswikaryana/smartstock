@@ -299,7 +299,7 @@ class InOutStockController extends Controller
         }
     }
 
-    public function approveIn(Request $request, int $id)
+    public function approveIn(Request $request, int $id, FirebaseNotificationService $firebase)
     {
         $data   = StockInMaster::where('id', $id)->first();
         try {
@@ -360,6 +360,18 @@ class InOutStockController extends Controller
                 );
             }
             $des                    = tanggalIndoWaktuLidgkap($data->approved_date) . " by " . $data->approvedBy->firstname . " " . $data->approvedBy->lastname;
+
+            // kirim notif ke keuangan
+            $targetToken    = User::role('keuangan')->select('device_token')->first();
+            $dataNumber     = $data->stock_in_number;
+            $idRequestData  = $data->id;
+            $firebase->send(
+                $targetToken->device_token,
+                'STOK MASUK KE GUDANG',
+                '[Stock In] - ' . $dataNumber . ' telah diinput dan terverifikasi oleh tim gudang. Lihat pada dashboard Smartwarehouse.',
+                ['url' => '/stock/in/' . $idRequestData . '/detail']
+            );
+
             return response()->json(['success' => true, 'approve' => $des]);
         } catch (\Throwable $th) {
             DB::rollback();
