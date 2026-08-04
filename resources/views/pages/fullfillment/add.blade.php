@@ -14,7 +14,7 @@
 
     <section class="">
         <div class="row">
-            <div class="col-6 mb-4">
+            <div class="col-12 col-lg-6 mb-4">
                 <div class="row g-4">
                     <div class="col-md-12">
                         <ol class="list-group">
@@ -79,7 +79,7 @@
                 </div>
             </div>
 
-            <div class="col-6">
+            <div class="col-12 col-lg-6">
                 <div class="card">
                     <div class="card-header py-3">
                         <h4 class="mb-0">Add More Items</h4>

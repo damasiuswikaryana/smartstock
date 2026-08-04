@@ -17,7 +17,7 @@
     <section>
         <div class="row">
             @foreach ($pekerjaan as $data)
-                <div class="col-4">
+                <div class="col-12 col-lg-4">
                     <div class="card user-card">
                         <div class="card-body">
                             <div class="d-flex align-items-center justify-content-between mb-3">

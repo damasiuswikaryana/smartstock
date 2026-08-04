@@ -60,12 +60,12 @@
                         </div>
                         <div class="mb-3 row">
                             <label class="col-lg-4 col-form-label">Area: <span class="text-danger">*</span></label>
-                            <div class="col-lg-8 row">
-                                <div class="col-12 col-lg-6">
+                            <div class="col-lg-8 row pe-0">
+                                <div class="col-12 col-lg-6 mb-2 mb-lg-0 pe-0">
                                     <input type="text" class="form-control" placeholder="Kabupaten" name="kabupaten"
                                         required />
                                 </div>
-                                <div class="col-12 col-lg-6 pe-0">
+                                <div class="col-12 col-lg-6 mb-2 mb-lg-0 pe-0">
                                     <input type="text" class="form-control" placeholder="Provinsi" name="provinsi"
                                         required />
                                 </div>
@@ -73,11 +73,11 @@
                         </div>
                         <div class="mb-3 row">
                             <label class="col-lg-4 col-form-label">Coordinates:</label>
-                            <div class="col-lg-8 row">
-                                <div class="col-12 col-lg-6">
+                            <div class="col-lg-8 row pe-0">
+                                <div class="col-12 col-lg-6 mb-2 mb-lg-0 pe-0">
                                     <input type="text" class="form-control" placeholder="Latitude" name="lat" />
                                 </div>
-                                <div class="col-12 col-lg-6 pe-0">
+                                <div class="col-12 col-lg-6 mb-2 mb-lg-0 pe-0">
                                     <input type="text" class="form-control" placeholder="Longitude" name="long" />
                                 </div>
                             </div>

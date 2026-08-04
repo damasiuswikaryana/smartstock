@@ -31,10 +31,9 @@
     </x-page-header>
 
     <div class="row">
-        <div class="col-6">
+        <div class="col-12 col-lg-6">
             <div class="card ">
                 <div class="card-body">
-
                     <form action="{{ route('roles.index') }}" method="get" id="form-role">
                         <div class="mb-3 row">
                             <div class="col-lg-12 me-0 pe-0">
