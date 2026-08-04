@@ -2,30 +2,77 @@
 
 @push('css')
     <link rel="stylesheet" href="{{ asset('assets/css/plugins/fixedColumns.bootstrap5.min.css') }}" />
+    <link rel="stylesheet" href="{{ asset('assets/css/plugins/flatpickr.min.css') }}" />
 @endpush
 
 @section('content')
-    <x-page-header title="History" module="Stock Transfer">
-        <li class="breadcrumb-item">Stock</li>
-        <li class="breadcrumb-item">Stock Transfer</li>
+    <x-page-header title="History" module="Purchase Order">
+        <li class="breadcrumb-item">Procurement</li>
+        <li class="breadcrumb-item">Purchase Order</li>
     </x-page-header>
 
-    <div class="d-flex justify-content-between align-items-center mb-4 mt-3">
-        <div class="col-6">
-            <button type="button" class="btn btn-shadow btn-light-primary me-2 d-flex align-items-center"
-                data-bs-toggle="modal" data-bs-target="#exampleModalCenter"><i
-                    class="ph-duotone ph-plus-circle icon-search me-2"></i> Add Stock Transfer</button>
+    <div class="row g-2 align-items-center mb-4 mt-3 justify-content-between p-sm-0">
+        <div class="col-12 col-lg-auto">
+            <div class="d-flex justify-content-start align-items-center">
+                <button type="button"
+                    class="btn btn-shadow btn-light-primary d-flex align-items-center justify-content-center mx-1"
+                    data-bs-toggle="modal" data-bs-target="#exampleModalCenter">
+                    <i class="ph-duotone ph-plus-circle me-2"></i>
+                    Add Purchase Order
+                </button>
+
+                <button class="btn btn-shadow btn-light-primary d-flex align-items-center justify-content-between mx-1"
+                    type="button" data-bs-toggle="collapse" data-bs-target="#collapseExample" aria-expanded="false"
+                    aria-controls="collapseExample">
+                    <div>
+                        <i class="ph-duotone ph-funnel icon-search me-2"></i>
+                        <span>Data Filter</span>
+                    </div>
+                    <i data-feather="chevron-down" class="icon-search ms-3"></i>
+                </button>
+            </div>
         </div>
-        <div class="col-6 text-end">
-            <div class="form-search">
-                <i class="ph-duotone ph-magnifying-glass icon-search"></i>
-                <input type="search" id="search" class="form-control" placeholder="Search here...">
+        <div class="col">
+            <div class="d-flex flex-column flex-lg-row gap-2 justify-content-end">
+                <div class="">
+                </div>
+                <div class="">
+                    <div class="form-search w-100">
+                        <i class="ph-duotone ph-magnifying-glass icon-search"></i>
+                        <input type="search" id="search" class="form-control" placeholder="Search here...">
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="border-0 mb-3">
+        <div class="collapse" id="collapseExample">
+            <div class="row">
+                <div class="col-12 col-lg-3 text-start mb-2 mb-lg-0">
+                    <div class="form-search w-100">
+                        <i class="ph-duotone ph-house icon-search"></i>
+                        <select class="form-control w-100" id="fl_status">
+                            <option value="">All Status</option>
+                            <option value="pending">Only Pending</option>
+                            <option value="checked">Has Checked</option>
+                            <option value="approved">Approved</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="col-12 col-lg-3 text-start mb-2 mb-lg-0">
+                    <div class="form-search w-100">
+                        <i class="ph-duotone ph-calendar icon-search"></i>
+                        <input type="text" class="form-control w-100 datepicker_range" id="daterange" name="daterange"
+                            placeholder="Select date range" />
+                    </div>
+                </div>
             </div>
         </div>
     </div>
 
     @php
-        $thead = ['Number', 'Project', 'Date', 'Source', 'Target', 'Items', 'Status', 'Options'];
+        $thead = ['PO Number', 'Date', 'Entity', 'Vendor', 'Items', 'Status', 'Options'];
     @endphp
     <x-datatable :thead=$thead :filter="null">
     </x-datatable>
@@ -35,7 +82,9 @@
         <div class="modal-dialog modal-xl modal-dialog-centered" role="document">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h5 class="modal-title" id="exampleModalCenterTitle">Stock Transfer - {{ namaLokasi($gudang) }}</h5>
+                    <h5 class="modal-title" id="exampleModalCenterTitle">
+                        Add Purchase Order
+                    </h5>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <form class="modal-body" action="#" method="post" id="form-tambah">
@@ -43,40 +92,32 @@
                         @csrf
                         @method('POST')
                         <div class="row">
-                            <div class="col-6">
-                                <h4 class="fw-bold mb-3">Stock Info</h4>
+                            <div class="col-12 col-lg-6">
                                 <div class="mb-3 row">
-                                    <label class="col-lg-4 col-form-label">Stock Transfer Number: <span
+                                    <label class="col-lg-4 col-form-label">PO Number: <span
                                             class="text-danger">*</span></label>
                                     <div class="col-lg-8">
-                                        <input type="text" class="form-control" placeholder="ASTA/XXX/XXX"
-                                            name="stock_transfer_number" value="" required>
+                                        <input type="text" class="form-control" placeholder="ASTA/XXX/XXX" name="po_no"
+                                            value="" required>
                                     </div>
                                 </div>
                                 <div class="mb-3 row">
                                     <label class="col-lg-4 col-form-label">Date: <span class="text-danger">*</span></label>
                                     <div class="col-lg-8">
-                                        <input type="date" class="form-control" placeholder="Date stock transfer"
-                                            name="transfer_date" value="" required>
-                                    </div>
-                                </div>
-                                <div class="mb-3 row">
-                                    <label class="col-lg-4 col-form-label">SRF Number: </label>
-                                    <div class="col-lg-8">
-                                        <input type="text" class="form-control" placeholder="SRF Number"
-                                            name="transfer_srf" value="">
+                                        <input type="date" class="form-control" placeholder="Date stock in"
+                                            name="po_date" value="" required>
                                     </div>
                                 </div>
                             </div>
 
-                            <div class="col-6">
-                                <h4 class="fw-bold mb-3">Project <span class="text-danger">*</span></h4>
+                            <div class="col-12 col-lg-6">
                                 <div class="mb-3 row">
-                                    <label class="col-lg-4 col-form-label">Project:</label>
+                                    <label class="col-lg-4 col-form-label">Vendor: <span
+                                            class="text-danger">*</span></label>
                                     <div class="col-lg-8">
-                                        <select class="form-control" name="pekerjaan_id" required>
-                                            @foreach ($pekerjaan as $pr)
-                                                <option value="{{ $pr->id }}">{{ $pr->name }}</option>
+                                        <select class="form-control" name="vendor_id" required>
+                                            @foreach ($vendor as $vd)
+                                                <option value="{{ $vd->id }}">{{ $vd->nama }}</option>
                                             @endforeach
                                         </select>
                                     </div>
@@ -88,17 +129,6 @@
                                         <select class="form-control" name="entitas_id" required>
                                             @foreach ($entitas as $et)
                                                 <option value="{{ $et->id }}">{{ $et->entitas_name }}</option>
-                                            @endforeach
-                                        </select>
-                                    </div>
-                                </div>
-                                <div class="mb-3 row">
-                                    <label class="col-lg-4 col-form-label">Target: <span
-                                            class="text-danger">*</span></label>
-                                    <div class="col-lg-8">
-                                        <select class="form-control" name="werehouse_target_id" required>
-                                            @foreach ($dataGudang as $gd)
-                                                <option value="{{ $gd->id }}">{{ $gd->nama }}</option>
                                             @endforeach
                                         </select>
                                     </div>
@@ -119,19 +149,43 @@
                                 </div>
                             </div>
 
-                            <div class="col-12">
-                                <h4 class="fw-bold mb-3">Notes and Documentation</h4>
+                            <div class="col-12 col-lg-6 offset-lg-6">
                                 <div class="mb-3 row">
+                                    <label class="col-lg-4 col-form-label">Tax: <span class="text-danger">*</span></label>
+                                    <div class="col-lg-8">
+                                        <input type="number" class="form-control" placeholder="In percentage"
+                                            name="tax" value="0" required>
+                                    </div>
+                                </div>
+                                <div class="mb-3 row">
+                                    <label class="col-lg-4 col-form-label">Discount: <span
+                                            class="text-danger">*</span></label>
+                                    <div class="col-lg-8">
+                                        <input type="number" class="form-control number-separator"
+                                            placeholder="Discount in rupiah" name="disc" value="0" required>
+                                    </div>
+                                </div>
+                                <div class="mb-3 row">
+                                    <label class="col-lg-4 col-form-label">Down Payment: <span
+                                            class="text-danger">*</span></label>
+                                    <div class="col-lg-8">
+                                        <input type="number" class="form-control number-separator"
+                                            placeholder="Down payment in rupiah" name="dp" value="0" required>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="col-12 mb-3">
+                                <div class="mb-1 row">
                                     <div class="col-lg-12">
                                         <label class="col-form-label">Notes: <span class="text-danger">*</span></label>
                                         <textarea type="text" class="form-control" name="notes" required></textarea>
                                     </div>
                                 </div>
-                                <div class="mb-0">
-                                    <p class="mb-0 text-muted"><b>Important</b>: <span class="text-danger">*</span> fields
-                                        are
-                                        required.</p>
-                                </div>
+                            </div>
+                            <div class="col-12">
+                                <p class="mb-0 text-muted"><b>Important</b>: <span class="text-danger">*</span> fields are
+                                    required.</p>
                             </div>
                         </div>
                     </div>
@@ -153,6 +207,7 @@
 
 @push('js')
     <script src="{{ asset('assets/js/plugins/dataTables.fixedColumns.min.js') }}"></script>
+    <script src="{{ asset('assets/js/plugins/flatpickr.min.js') }}"></script>
     <script type="text/javascript">
         $("#modalEdit").on("show.bs.modal", function(e) {
             var link = $(e.relatedTarget);
@@ -162,7 +217,13 @@
         let table = $('#myTable').DataTable({
             processing: true,
             serverSide: true,
-            ajax: "{{ route('stocktransfer.index') }}",
+            ajax: {
+                url: "{{ route('po.index') }}",
+                data: function(d) {
+                    d.status = $('#fl_status').val();
+                    d.range = $('#daterange').val();
+                }
+            },
             scrollY: true,
             scrollX: true,
             scrollCollapse: true,
@@ -176,45 +237,40 @@
                 [0, 'asc']
             ],
             columns: [{
-                    data: 'st_number',
-                    name: 'st_number',
-                    class: 'py-1 fw-bold',
+                    data: 'po_number',
+                    name: 'po_number',
+                    class: 'py-lg-1 py-sm-2',
+                },
+                {
+                    data: 'po_date',
+                    name: 'po_date',
+                    class: 'py-lg-1 py-sm-2 text-center',
                 },
                 {
                     data: 'entitas',
                     name: 'entitas',
-                    class: 'py-1',
+                    class: 'py-lg-1 py-sm-2 text-center',
                 },
                 {
-                    data: 'date',
-                    name: 'date',
-                    class: 'py-1',
-                },
-                {
-                    data: 'werehouse_source',
-                    name: 'werehouse_source',
-                    class: 'py-1',
-                },
-                {
-                    data: 'werehouse_target',
-                    name: 'werehouse_target',
-                    class: 'py-1',
+                    data: 'vendor',
+                    name: 'vendor',
+                    class: 'py-lg-1 py-sm-2 text-center',
                 },
                 {
                     data: 'items',
                     name: 'items',
-                    class: 'py-1 text-center',
+                    class: 'py-lg-1 py-sm-2 text-center',
                 },
                 {
-                    data: 'status',
-                    name: 'status',
+                    data: 'po_status',
+                    name: 'po_status',
                     visible: true,
-                    class: 'py-1 text-center',
+                    class: 'py-lg-1 py-sm-2 text-center',
                 },
                 {
                     data: 'action',
                     name: 'action',
-                    class: 'text-center py-1',
+                    class: 'text-center py-lg-1 py-sm-2',
                     orderable: false,
                     searchable: false,
                 },
@@ -233,6 +289,15 @@
             table.search($(this).val()).draw();
         });
 
+        $('#fl_status, #daterange').on('change', function() {
+            table.ajax.reload();
+        });
+
+        flatpickr(document.querySelector('.datepicker_range'), {
+            mode: 'range',
+            dateFormat: 'Y-m-d',
+        });
+
         table.on('draw', function() {
             var tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'));
             var tooltipTriggerList1 = [].slice.call(document.querySelectorAll('[title]'));
@@ -247,7 +312,7 @@
         $('#form-tambah').on('submit', function(e) {
             e.preventDefault();
             $.ajax({
-                url: '{{ route('stocktransfer.simpan') }}', // Route untuk simpan data
+                url: '{{ route('po.simpan') }}', // Route untuk simpan data
                 method: 'POST',
                 data: $(this).serialize(),
                 beforeSend: showLoader(),
@@ -263,16 +328,16 @@
                         showToastError(response.message);
                     }
                 },
-                error: function(xhr) {
+                error: function(xhr, status, error) {
                     hideLoader();
-                    showToastError("Error while adding data");
+                    showToastError("Error: " + xhr.responseText);
                 }
             });
         });
 
         $(document).on('click', '.btn-delete', function() {
             let id = $(this).data('id');
-            var url = "{{ route('stocktransfer.hapus', ':id:') }}";
+            var url = "{{ route('vendor.hapus', ':id:') }}";
             var url = url.replace(':id:', id);
 
             if (confirm('Delete this data?')) {
@@ -305,7 +370,7 @@
             e.preventDefault();
             let html = `
                 <div class="row p-0 mx-0 mb-2 produk-item">
-                    <div class="col-11 col-lg-11 ps-0">
+                    <div class="col-10 col-lg-11 ps-0">
                         <select data-index="${itemMasterIndex}" class="form-control item-master" name="item[${itemMasterIndex}][id_item]" required>
                             <option value="" selected disabled>Select Item</option>
                             @foreach ($items as $item)
@@ -314,7 +379,7 @@
                         </select>
                         <div class="variant-container mt-2" id="variant-container-${itemMasterIndex}"></div>
                     </div>
-                    <div class="col-1 col-lg-1 mx-0 pe-0">
+                    <div class="col-2 col-lg-1 mx-0 pe-0">
                         <button id="btn-delete-${itemMasterIndex}" type="button" class="btn btn-rounded btn-light-danger btn-delete-produk" style="font-size:20px;">
                             <i class="ti ti-trash"></i>
                         </button>
@@ -328,50 +393,49 @@
 
         $(document).on('change', '.item-master', function() {
             let itemId = $(this).val();
-            let werehouseId = {{ $gudang }};
             let index = $(this).data('index');
             $.ajax({
-                url: "{{ route('getVariantStocks', ['id' => ':id', 'whid' => ':wh_id']) }}".replace(':id',
-                    itemId).replace(':wh_id', werehouseId),
+                url: "{{ route('getVariants', ':id') }}".replace(':id', itemId),
                 type: "GET",
                 success: function(res) {
                     let html = '';
                     $.each(res.variants, function(i, variant) {
+                        let satuanOptions = '<option value="">Pilih satuan</option>';
+
+                        $.each(res.satuans, function(j, satuan) {
+                            satuanOptions += `
+                            <option value="${satuan.id}">
+                                ${satuan.satuan}
+                            </option>`;
+                        });
+
                         html += `
                     <div class="row mb-2 align-items-center">
                         <div class="col-1 text-center">
                             <i class="fs-3 ph-duotone ph-arrow-elbow-down-right"></i>
                         </div>
-                        <div class="col-2">
-                            <input type="text" class="form-control" value="${variant.sku_varian}" disabled>
-                        </div>
-                        <div class="col-5">
+                        <div class="col-12 col-lg-5">
                             <input type="text" class="form-control" value="${variant.name_varian}" disabled>
                         </div>
-                        <div class="col-2 text-center">
-                            <input type="text" class="form-control" value="Stock: ${variant.stok}" disabled>
+                        <div class="col-4 col-lg-2">
+                            <input type="text" class="form-control" value="${variant.sku_varian}" disabled>
                         </div>
-                        <div class="col-2">
-                            <input type="number" min="0" max="${variant.stok}" class="form-control qty-input" data-stock="${variant.stok}" name="item[${index}][variants][${variant.id}][qty]" placeholder="Qty" value="0">
+                        <div class="col-4 col-lg-2">
+                            <select class="form-select"
+                                name="item[${index}][variants][${variant.id}][satuan]">
+                                ${satuanOptions}
+                            </select>
+                        </div>
+                        <div class="col-4 col-lg-2">
+                            <input type="number" min="0" class="form-control" name="item[${index}][variants][${variant.id}][qty]" placeholder="Qty" value="0">
                             <input type="hidden" name="item[${index}][variants][${variant.id}][id_variant]" value="${variant.id}">
+                            <input type="hidden" name="item[${index}][variants][${variant.id}][nilai_variant]" value="${variant.nilai}">
                         </div>
                     </div>`;
                     });
                     $('#variant-container-' + index).html(html);
                 }
             });
-        });
-
-        $(document).on('input change', '.qty-input', function() {
-            let stock = parseInt($(this).data('stock'));
-            let qty = parseInt($(this).val()) || 0;
-            if (qty > stock) {
-                $(this).val(stock);
-                showToastError("Stock tidak mencukupi");
-            }
-            if (qty < 0) {
-                $(this).val(0);
-            }
         });
     </script>
 @endpush

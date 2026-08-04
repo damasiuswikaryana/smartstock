@@ -37,8 +37,10 @@ Route::group(['middleware' => ['isAdmin', 'auth']], function () {
     Route::get('dashboard-get-clients',                 [AjaxController::class, 'getClients'])->name('getDashboardClients');
     Route::get('dashboard-top-items',                   [AjaxController::class, 'topItems'])->name('topItems');
     Route::get('dashboard-categories',                  [AjaxController::class, 'categories'])->name('getDashboardCategories');
+
     // PENGADAAN
     require __DIR__ . '/admin/pengadaan/fullfillment.php';
+    require __DIR__ . '/admin/pengadaan/po.php';
 
     //GUDANG
     // -----> Stock

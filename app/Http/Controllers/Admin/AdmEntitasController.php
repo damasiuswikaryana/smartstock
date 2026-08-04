@@ -3,9 +3,11 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Models\Entitas;
+use App\Models\User;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Storage;
 use DataTables;
 use DB;
 
@@ -13,7 +15,8 @@ class AdmEntitasController extends Controller
 {
     public function index(Request $request)
     {
-        $data   = Entitas::all();
+        $data       = Entitas::all();
+        $directors  = User::role('director')->get();
 
         if ($request->ajax()) {
             return DataTables::of($data)
@@ -32,7 +35,7 @@ class AdmEntitasController extends Controller
                 })->rawColumns(['action', 'updated_at'])
                 ->make(true);
         }
-        return view('pages.entitas.index');
+        return view('pages.entitas.index', compact('directors'));
     }
 
     public function store(Request $request)
@@ -44,6 +47,10 @@ class AdmEntitasController extends Controller
             Entitas::create([
                 'entitas_name'     => $input['name'],
                 'entitas_alamat'   => $input['alamat'],
+                'entitas_company'  => $input['company'],
+                'entitas_email'    => $input['email'],
+                'entitas_phone'    => $input['phone'],
+                'director_id'      => $input['director']
             ]);
             DB::commit();
             return response()->json(['success' => true]);
@@ -55,9 +62,11 @@ class AdmEntitasController extends Controller
 
     public function edit(int $id)
     {
-        $data   = Entitas::where('id', $id)->first();
+        $data       = Entitas::where('id', $id)->first();
+        $directors  = User::role('director')->get();
+
         try {
-            return view('pages.entitas.edit', compact('data'));
+            return view('pages.entitas.edit', compact('data', 'directors'));
         } catch (\Throwable $th) {
             return redirect()->back()->with('error', "Error: " . $th->getMessage());
         }
@@ -71,6 +80,10 @@ class AdmEntitasController extends Controller
             DB::beginTransaction();
             $data->entitas_name       = $input['name'];
             $data->entitas_alamat     = $input['alamat'];
+            $data->entitas_company    = $input['company'];
+            $data->entitas_email      = $input['email'];
+            $data->entitas_phone      = $input['phone'];
+            $data->director_id        = $input['director'];
             $data->save();
             DB::commit();
             return response()->json(['success' => true]);
@@ -88,6 +101,49 @@ class AdmEntitasController extends Controller
             return response()->json(['success' => true]);
         } catch (\Throwable $th) {
             return response()->json(['success' => false, 'message' => "Error: " . $th->getMessage()]);
+        }
+    }
+
+    public function storeLogo(Request $request, int $id)
+    {
+        try {
+            $data = Entitas::where('id', $id)->first();
+            DB::beginTransaction();
+
+            if (!$request->hasFile('file')) {
+                return response()->json([
+                    'error' => 'File tidak ditemukan dalam request.'
+                ], 400);
+            }
+
+            $file = $request->file('file');
+
+            // Validasi tambahan opsional
+            if (!$file->isValid()) {
+                return response()->json([
+                    'error' => 'File tidak valid.'
+                ], 422);
+            }
+
+            if ($data->entitas_logo && Storage::disk('public')->exists('entitas/' . $data->entitas_logo)) {
+                Storage::disk('public')->delete('entitas/' . $data->entitas_logo);
+            }
+
+            $path       = $file->store('entitas', 'public');
+            $filename   = basename($path);
+            $data->entitas_logo   = $filename;
+            $data->save();
+            DB::commit();
+
+            return response()->json([
+                'url'  => Storage::url($path),
+                'path' => $path,
+            ]);
+        } catch (\Exception $e) {
+            DB::rollback();
+            return response()->json([
+                'error' => 'Upload Error: ' . $e->getMessage(),
+            ], 500);
         }
     }
 }

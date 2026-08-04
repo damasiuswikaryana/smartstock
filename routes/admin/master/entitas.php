@@ -9,4 +9,5 @@ Route::controller(AdmEntitasController::class)->name('entitas.')->prefix('entita
     Route::get('/{id}/ubah', 'edit')->name('ubah');
     Route::put('/{id}/update', 'update')->name('update');
     Route::delete('/{id}/hapus', 'destroy')->name('hapus');
+    Route::post('/{id}/upload-logo', 'storeLogo')->name('storeLogo');
 });

@@ -33642,7 +33642,7 @@ table.dataTable tbody tr > .dtfc-fixed-end {
 }
 
 .text-green {
-    color: #007e42;
+    color: #007e42 !important;
 }
 /**  =====================
   36. Customizer css end

@@ -9,6 +9,7 @@ use App\Models\StockTransferMaster;
 use App\Models\StockMutation;
 use App\Models\Project;
 use App\Models\Stock;
+use App\Models\Satuan;
 use App\Models\Category;
 
 use Illuminate\Http\Request;
@@ -29,11 +30,13 @@ class AjaxController extends Controller
 
     public function getVariants(int $id)
     {
-        $item = ItemMaster::with('varian')->findOrFail($id);
+        $item       = ItemMaster::with('varian')->findOrFail($id);
+        $satuans    = Satuan::all();
 
         return response()->json([
-            'success' => true,
-            'variants' => $item->varian
+            'success'   => true,
+            'variants'  => $item->varian,
+            'satuans'   => $satuans,
         ]);
     }
 

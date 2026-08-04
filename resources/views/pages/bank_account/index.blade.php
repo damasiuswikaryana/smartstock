@@ -152,7 +152,15 @@
                     orderable: false,
                     searchable: false,
                 },
-            ]
+            ],
+            createdRow: function(row, data, dataIndex) {
+                var api = this.api();
+                $('td', row).each(function(colIndex) {
+                    // Mengambil title langsung dari konfigurasi kolom DataTables
+                    var title = api.column(colIndex).header().textContent.trim();
+                    $(this).attr('data-label', title);
+                });
+            }
         });
 
         $('#search').keyup(function() {
