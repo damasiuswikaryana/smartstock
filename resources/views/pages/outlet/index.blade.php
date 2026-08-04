@@ -5,9 +5,9 @@
 @endpush
 
 @section('content')
-    <x-page-header title="Werehouse List" module="Werehouse Management">
+    <x-page-header title="Warehouse List" module="Warehouse Management">
         <li class="breadcrumb-item">Master Data</li>
-        <li class="breadcrumb-item">Werehouse</li>
+        <li class="breadcrumb-item">Warehouse</li>
     </x-page-header>
 
     <div class="d-flex justify-content-between align-items-center mb-4 mt-3">
@@ -15,7 +15,7 @@
             <button type="button" class="btn btn-shadow btn-light-primary me-2 d-flex align-items-center"
                 data-bs-toggle="modal" data-bs-target="#exampleModalCenter"><i
                     class="ph-duotone ph-plus-circle icon-search me-2"></i> Add
-                Werehouse</button>
+                Warehouse</button>
         </div>
         <div class="col-6 text-end">
             <div class="form-search">
@@ -26,7 +26,7 @@
     </div>
 
     @php
-        $thead = ['Werehouse', 'Address', 'Kabupaten', 'Provinsi', 'Latitude', 'Longitude', 'Last Updated', 'Options'];
+        $thead = ['Warehouse', 'Address', 'Kabupaten', 'Provinsi', 'Latitude', 'Longitude', 'Last Updated', 'Options'];
     @endphp
     <x-datatable :thead=$thead :filter="null">
     </x-datatable>
@@ -36,7 +36,7 @@
         <div class="modal-dialog modal-lg modal-dialog-centered" role="document">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h5 class="modal-title" id="exampleModalCenterTitle">Add New Werehouse</h5>
+                    <h5 class="modal-title" id="exampleModalCenterTitle">Add New Warehouse</h5>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <form class="modal-body" action="#" method="post" id="form-tambah">
@@ -44,7 +44,7 @@
                         @csrf
                         @method('POST')
                         <div class="mb-3 row">
-                            <label class="col-lg-4 col-form-label">Werehouse Name: <span
+                            <label class="col-lg-4 col-form-label">Warehouse Name: <span
                                     class="text-danger">*</span></label>
                             <div class="col-lg-8">
                                 <input type="text" class="form-control" placeholder="Input werehouse name" name="nama"

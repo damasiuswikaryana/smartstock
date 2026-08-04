@@ -38,9 +38,9 @@ class AdmVendorController extends Controller
                 })
                 ->addColumn('is_dp', function ($row) {
                     if ($row->is_dp) {
-                        return '<span class="badge bg-light-dark">Available</span>';
+                        return '<span class="badge bg-light-dark f-14">Available</span>';
                     } else {
-                        return '<span class="badge bg-light-danger">Not Available</span>';
+                        return '<span class="badge bg-light-danger f-14">Not Available</span>';
                     }
                 })
                 ->rawColumns(['action', 'updated_at', 'is_dp', 'bank'])

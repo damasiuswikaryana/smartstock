@@ -10,15 +10,19 @@
         @if ($data->po_status == 'Pending')
             <div class="col-12 d-flex justify-content-start align-items-center">
                 @if ($data->checked_date == null)
-                    <button type="button" id="checked-btn" class="btn btn-shadow btn-primary me-2 d-flex align-items-center">
-                        <i class="ph-duotone ph-check-circle icon-search me-2"></i> Process to Checked
-                    </button>
+                    @hasanyrole('keuangan|masteradmin|admin')
+                        <button type="button" id="checked-btn" class="btn btn-shadow btn-primary me-2 d-flex align-items-center">
+                            <i class="ph-duotone ph-check-circle icon-search me-2"></i> Process to Checked
+                        </button>
+                    @endhasanyrole
                 @endif
                 @if ($data->checked_date != null && $data->director_date == null)
-                    <button type="button" id="approval-btn"
-                        class="btn btn-shadow btn-primary me-2 d-flex align-items-center">
-                        <i class="ph-duotone ph-check-circle icon-search me-2"></i> Approve Purchase Order
-                    </button>
+                    @hasanyrole('director|masteradmin|admin')
+                        <button type="button" id="approval-btn"
+                            class="btn btn-shadow btn-primary me-2 d-flex align-items-center">
+                            <i class="ph-duotone ph-check-circle icon-search me-2"></i> Approve Purchase Order
+                        </button>
+                    @endhasanyrole
                 @endif
             </div>
         @else
@@ -86,7 +90,7 @@
                                     </div>
                                     <div class="ms-0 me-auto col-6" id="checked_status">
                                         @if ($data->checked_date == null)
-                                            <span class="f-14 badge bg-light-dark">Waiting for check ...</span>
+                                            <span class="f-14 badge bg-light-dark">Waiting for finannce check ...</span>
                                         @else
                                             <span class="f-14 badge bg-light-success text-green">Checked</span>
                                         @endif

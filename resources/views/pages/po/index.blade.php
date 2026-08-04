@@ -57,6 +57,7 @@
                             <option value="pending">Only Pending</option>
                             <option value="checked">Has Checked</option>
                             <option value="approved">Approved</option>
+                            <option value="myapproval">Need My Approval</option>
                         </select>
                     </div>
                 </div>

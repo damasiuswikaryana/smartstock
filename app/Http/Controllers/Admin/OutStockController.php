@@ -112,9 +112,9 @@ class OutStockController extends Controller
                 })
                 ->addColumn('status', function ($row) {
                     if ($row->status == "Pending") {
-                        return '<span class="badge bg-light-dark">Pending</span>';
+                        return '<span class="badge bg-light-dark f-14">Pending</span>';
                     } else {
-                        return '<span class="badge bg-light-success">Approval</span>';
+                        return '<span class="badge bg-light-success f-14 text-green">Approval</span>';
                     }
                 })
                 ->rawColumns(['action', 'updated_at', 'so_number', 'date', 'werehouse', 'entitas', 'status'])

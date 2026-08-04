@@ -10,11 +10,11 @@ use App\Models\Vendor;
 use App\Models\Po;
 use App\Models\PoChild;
 use App\Models\Satuan;
+use App\Models\User;
 
 use Illuminate\Http\Request;
 use Yajra\DataTables\DataTables;
 use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Str;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Auth;
 
@@ -31,6 +31,7 @@ class AdmPoController extends Controller
         $entitas    = Entitas::all();
         $items      = ItemMaster::all();
         $lokasi     = Auth::user()->loc_id;
+        $user       = User::where('id', Auth::user()->id)->first();
         $data       = Po::with('child')->whereMonth('po_date', $bulan)->whereYear('po_date', $tahun);
 
         if ($request->ajax()) {
@@ -43,6 +44,14 @@ class AdmPoController extends Controller
                     $data       = $data->where('checked_date', '!=', NULL);
                 } elseif ($status == "approved") {
                     $data       = $data->where('po_status', "Approved");
+                } elseif ($status == "myapproval") {
+                    // cek roles
+                    if ($user->hasRole('keuangan')) {
+                        $data       = $data->whereNull('checked_date');
+                    }
+                    if ($user->hasRole('director')) {
+                        $data       = $data->whereNull('director_date');
+                    }
                 }
             }
             // filter daterange
@@ -116,7 +125,7 @@ class AdmPoController extends Controller
         return view('pages.po.index', compact('vendor', 'items', 'entitas'));
     }
 
-    public function store(Request $request)
+    public function store(Request $request, FirebaseNotificationService $firebase)
     {
         $input      = $request->all();
         $keuangan   = User::role('keuangan')->first();
@@ -154,6 +163,17 @@ class AdmPoController extends Controller
                     }
                 }
             }
+
+            // kirim notif ke keuangan
+            $targetToken    = User::role('keuangan')->select('device_token')->first();
+            $dataNumber     = $po_master->po_no;
+            $idRequestData  = $po_master->id;
+            $firebase->send(
+                $targetToken->device_token,
+                'BUTUH CHECK',
+                '[Purchase Order] - ' . $dataNumber . ' telah diinput. Butuh approval Anda. Lihat pada dashboard Smartwarehouse.',
+                ['url' => 'po/' . $idRequestData . '/detail']
+            );
             return response()->json(['success' => true]);
         } catch (\Throwable $th) {
             DB::rollback();
@@ -251,7 +271,7 @@ class AdmPoController extends Controller
         }
     }
 
-    public function checked(Request $request, int $id)
+    public function checked(Request $request, int $id, FirebaseNotificationService $firebase)
     {
         $data   = Po::where('id', $id)->first();
         try {
@@ -261,6 +281,17 @@ class AdmPoController extends Controller
             $data->save();
             $des                   = tanggalIndoWaktuLidgkap($data->checked_date) . " by " . $data->checkedBy->firstname . " " . $data->checkedBy->lastname;
             DB::commit();
+            // kirim notif ke director
+            $targetToken    = User::select('device_token')->where('id', $data->director_id)->first();
+            $dataNumber     = $data->po_no;
+            $idRequestData  = $data->id;
+            $firebase->send(
+                $targetToken->device_token,
+                'BUTUH APPROVAL',
+                '[Purchase Order] - ' . $dataNumber . ' telah selesai dicek oleh keuangan. Butuh approval Anda. Lihat pada dashboard Smartwarehouse.',
+                ['url' => 'po/' . $idRequestData . '/detail']
+            );
+
             return response()->json(['success' => true, 'approve' => $des]);
         } catch (\Throwable $th) {
             DB::rollback();
@@ -268,7 +299,7 @@ class AdmPoController extends Controller
         }
     }
 
-    public function approved(Request $request, int $id)
+    public function approved(Request $request, int $id, FirebaseNotificationService $firebase)
     {
         $data   = Po::where('id', $id)->first();
         try {
@@ -280,6 +311,16 @@ class AdmPoController extends Controller
                 $data->save();
                 $des                    = tanggalIndoWaktuLidgkap($data->director_date) . " by " . $data->directorBy->firstname . " " . $data->directorBy->lastname;
                 DB::commit();
+                // kirim notif balik ke pengadaan
+                $targetToken    = User::select('device_token')->where('id', $data->created_by)->first();
+                $dataNumber     = $data->po_no;
+                $idRequestData  = $data->id;
+                $firebase->send(
+                    $targetToken->device_token,
+                    'PO DISETUJUI',
+                    '[Purchase Order] - ' . $dataNumber . ' telah berhasil disetujui direktur. Lihat pada dashboard Smartwarehouse.',
+                    ['url' => 'po/' . $idRequestData . '/detail']
+                );
                 return response()->json(['success' => true, 'approve' => $des]);
             } else {
                 return response()->json(['success' => false, 'message' => "PO must be checked first by finance"]);
@@ -293,9 +334,10 @@ class AdmPoController extends Controller
     public function downloadPo(int $id, PoDownloladService $poService)
     {
         $data           = Po::select('po_no')->where('id', $id)->first();
+        $namaPo         = str_replace('/', '_', $data->po_no);
         $pdf            = $poService->generatePdf($id);
         $waktu          = tanggalIndoWaktu(date('Y-m-d H:i:s'));
-        $filename       = 'Purchase Order - ' . $data->po_no . ' - ' . $waktu . '.pdf';
+        $filename       = 'Purchase_Order_' . $namaPo . '_' . $waktu . '.pdf';
         return $pdf->stream($filename);
     }
 }

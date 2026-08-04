@@ -54,9 +54,9 @@ class UserController extends Controller
                     return '<code>' . $row->username . '</code>';
                 })->addColumn('status', function ($row) {
                     if ($row->status == 'Active') {
-                        return '<span class="badge bg-light-success">Active</span>';
+                        return '<span class="badge bg-light-success f-14 text-green">Active</span>';
                     } else {
-                        return '<span class="badge bg-light-danger">Inactive</span>';
+                        return '<span class="badge bg-light-danger f-14">Inactive</span>';
                     }
                 })->rawColumns(['action', 'user', 'werehouse', 'phone', 'username', 'status'])
                 ->make(true);

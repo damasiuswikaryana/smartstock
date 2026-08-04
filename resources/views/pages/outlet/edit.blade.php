@@ -1,7 +1,7 @@
 <link rel="stylesheet" href="{{ asset('assets/css/plugins/uppy.min.css') }}" />
 
 <div class="modal-header">
-    <h5 class="modal-title" id="modalEditTitle">Edit Werehouse</h5>
+    <h5 class="modal-title" id="modalEditTitle">Edit Warehouse</h5>
     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
 </div>
 <form class="modal-body" action="#" method="post" id="form-edit">
@@ -9,7 +9,7 @@
         @csrf
         @method('POST')
         <div class="mb-3 row">
-            <label class="col-lg-4 col-form-label">Werehouse Name: <span class="text-danger">*</span></label>
+            <label class="col-lg-4 col-form-label">Warehouse Name: <span class="text-danger">*</span></label>
             <div class="col-lg-8">
                 <input type="text" class="form-control" placeholder="Masukan nama outlet" name="nama"
                     value="{{ $data->nama }}" required>
@@ -49,7 +49,7 @@
             </div>
         </div>
         <div class="mb-3 row">
-            <label class="col-lg-4 col-form-label">Werehouse Photo:</label>
+            <label class="col-lg-4 col-form-label">Warehouse Photo:</label>
             <div class="col-lg-8 row">
                 @if ($data->photo != null)
                     <img src="{{ asset('storage/outlet/' . $data->photo) }}" class="mb-2" style="width:40%;" />

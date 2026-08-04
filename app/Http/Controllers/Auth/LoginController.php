@@ -62,6 +62,8 @@ class LoginController extends Controller
             'admin_cabang',
             'pengadaan',
             'gudang',
+            'keuangan',
+            'director',
         ])) {
             Auth::logout();
             $request->session()->invalidate();
@@ -74,22 +76,28 @@ class LoginController extends Controller
 
         // Pesan berdasarkan role
         if ($user->hasRole('masteradmin')) {
-            $message = 'Success Login as Master Admin';
+            $message = 'Success Login as Master Admin. Redirecting ...';
             $redirect = route('dashboard');
         } elseif ($user->hasRole('admin')) {
-            $message = 'Success Login as Admin';
+            $message = 'Success Login as Admin. Redirecting ...';
             $redirect = route('dashboard');
         } elseif ($user->hasRole('admin_cabang')) {
-            $message = 'Success Login as Branch Admin';
+            $message = 'Success Login as Branch Admin. Redirecting ...';
             $redirect = route('stockCurrent.index');
         } elseif ($user->hasRole('pengadaan')) {
-            $message = 'Success Login as Procurement';
+            $message = 'Success Login as Procurement. Redirecting ...';
             $redirect = route('dashboard');
         } elseif ($user->hasRole('gudang')) {
-            $message = 'Success Login as Warehouse';
+            $message = 'Success Login as Warehouse. Redirecting ...';
             $redirect = route('dashboard');
+        } elseif ($user->hasRole('keuangan')) {
+            $message = 'Success Login as Finance. Redirecting ...';
+            $redirect = route('po.index');
+        } elseif ($user->hasRole('director')) {
+            $message = 'Success Login as Director. Redirecting ...';
+            $redirect = route('po.index');
         } else {
-            $message = 'Welcome guest';
+            $message = 'Welcome guest. Redirecting ...';
             $redirect = route('dashboard');
         }
 
