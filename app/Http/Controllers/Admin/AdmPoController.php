@@ -118,6 +118,13 @@ class AdmPoController extends Controller
                 ->addColumn('po_date', function ($row) {
                     return tglIndo4($row->po_date);
                 })
+                ->addColumn('po_dp', function ($row) {
+                    if ($row->dp == NULL || $row->dp == 0) {
+                        return '';
+                    } else {
+                        return '<span class="badge bg-danger rounded-pill">DP</span>';
+                    }
+                })
                 ->addColumn('entitas', function ($row) {
                     return $row->entitas->entitas_name;
                 })
@@ -139,7 +146,7 @@ class AdmPoController extends Controller
                         return '<span class="badge bg-light-success text-green f-14">Approval</span>';
                     }
                 })
-                ->rawColumns(['action', 'updated_at', 'po_number', 'po_date', 'entitas', 'vendor', 'items', 'po_status'])
+                ->rawColumns(['action', 'updated_at', 'po_number', 'po_date', 'po_dp', 'entitas', 'vendor', 'items', 'po_status'])
                 ->make(true);
         }
         return view('pages.po.index', compact('vendor', 'items', 'entitas'));

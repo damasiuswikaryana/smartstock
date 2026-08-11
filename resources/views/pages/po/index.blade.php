@@ -84,7 +84,7 @@
     </div>
 
     @php
-        $thead = ['PO Number', 'Date', 'Entity', 'Vendor', 'Items', 'Status', 'Options'];
+        $thead = ['PO Number', 'Date', 'Entity', 'Vendor', 'Items', 'Status', 'DP', 'Options'];
     @endphp
     <x-datatable :thead=$thead :filter="null">
     </x-datatable>
@@ -319,6 +319,12 @@
                 {
                     data: 'po_status',
                     name: 'po_status',
+                    visible: true,
+                    class: 'py-lg-1 py-sm-2 text-center',
+                },
+                {
+                    data: 'po_dp',
+                    name: 'po_dp',
                     visible: true,
                     class: 'py-lg-1 py-sm-2 text-center',
                 },

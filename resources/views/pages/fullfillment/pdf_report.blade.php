@@ -215,7 +215,7 @@
         <div class="col-12 mb-2">
             <div class="row align-items-center">
                 <div class="col-sm-12">
-                    <h2 style="text-align:center; margin:0px; padding:0px;">Stock Out (Keluar)</h2>
+                    <h2 style="text-align:center; margin:0px; padding:0px;">Stock Out (Keluar) History Report</h2>
                     <h3 style="text-align:center; margin:0px; padding:0px; font-weight:400;">
                         {{ $data->name . ' (' . $data->no_kontrak . ')' }}</h3>
                 </div>
@@ -278,7 +278,7 @@
         <div class="col-12 mb-2">
             <div class="row align-items-center">
                 <div class="col-sm-12">
-                    <h2 style="text-align:center; margin:0px; padding:0px;">Stock Transfer</h2>
+                    <h2 style="text-align:center; margin:0px; padding:0px;">Stock Transfer History Report</h2>
                     <h3 style="text-align:center; margin:0px; padding:0px; font-weight:400;">
                         {{ $data->name . ' (' . $data->no_kontrak . ')' }}</h3>
                 </div>
