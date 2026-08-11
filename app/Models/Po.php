@@ -34,6 +34,11 @@ class Po extends Model
         return $this->belongsTo(User::class, 'created_by', 'id');
     }
 
+    public function adminInputBy(): BelongsTo
+    {
+        return $this->belongsTo(User::class, 'adminInput_by', 'id');
+    }
+
     public function checkedBy(): BelongsTo
     {
         return $this->belongsTo(User::class, 'checked_by', 'id');

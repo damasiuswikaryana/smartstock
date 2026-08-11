@@ -11,6 +11,9 @@ use App\Models\Entitas;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Yajra\DataTables\DataTables;
+use Barryvdh\DomPDF\Facade\Pdf;
+
+use App\Services\StockMutationService;
 
 class AdmStockMutationController extends Controller
 {
@@ -18,8 +21,7 @@ class AdmStockMutationController extends Controller
     {
         $allCategory    = Category::all();
         $allEntitas     = Entitas::all();
-
-        $lokasi     = Auth::user()->loc_id;
+        $lokasi         = Auth::user()->loc_id;
 
         if (
             Auth::user()->roles[0]->name == "masteradmin"
@@ -127,5 +129,15 @@ class AdmStockMutationController extends Controller
         } catch (\Throwable $th) {
             return redirect()->back()->with('error', "Error: " . $th->getMessage());
         }
+    }
+
+    public function downloadReport($tipe, $source, $target, $category, StockMutationService $reportService)
+    {
+        // dd($stocks);
+        // $customPaper    = [0, 0, 220, 425];
+        $pdf            = $reportService->generatePdf($tipe, $source, $target, $category);
+        $waktu          = tanggalIndoWaktu(date('Y-m-d H:i:s'));
+        $filename       = 'Stock Mutation - ' . $waktu . '.pdf';
+        return $pdf->stream($filename);
     }
 }

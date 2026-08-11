@@ -320,7 +320,7 @@
 
         $(document).on('click', '.btn-delete', function() {
             let id = $(this).data('id');
-            var url = "{{ route('vendor.hapus', ':id:') }}";
+            var url = "{{ route('stockin.hapus', ':id:') }}";
             var url = url.replace(':id:', id);
 
             if (confirm('Delete this data?')) {

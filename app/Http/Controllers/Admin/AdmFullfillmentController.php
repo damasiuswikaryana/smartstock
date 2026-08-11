@@ -14,6 +14,8 @@ use Illuminate\Support\Facades\Auth;
 use Yajra\DataTables\DataTables;
 use DB;
 
+use App\Services\MutationContractFullfillmentService;
+
 class AdmFullfillmentController extends Controller
 {
     public function index()
@@ -153,7 +155,7 @@ class AdmFullfillmentController extends Controller
             ->where('target_id', $gudang_koneksi)
             ->get();
 
-        $data_out        = StockMutation::where('pekerjaan_id', $id)
+        $data_out       = StockMutation::where('pekerjaan_id', $id)
             ->where('tipe', 'Keluar')
             ->where('source_id', $gudang_koneksi)
             ->get();
@@ -167,5 +169,16 @@ class AdmFullfillmentController extends Controller
             ->get();
 
         return view('pages.fullfillment.detail', compact('data', 'category', 'totalQty', 'grandTotal', 'stockSummary', 'data_in', 'data_out', 'data_trf'));
+    }
+
+    public function downloadMutation(int $id, MutationContractFullfillmentService $reportService)
+    {
+        // $customPaper    = [0, 0, 220, 425];
+        $data           = Project::with('items')->where('id', $id)->first();
+        $project        = $data->name;
+        $pdf            = $reportService->generatePdf($id);
+        $waktu          = tanggalIndoWaktu(date('Y-m-d H:i:s'));
+        $filename       = 'Mutation History - ' . $project . ' - ' . $waktu . '.pdf';
+        return $pdf->stream($filename);
     }
 }

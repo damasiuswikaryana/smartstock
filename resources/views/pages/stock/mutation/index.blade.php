@@ -25,6 +25,12 @@
         <div class="col">
             <div class="d-flex flex-column flex-lg-row gap-2 justify-content-end">
                 <div class="">
+                    <button id="btnDownload" class="btn btn-light-secondary d-flex align-items-center me-3 me-sm-0 w-100"
+                        type="button">
+                        <i class="ph-duotone ph-download icon-search me-2"></i>
+                        <span>Download Data</span></button>
+                </div>
+                <div class="">
                     <div class="form-search w-100">
                         <i class="ph-duotone ph-magnifying-glass icon-search"></i>
                         <input type="search" id="search" class="form-control" placeholder="Search here...">
@@ -209,6 +215,23 @@
             tooltipTriggerList1.map(function(tooltipTriggerEl) {
                 return new bootstrap.Tooltip(tooltipTriggerEl);
             });
+        });
+        $('#btnDownload').on('click', function() {
+            let tipe = $('#fl_tipe').val() || 'all';
+            let source = $('#fl_source').val() || 'all';
+            let target = $('#fl_target').val() || 'all';
+            let category = $('#fl_category').val() || 'all';
+
+            let url =
+                "{{ route('stockMutation.downloadReport', ['tipe' => ':tipe', 'sc' => ':sc', 'tg' => ':tg', 'cat' => ':cat']) }}"
+                .replace(':tipe', tipe).replace(':sc', source).replace(':tg', target).replace(':cat',
+                    category);
+
+            const link = document.createElement('a');
+            link.href = url;
+            link.target = '_blank';
+            link.rel = 'noopener noreferrer';
+            link.click();
         });
     </script>
 @endpush

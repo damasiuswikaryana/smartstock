@@ -180,7 +180,7 @@
                             showToastError(res.message);
                         }
                     },
-                    error: function() {
+                    error: function(xhr) {
                         hideLoader();
                         showToastError("Error while approving data");
                     }

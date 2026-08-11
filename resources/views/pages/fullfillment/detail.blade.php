@@ -152,7 +152,13 @@
         </div>
 
         <div class="row">
-            <h4 class="mb-3">Item Mutations</h4>
+            <div class="d-flex justify-content-between align-content-center mb-3">
+                <h4 class="">Item Mutations</h4>
+                <button id="btnDownload" class="btn btn-light-secondary d-flex align-items-center me-3 me-sm-0"
+                    type="button">
+                    <i class="ph-duotone ph-download icon-search me-2"></i>
+                    <span>Download Data</span></button>
+            </div>
             <div class="col-12">
                 <div class="card table-card">
                     <div class="card-body p-3">
@@ -253,7 +259,8 @@
                                                         </div>
                                                     </td>
                                                     <td>
-                                                        <i class="f-20 ph-duotone ph-arrow-fat-lines-right text-danger"></i>
+                                                        <i
+                                                            class="f-20 ph-duotone ph-arrow-fat-lines-right text-danger"></i>
                                                         <p class="mb-0">{{ $item_out->gudangAsal->nama }}</p>
 
                                                     </td>
@@ -338,5 +345,18 @@
 @endsection
 
 @push('js')
-    <script type="text/javascript"></script>
+    <script type="text/javascript">
+        $('#btnDownload').on('click', function() {
+            var idFullfillment = {{ $data->id }};
+            let url =
+                "{{ route('fullfillment.downloadMutation', ['id' => ':id']) }}"
+                .replace(':id', idFullfillment);
+
+            const link = document.createElement('a');
+            link.href = url;
+            link.target = '_blank';
+            link.rel = 'noopener noreferrer';
+            link.click();
+        });
+    </script>
 @endpush

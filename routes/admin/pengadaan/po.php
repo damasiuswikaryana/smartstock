@@ -14,4 +14,5 @@ Route::controller(AdmPoController::class)->name('po.')->prefix('po')->group(func
 
     Route::post('/{id}/approve', 'approved')->name('approved');
     Route::post('/{id}/checked', 'checked')->name('checked');
+    Route::post('/{id}/recorded', 'recorded')->name('recorded');
 });

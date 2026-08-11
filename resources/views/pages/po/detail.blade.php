@@ -7,7 +7,7 @@
     </x-page-header>
 
     <div class="d-flex justify-content-between align-items-center mb-4 mt-3">
-        @if ($data->po_status == 'Pending')
+        @if ($data->po_status == 'Pending' || $data->po_status == 'Checked' || $data->po_status == 'Recorded')
             <div class="col-12 d-flex justify-content-start align-items-center">
                 @if ($data->checked_date == null)
                     @hasanyrole('keuangan|masteradmin|admin')
@@ -16,13 +16,23 @@
                         </button>
                     @endhasanyrole
                 @endif
-                @if ($data->checked_date != null && $data->director_date == null)
-                    @hasanyrole('director|masteradmin|admin')
-                        <button type="button" id="approval-btn"
+                @if ($data->checked_date != null && $data->adminInput_date == null)
+                    @hasanyrole('adminkeuangan|masteradmin|admin')
+                        <button type="button" id="recorded-btn"
                             class="btn btn-shadow btn-primary me-2 d-flex align-items-center">
-                            <i class="ph-duotone ph-check-circle icon-search me-2"></i> Approve Purchase Order
+                            <i class="ph-duotone ph-check-circle icon-search me-2"></i> Process to Recorded
                         </button>
                     @endhasanyrole
+                @endif
+                @if ($data->director_id != null)
+                    @if ($data->adminInput_date != null && $data->checked_date != null && $data->director_date == null)
+                        @hasanyrole('director|masteradmin|admin')
+                            <button type="button" id="approval-btn"
+                                class="btn btn-shadow btn-primary me-2 d-flex align-items-center">
+                                <i class="ph-duotone ph-check-circle icon-search me-2"></i> Approve Purchase Order
+                            </button>
+                        @endhasanyrole
+                    @endif
                 @endif
             </div>
         @else
@@ -86,11 +96,11 @@
                                 </li>
                                 <li class="list-group-item d-flex justify-content-between align-items-start">
                                     <div class="ms-0 me-auto col-6">
-                                        Checked
+                                        Financial Check
                                     </div>
                                     <div class="ms-0 me-auto col-6" id="checked_status">
                                         @if ($data->checked_date == null)
-                                            <span class="f-14 badge bg-light-dark">Waiting for finannce check ...</span>
+                                            <span class="f-14 badge bg-light-dark">Waiting for check ...</span>
                                         @else
                                             <span class="f-14 badge bg-light-success text-green">Checked</span>
                                         @endif
@@ -109,18 +119,40 @@
                                         Director Approval
                                     </div>
                                     <div class="ms-0 me-auto col-6" id="director_status">
-                                        @if ($data->director_date == null)
-                                            <span class="f-14 badge bg-light-dark">Waiting for director approval
-                                                ...</span>
-                                        @else
-                                            <span class="f-14 badge bg-light-success text-green">Approved</span>
-                                        @endif
                                         @if ($data->director_id != null)
+                                            @if ($data->director_date == null)
+                                                <span class="f-14 badge bg-light-dark">Waiting for approval
+                                                    ...</span>
+                                            @else
+                                                <span class="f-14 badge bg-light-success text-green">Approved</span>
+                                            @endif
                                             <p class="fw-medium mb-0">
                                                 @if ($data->director_date != null)
                                                     {{ tanggalIndoWaktuLidgkap($data->director_date) }}
                                                 @endif by
                                                 {{ $data->directorBy->firstname . ' ' . $data->directorBy->lastname }}
+                                            </p>
+                                        @else
+                                            <span class="f-14 badge bg-light-dark">No Approval Needed</span>
+                                        @endif
+                                    </div>
+                                </li>
+                                <li class="list-group-item d-flex justify-content-between align-items-start">
+                                    <div class="ms-0 me-auto col-6">
+                                        Financial Record
+                                    </div>
+                                    <div class="ms-0 me-auto col-6" id="recorded_status">
+                                        @if ($data->adminInput_date == null)
+                                            <span class="f-14 badge bg-light-dark">Waiting for record ...</span>
+                                        @else
+                                            <span class="f-14 badge bg-light-success text-green">Recorded</span>
+                                        @endif
+                                        @if ($data->adminInput_by != null)
+                                            <p class="fw-medium mb-0">
+                                                @if ($data->adminInput_date != null)
+                                                    {{ tanggalIndoWaktuLidgkap($data->adminInput_date) }}
+                                                @endif by
+                                                {{ $data->adminInputBy->firstname . ' ' . $data->adminInputBy->lastname }}
                                             </p>
                                         @endif
                                     </div>
@@ -165,55 +197,64 @@
                             </ol>
 
                             <ol class="list-group mt-3">
-                                <li class="list-group-item d-flex justify-content-between align-items-start">
+                                <li class="list-group-item d-flex justify-content-between align-items-start py-2">
                                     <div class="ms-0 me-auto col-6">
                                         Subtotal
                                     </div>
-                                    <div class="ms-0 me-auto fw-bold col-6 text-end">
+                                    <div class="ms-0 me-auto col-6 text-end">
                                         {{ rupiah($subtotal) }}
                                     </div>
                                 </li>
-                                <li class="list-group-item d-flex justify-content-between align-items-start">
+                                <li class="list-group-item d-flex justify-content-between align-items-start py-2">
                                     <div class="ms-0 me-auto col-6">
-                                        Tax
+                                        PPH
                                     </div>
-                                    <div class="ms-0 me-auto fw-bold col-6 text-end">
+                                    <div class="ms-0 me-auto col-6 text-end">
                                         {!! $data->tax . '%' . ' &nbsp; (' . rupiah($tax_amount) . ')' !!}
                                     </div>
                                 </li>
-                                <li class="list-group-item d-flex justify-content-between align-items-start">
+                                <li class="list-group-item d-flex justify-content-between align-items-start py-2">
+                                    <div class="ms-0 me-auto col-6">
+                                        PPN
+                                    </div>
+                                    <div class="ms-0 me-auto col-6 text-end">
+                                        {!! $data->ppn . '%' . ' &nbsp; (' . rupiah($ppn_amount) . ')' !!}
+                                    </div>
+                                </li>
+                                <li class="list-group-item d-flex justify-content-between align-items-start py-2">
                                     <div class="ms-0 me-auto col-6">
                                         <i class="me-2 ph-duotone ph-arrow-right"></i> Total After Tax
                                     </div>
-                                    <div class="ms-0 me-auto fw-bold col-6 text-end text-danger">
+                                    <div class="ms-0 me-auto col-6 text-end text-danger">
                                         {{ rupiah($total_after_tax) }}
                                     </div>
                                 </li>
-                                <li class="list-group-item d-flex justify-content-between align-items-start">
+                                <li class="list-group-item d-flex justify-content-between align-items-start py-2">
                                     <div class="ms-0 me-auto col-6">
                                         Discount
                                     </div>
-                                    <div class="ms-0 me-auto fw-bold col-6 text-end text-green">
-                                        {{ rupiah($data->disc) }}
+                                    <div class="ms-0 me-auto col-6 text-end text-green">
+                                        {{ $data->disc_perc != null ? $data->disc_perc . '%' : '' }}
+                                        {!! ' &nbsp; (' . rupiah($disc_amount) . ')' !!}
                                     </div>
                                 </li>
-                                <li class="list-group-item d-flex justify-content-between align-items-start">
+                                <li class="list-group-item d-flex justify-content-between align-items-start py-2">
                                     <div class="ms-0 me-auto col-6">
                                         <i class="me-2 ph-duotone ph-arrow-right"></i> Total After Discount
                                     </div>
-                                    <div class="ms-0 me-auto fw-bold col-6 text-end text-green">
+                                    <div class="ms-0 me-auto col-6 text-end text-green">
                                         {{ rupiah($total_after_disc) }}
                                     </div>
                                 </li>
-                                <li class="list-group-item d-flex justify-content-between align-items-start">
+                                <li class="list-group-item d-flex justify-content-between align-items-start py-2">
                                     <div class="ms-0 me-auto col-6">
                                         Down Payment
                                     </div>
-                                    <div class="ms-0 me-auto fw-bold col-6 text-end">
+                                    <div class="ms-0 me-auto col-6 text-end">
                                         {{ rupiah($data->dp) }}
                                     </div>
                                 </li>
-                                <li class="list-group-item d-flex justify-content-between align-items-start">
+                                <li class="list-group-item d-flex justify-content-between align-items-start py-2">
                                     <div class="ms-0 me-auto col-6">
                                         Total
                                     </div>
@@ -232,6 +273,38 @@
 
 @push('js')
     <script type="text/javascript">
+        $(document).on('click', '#recorded-btn', function() {
+            let id = {{ $data->id }};
+            var url = "{{ route('po.recorded', ':id:') }}";
+            var url = url.replace(':id:', id);
+            if (confirm('Approve this data?')) {
+                $.ajax({
+                    url: url,
+                    type: 'POST',
+                    data: {
+                        _token: '{{ csrf_token() }}'
+                    },
+                    beforeSend: showLoader(),
+                    success: function(res) {
+                        if (res.success) {
+                            $('#recorded_status').html(
+                                '<span class="f-14 badge bg-light-success text-green">Recorded</span><p class="fw-medium mb-0">' +
+                                res.approve + '</p>');
+                            hideLoader();
+                            showToastSuccess("Approval success");
+                        } else {
+                            hideLoader();
+                            showToastError(res.message);
+                        }
+                    },
+                    error: function() {
+                        hideLoader();
+                        showToastError("Error while approving data");
+                    }
+                });
+            }
+        });
+
         $(document).on('click', '#checked-btn', function() {
             let id = {{ $data->id }};
             var url = "{{ route('po.checked', ':id:') }}";

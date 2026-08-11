@@ -39,9 +39,11 @@ class AdmPoController extends Controller
             if ($request->status) {
                 $status     = $request->status;
                 if ($status == 'pending') {
-                    $data       = $data->where('po_status', "Pending");
+                    $data = $data->where('po_status', "Pending");
                 } elseif ($status == 'checked') {
-                    $data       = $data->where('checked_date', '!=', NULL);
+                    $data       = $data->where('po_status', "Checked");
+                } elseif ($status == "recorded") {
+                    $data       = $data->where('po_status', "Recorded");
                 } elseif ($status == "approved") {
                     $data       = $data->where('po_status', "Approved");
                 } elseif ($status == "myapproval") {
@@ -49,8 +51,11 @@ class AdmPoController extends Controller
                     if ($user->hasRole('keuangan')) {
                         $data       = $data->whereNull('checked_date');
                     }
+                    if ($user->hasRole('adminkeuangan')) {
+                        $data       = $data->whereNull('adminInput_date');
+                    }
                     if ($user->hasRole('director')) {
-                        $data       = $data->whereNull('director_date');
+                        $data       = $data->whereNotNull('director_id')->whereNull('director_date');
                     }
                 }
             }
@@ -67,6 +72,17 @@ class AdmPoController extends Controller
                     ]);
                 } else {
                     $data = $data->whereDate('po_date', $startDate);
+                }
+            }
+            // filter director
+            if ($request->director) {
+                $director   = $request->director;
+                if ($director == "yes") {
+                    $data   = $data->whereNotNull('director_id');
+                } elseif ($director == "no") {
+                    $data   = $data->whereNull('director_id');
+                } else {
+                    $data   = $data;
                 }
             }
             $data = $data->get();
@@ -115,6 +131,10 @@ class AdmPoController extends Controller
                 ->addColumn('po_status', function ($row) {
                     if ($row->po_status == "Pending") {
                         return '<span class="badge bg-light-dark f-14">Pending</span>';
+                    } elseif ($row->po_status == "Recorded") {
+                        return '<span class="badge bg-light-success text-green f-14">Recorded</span>';
+                    } elseif ($row->po_status == "Checked") {
+                        return '<span class="badge bg-light-primary f-14">Checked</span>';
                     } else {
                         return '<span class="badge bg-light-success text-green f-14">Approval</span>';
                     }
@@ -127,9 +147,22 @@ class AdmPoController extends Controller
 
     public function store(Request $request, FirebaseNotificationService $firebase)
     {
-        $input      = $request->all();
-        $keuangan   = User::role('keuangan')->first();
-        $director   = Entitas::select('director_id')->where('id', $input['entitas_id'])->first();
+        $input          = $request->all();
+        $keuangan       = User::role('keuangan')->first();
+        $keuanganAdmin  = User::role('adminkeuangan')->first();
+        if ($input['dir_approval'] == "yes") {
+            $director       = Entitas::select('director_id')->where('id', $input['entitas_id'])->first();
+            $director_id    = $director->director_id;
+        } else {
+            $director_id    = NULL;
+        }
+        if ($input['disc_tipe'] == 'rupiah') {
+            $disc_rp    = hapusTitikAngka($input['disc']);
+            $disc_pr    = NULL;
+        } else {
+            $disc_rp    = NULL;
+            $disc_pr    = hapusTitikAngka($input['disc']);
+        }
         try {
             DB::beginTransaction();
             $po_master              = Po::create([
@@ -139,12 +172,16 @@ class AdmPoController extends Controller
                 'entitas_id'        => $input['entitas_id'],
                 'vendor_id'         => $input['vendor_id'],
                 'tax'               => $input['tax'],
-                'disc'              => hapusTitikAngka($input['disc']),
+                'ppn'               => $input['ppn'],
+                'disc'              => $disc_rp,
+                'disc_perc'         => $disc_pr,
                 'dp'                => hapusTitikAngka($input['dp']),
                 'created_by'        => Auth::user()->id,
+                'adminInput_by'     => $keuanganAdmin->id,
+                'adminInput_date'   => NULL,
                 'checked_by'        => $keuangan->id,
                 'checked_date'      => NULL,
-                'director_id'       => $director->director_id,
+                'director_id'       => $director_id,
                 'director_date'     => NULL,
                 'notes'             => $input['notes'],
             ]);
@@ -171,8 +208,8 @@ class AdmPoController extends Controller
             $firebase->send(
                 $targetToken->device_token,
                 'BUTUH CHECK',
-                '[Purchase Order] - ' . $dataNumber . ' telah diinput. Butuh approval Anda. Lihat pada dashboard Smartwarehouse.',
-                ['url' => 'po/' . $idRequestData . '/detail']
+                '[Purchase Order] - ' . $dataNumber . ' telah diinput. Butuh pengecekan Anda. Lihat pada dashboard Smartwarehouse.',
+                ['url' => '/po/' . $idRequestData . '/detail']
             );
             return response()->json(['success' => true]);
         } catch (\Throwable $th) {
@@ -189,13 +226,21 @@ class AdmPoController extends Controller
         });
         $tax            = $data->tax;
         $tax_amount     = $tax / 100 * $subtotal;
-        $total_after_tax = $subtotal + $tax_amount;
+        $ppn            = $data->ppn;
+        $ppn_amount     = $ppn / 100 * $subtotal;
+        $total_after_tax = $subtotal + $tax_amount + $ppn_amount;
         $disc           = $data->disc;
-        $total_after_disc = $total_after_tax - $disc;
-        $dp             = $data->dp;
-        $total_after_dp = $total_after_disc + $dp;
+        if ($disc != NULL) {
+            $disc_amount        = $disc;
+        } else {
+            $disc_perc          = $data->disc_perc;
+            $disc_amount        = $disc_perc / 100 * $subtotal;
+        }
+        $total_after_disc   = $total_after_tax - $disc_amount;
+        $dp                 = $data->dp;
+        $total_after_dp     = $total_after_disc + $dp;
 
-        return view('pages.po.detail', compact('data', 'subtotal', 'tax_amount', 'total_after_tax', 'total_after_disc', 'total_after_dp'));
+        return view('pages.po.detail', compact('data', 'subtotal', 'tax_amount', 'ppn_amount', 'total_after_tax', 'disc_perc', 'disc_amount', 'total_after_disc', 'total_after_dp'));
     }
 
     public function edit(int $id)
@@ -278,20 +323,37 @@ class AdmPoController extends Controller
             DB::beginTransaction();
             $data->checked_date    = date("Y-m-d H:i:s");
             $data->checked_by      = Auth::user()->id;
+            if ($data->director_id != NULL) {
+                $data->po_status   = "Checked";
+            } else {
+                $data->po_status   = "Approved";
+            }
             $data->save();
             $des                   = tanggalIndoWaktuLidgkap($data->checked_date) . " by " . $data->checkedBy->firstname . " " . $data->checkedBy->lastname;
             DB::commit();
-            // kirim notif ke director
-            $targetToken    = User::select('device_token')->where('id', $data->director_id)->first();
-            $dataNumber     = $data->po_no;
-            $idRequestData  = $data->id;
-            $firebase->send(
-                $targetToken->device_token,
-                'BUTUH APPROVAL',
-                '[Purchase Order] - ' . $dataNumber . ' telah selesai dicek oleh keuangan. Butuh approval Anda. Lihat pada dashboard Smartwarehouse.',
-                ['url' => 'po/' . $idRequestData . '/detail']
-            );
-
+            if ($data->director_id != NULL) {
+                // kirim notif ke director
+                $targetToken    = User::select('device_token')->where('id', $data->director_id)->first();
+                $dataNumber     = $data->po_no;
+                $idRequestData  = $data->id;
+                $firebase->send(
+                    $targetToken->device_token,
+                    'BUTUH APPROVAL',
+                    '[Purchase Order] - ' . $dataNumber . ' telah selesai dicek oleh keuangan. Butuh approval Anda. Lihat pada dashboard Smartwarehouse.',
+                    ['url' => 'po/' . $idRequestData . '/detail']
+                );
+            } else {
+                // kirim notif ke admin keuangan
+                $targetToken    = User::role('adminkeuangan')->select('device_token')->first();
+                $dataNumber     = $data->po_no;
+                $idRequestData  = $data->id;
+                $firebase->send(
+                    $targetToken->device_token,
+                    'BUTUH APPROVAL',
+                    '[Purchase Order] - ' . $dataNumber . ' telah selesai dicek oleh keuangan. Saatnya menambahkan ke Zaheer. Lihat pada dashboard Smartwarehouse.',
+                    ['url' => '/po/' . $idRequestData . '/detail']
+                );
+            }
             return response()->json(['success' => true, 'approve' => $des]);
         } catch (\Throwable $th) {
             DB::rollback();
@@ -319,12 +381,49 @@ class AdmPoController extends Controller
                     $targetToken->device_token,
                     'PO DISETUJUI',
                     '[Purchase Order] - ' . $dataNumber . ' telah berhasil disetujui direktur. Lihat pada dashboard Smartwarehouse.',
-                    ['url' => 'po/' . $idRequestData . '/detail']
+                    ['url' => '/po/' . $idRequestData . '/detail']
+                );
+                // kirim juga ke admin keuangan agar ditambahkan ke zaheer
+                $targetToken2    = User::role('adminkeuangan')->select('device_token')->first();
+                $firebase->send(
+                    $targetToken2->device_token,
+                    'PO DISETUJUI',
+                    '[Purchase Order] - ' . $dataNumber . ' telah berhasil disetujui direktur. Saatnya menambahkan ke Zaheer. Lihat pada dashboard Smartwarehouse.',
+                    ['url' => '/po/' . $idRequestData . '/detail']
                 );
                 return response()->json(['success' => true, 'approve' => $des]);
             } else {
                 return response()->json(['success' => false, 'message' => "PO must be checked first by finance"]);
             }
+        } catch (\Throwable $th) {
+            DB::rollback();
+            return response()->json(['success' => false, 'message' => "Error: " . $th->getMessage()]);
+        }
+    }
+
+    public function recorded(Request $request, int $id, FirebaseNotificationService $firebase)
+    {
+        $data   = Po::where('id', $id)->first();
+        try {
+            DB::beginTransaction();
+            $data->adminInput_date  = date("Y-m-d H:i:s");
+            $data->adminInput_by    = Auth::user()->id;
+            $data->po_status        = "Recorded";
+            $data->save();
+            $des                   = tanggalIndoWaktuLidgkap($data->adminInput_date) . " by " . $data->adminInputBy->firstname . " " . $data->adminInputBy->lastname;
+            DB::commit();
+            // kirim notif ke finance
+            $targetToken    = User::role('keuangan')->select('device_token')->first();
+            $dataNumber     = $data->po_no;
+            $idRequestData  = $data->id;
+            $firebase->send(
+                $targetToken->device_token,
+                'BUTUH APPROVAL',
+                '[Purchase Order] - ' . $dataNumber . ' telah selesai penginputan di sistem Zaheer. Lihat pada dashboard Smartwarehouse.',
+                ['url' => '/po/' . $idRequestData . '/detail']
+            );
+
+            return response()->json(['success' => true, 'approve' => $des]);
         } catch (\Throwable $th) {
             DB::rollback();
             return response()->json(['success' => false, 'message' => "Error: " . $th->getMessage()]);

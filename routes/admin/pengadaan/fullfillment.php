@@ -8,4 +8,5 @@ Route::controller(AdmFullfillmentController::class)->name('fullfillment.')->pref
     Route::get('/{id}/add',         'add')->name('add');
     Route::post('/{id}/store-item', 'storeItem')->name('storeItem');
     Route::get('/{id}/detail',      'detail')->name('detail');
+    Route::get('/{id}/download-mutation', 'downloadMutation')->name('downloadMutation');
 });

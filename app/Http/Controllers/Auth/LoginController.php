@@ -63,6 +63,7 @@ class LoginController extends Controller
             'pengadaan',
             'gudang',
             'keuangan',
+            'adminkeuangan',
             'director',
         ])) {
             Auth::logout();
@@ -92,6 +93,9 @@ class LoginController extends Controller
             $redirect = route('dashboard');
         } elseif ($user->hasRole('keuangan')) {
             $message = 'Success Login as Finance. Redirecting ...';
+            $redirect = route('po.index');
+        } elseif ($user->hasRole('adminkeuangan')) {
+            $message = 'Success Login as Finance Admin. Redirecting ...';
             $redirect = route('po.index');
         } elseif ($user->hasRole('director')) {
             $message = 'Success Login as Director. Redirecting ...';
