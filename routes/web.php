@@ -41,6 +41,7 @@ Route::group(['middleware' => ['isAdmin', 'auth']], function () {
     // PENGADAAN
     require __DIR__ . '/admin/pengadaan/fullfillment.php';
     require __DIR__ . '/admin/pengadaan/po.php';
+    require __DIR__ . '/admin/pengadaan/qr.php';
 
     //GUDANG
     // -----> Stock
