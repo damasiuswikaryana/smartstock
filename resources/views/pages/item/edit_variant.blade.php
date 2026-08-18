@@ -58,6 +58,19 @@
                 @endif
             </div>
         </div>
+        <div class="mb-3 row">
+            <label class="col-lg-4 col-form-label">Satuan: <span class="text-danger">*</span></label>
+            <div class="col-lg-8">
+                <div class="">
+                    <select class="form-control" name="satuan_id" required>
+                        @foreach ($satuan as $sat)
+                            <option @if ($data->satuan_id == $sat->id) selected @endif value="{{ $sat->id }}">
+                                {{ $sat->satuan }}</option>
+                        @endforeach
+                    </select>
+                </div>
+            </div>
+        </div>
         <div class="alert alert-warning text-center mb-0"><b>Note:</b> Photo must be 500 x 500 pixel or ratio.
         </div>
     </div>

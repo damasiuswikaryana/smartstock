@@ -13,4 +13,5 @@ Route::controller(TransferStockController::class)->name('stocktransfer.')->prefi
     Route::post('/transfer/{id}/upload-document',    'upload')->name('upload');
     Route::delete('/transfer/{id}/hapus-document',   'destroy_photo')->name('hapusPhoto');
     Route::post('/transfer/{id}/approve',            'approveOut')->name('approve');
+    Route::get('/transfer/download/tanda-terima/{id}', 'downloadTandaTerima')->name('downloadTandaTerima');
 });

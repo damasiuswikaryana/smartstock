@@ -11,6 +11,7 @@ use App\Models\Po;
 use App\Models\PoChild;
 use App\Models\Satuan;
 use App\Models\User;
+use App\Models\Category;
 
 use Illuminate\Http\Request;
 use Yajra\DataTables\DataTables;
@@ -31,6 +32,7 @@ class AdmPoController extends Controller
         $entitas    = Entitas::all();
         $items      = ItemMaster::all();
         $lokasi     = Auth::user()->loc_id;
+        $categories = Category::all();
         $user       = User::where('id', Auth::user()->id)->first();
         $data       = Po::with('child')->whereMonth('po_date', $bulan)->whereYear('po_date', $tahun);
 
@@ -149,7 +151,7 @@ class AdmPoController extends Controller
                 ->rawColumns(['action', 'updated_at', 'po_number', 'po_date', 'po_dp', 'entitas', 'vendor', 'items', 'po_status'])
                 ->make(true);
         }
-        return view('pages.po.index', compact('vendor', 'items', 'entitas'));
+        return view('pages.po.index', compact('vendor', 'items', 'entitas', 'categories'));
     }
 
     public function store(Request $request, FirebaseNotificationService $firebase)

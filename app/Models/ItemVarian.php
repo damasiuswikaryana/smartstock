@@ -22,4 +22,9 @@ class ItemVarian extends Model
     {
         return $this->hasMany(Stock::class, 'item_varian_id');
     }
+
+    public function satuan(): BelongsTo
+    {
+        return $this->belongsTo(Satuan::class, 'satuan_id', 'id');
+    }
 }

@@ -13,4 +13,5 @@ Route::controller(InOutStockController::class)->name('stockin.')->prefix('stock'
     Route::post('/in/{id}/upload-document', 'upload')->name('upload');
     Route::delete('/in/{id}/hapus-document', 'destroy_photo')->name('hapusPhoto');
     Route::post('/in/{id}/approve', 'approveIn')->name('approve');
+    Route::get('/in/download/tanda-terima/{id}', 'downloadTandaTerima')->name('downloadTandaTerima');
 });

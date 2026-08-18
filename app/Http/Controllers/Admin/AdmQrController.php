@@ -11,6 +11,7 @@ use App\Models\Qr;
 use App\Models\QrChild;
 use App\Models\Satuan;
 use App\Models\User;
+use App\Models\Category;
 
 use Illuminate\Http\Request;
 use Yajra\DataTables\DataTables;
@@ -31,6 +32,7 @@ class AdmQrController extends Controller
         $entitas    = Entitas::all();
         $items      = ItemMaster::all();
         $lokasi     = Auth::user()->loc_id;
+        $categories = Category::all();
         $user       = User::where('id', Auth::user()->id)->first();
         $data       = Qr::with('child')->whereMonth('qr_date', $bulan)->whereYear('qr_date', $tahun);
 
@@ -149,7 +151,7 @@ class AdmQrController extends Controller
                 ->rawColumns(['action', 'updated_at', 'qr_number', 'qr_date', 'qr_dp', 'entitas', 'vendor', 'items', 'qr_status'])
                 ->make(true);
         }
-        return view('pages.qr.index', compact('vendor', 'items', 'entitas'));
+        return view('pages.qr.index', compact('vendor', 'items', 'entitas', 'categories'));
     }
 
     public function store(Request $request, FirebaseNotificationService $firebase)

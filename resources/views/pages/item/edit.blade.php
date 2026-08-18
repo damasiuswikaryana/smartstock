@@ -150,7 +150,7 @@
         </div>
     </div>
     @php
-        $thead = ['SKU', 'Variant Name', 'Variant Code', 'Value', 'Options'];
+        $thead = ['SKU', 'Variant Name', 'Variant Code', 'Value', 'Satuan', 'Options'];
     @endphp
     <x-datatable :thead=$thead :filter="null">
     </x-datatable>
@@ -203,6 +203,18 @@
                                 <div class="">
                                     <input type="text" class="form-control number-separator"
                                         placeholder="Value in rupiah" name="nilai" required />
+                                </div>
+                            </div>
+                        </div>
+                        <div class="mb-3 row">
+                            <label class="col-lg-4 col-form-label">Satuan: <span class="text-danger">*</span></label>
+                            <div class="col-lg-8">
+                                <div class="">
+                                    <select class="form-control" name="satuan_id" required>
+                                        @foreach ($satuan as $sat)
+                                            <option value="{{ $sat->id }}">{{ $sat->satuan }}</option>
+                                        @endforeach
+                                    </select>
                                 </div>
                             </div>
                         </div>
@@ -334,6 +346,11 @@
                 {
                     data: 'nilai',
                     name: 'nilai',
+                    class: 'py-1 text-center',
+                },
+                {
+                    data: 'satuan',
+                    name: 'satuan',
                     class: 'py-1 text-center',
                 },
                 {

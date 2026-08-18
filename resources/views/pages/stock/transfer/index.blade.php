@@ -152,8 +152,21 @@
 @endsection
 
 @push('js')
+    <script src="{{ asset('assets/js/plugins/choices.min.js') }}"></script>
     <script src="{{ asset('assets/js/plugins/dataTables.fixedColumns.min.js') }}"></script>
     <script type="text/javascript">
+        function initItemMasterChoices(element) {
+            new Choices(element, {
+                searchEnabled: true,
+                searchPlaceholderValue: 'Search item...',
+                itemSelectText: '',
+                shouldSort: false,
+                allowHTML: true,
+                placeholder: true,
+                placeholderValue: 'Select Item'
+            });
+        }
+
         $("#modalEdit").on("show.bs.modal", function(e) {
             var link = $(e.relatedTarget);
             $(this).find(".modal-content").load(link.attr("href"));
@@ -306,10 +319,14 @@
             let html = `
                 <div class="row p-0 mx-0 mb-2 produk-item">
                     <div class="col-11 col-lg-11 ps-0">
-                        <select data-index="${itemMasterIndex}" class="form-control item-master" name="item[${itemMasterIndex}][id_item]" required>
+                        <select data-index="${itemMasterIndex}" class="form-control item-master" name="item[${itemMasterIndex}][id_item]" id="item-master-${itemMasterIndex}" required>
                             <option value="" selected disabled>Select Item</option>
-                            @foreach ($items as $item)
-                                <option value="{{ $item->id }}">{{ $item->nama }}</option>
+                            @foreach ($categories as $category)
+                                <optgroup label="{{ $category->title }}">
+                                    @foreach ($category->items as $item)
+                                        <option value="{{ $item->id }}">{{ $item->nama }}</option>
+                                    @endforeach
+                                </optgroup>
                             @endforeach
                         </select>
                         <div class="variant-container mt-2" id="variant-container-${itemMasterIndex}"></div>
@@ -323,6 +340,8 @@
                 `;
 
             $('#produk-container').append(html);
+            let selectElement = document.getElementById(`item-master-${itemMasterIndex}`);
+            initItemMasterChoices(selectElement);
             itemMasterIndex++;
         });
 

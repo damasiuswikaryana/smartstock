@@ -6,7 +6,7 @@
         <li class="breadcrumb-item">Stock Out</li>
     </x-page-header>
 
-    <div class="d-flex justify-content-between align-items-center mb-4 mt-3">
+    <div class="d-flex flex-column justify-content-between align-items-center mb-4 mt-3">
         @if ($data->status == 'Pending')
             <div class="col-12 d-flex justify-content-between align-items-center">
                 <button type="button" id="approval-btn" class="btn btn-shadow btn-primary me-2 d-flex align-items-center">
@@ -19,6 +19,12 @@
                 <p class="pb-0 mb-0">Data that has been approved cannot be changed or deleted.</p>
             </div>
         @endif
+
+        <button id="btnDownload"
+            class="btn btn-lg btn-shadow btn-light-secondary d-flex align-items-center mt-3 me-3 me-sm-0 w-100"
+            type="button">
+            <i class="ph-duotone ph-download icon-search me-2 fs-4"></i>
+            <span class="fs-4">Download Tanda Terima</span></button>
     </div>
 
     <section>
@@ -91,6 +97,14 @@
                                             <p class="fw-medium mb-0">{{ tanggalIndoWaktuLidgkap($data->approved_date) }} by
                                                 {{ $data->approvedBy->firstname . ' ' . $data->approvedBy->lastname }}</p>
                                         @endif
+                                    </div>
+                                </li>
+                                <li class="list-group-item d-flex justify-content-between align-items-start">
+                                    <div class="ms-0 me-auto col-6">
+                                        Received by
+                                    </div>
+                                    <div class="ms-0 me-auto fw-bold col-6">
+                                        {{ $data->received_by }}
                                     </div>
                                 </li>
                             </ol>
@@ -187,6 +201,19 @@
                     }
                 });
             }
+        });
+
+        $('#btnDownload').on('click', function() {
+            let id = {{ $data->id }};
+            let url =
+                "{{ route('stockout.downloadTandaTerima', ['id' => ':id']) }}"
+                .replace(':id', id);
+
+            const link = document.createElement('a');
+            link.href = url;
+            link.target = '_blank';
+            link.rel = 'noopener noreferrer';
+            link.click();
         });
     </script>
 @endpush

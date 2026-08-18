@@ -12,9 +12,7 @@ use App\Models\StockTransferMaster;
 use App\Models\StockTransferMasterPhoto;
 use App\Models\StockTransferChild;
 use App\Models\Stock;
-
-use App\Models\StockOutMaster;
-use App\Models\StockOutMasterPhoto;
+use App\Models\Category;
 use App\Models\StockOutChild;
 
 use Illuminate\Http\Request;
@@ -25,6 +23,7 @@ use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Auth;
 
 use App\Services\FirebaseNotificationService;
+use App\Services\TandaTerimaTransferService;
 
 class TransferStockController extends Controller
 {
@@ -34,6 +33,7 @@ class TransferStockController extends Controller
         $pekerjaan  = Project::all();
         $entitas    = Entitas::all();
         $dataGudang = Outlet::all();
+        $categories = Category::all();
 
         $stockav    = Stock::where('lokasi_id', $gudang)->get();
         $items      =
@@ -109,7 +109,7 @@ class TransferStockController extends Controller
                 ->rawColumns(['action', 'updated_at', 'st_number', 'date', 'werehouse_source', 'werehouse_target', 'entitas', 'status'])
                 ->make(true);
         }
-        return view('pages.stock.transfer.index', compact('gudang', 'pekerjaan', 'items', 'entitas', 'stockav', 'dataGudang'));
+        return view('pages.stock.transfer.index', compact('gudang', 'pekerjaan', 'items', 'entitas', 'stockav', 'dataGudang', 'categories'));
     }
 
     public function store(Request $request, FirebaseNotificationService $firebase)
@@ -413,5 +413,13 @@ class TransferStockController extends Controller
             DB::rollback();
             return response()->json(['success' => false, 'message' => "Error: " . $th->getMessage()]);
         }
+    }
+
+    public function downloadTandaTerima(int $id, TandaTerimaTransferService $reportService)
+    {
+        $pdf            = $reportService->generatePdf($id);
+        $waktu          = tanggalIndoWaktu(date('Y-m-d H:i:s'));
+        $filename       = 'Tanda Terima - ' . $waktu . '.pdf';
+        return $pdf->stream($filename);
     }
 }

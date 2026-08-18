@@ -7,6 +7,7 @@ use App\Models\Entitas;
 use App\Models\Outlet;
 use App\Models\Stock;
 use App\Models\ItemMaster;
+use App\Models\Category;
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
@@ -18,7 +19,8 @@ class InitationStockController extends Controller
         $entitas    = Entitas::all();
         $lokasi     = Outlet::all();
         $items      = ItemMaster::all();
-        return view('pages.stock.initation.index', compact('lokasi', 'entitas', 'items'));
+        $categories = Category::all();
+        return view('pages.stock.initation.index', compact('lokasi', 'entitas', 'items', 'categories'));
     }
 
     public function store(Request $request)
@@ -29,27 +31,25 @@ class InitationStockController extends Controller
             foreach ($request->item as $item) {
                 foreach ($item['variants'] as $variant) {
 
-                    $cekStok = Stock::where('item_varian_id', $variant['id_variant'])
-                        ->where('lokasi_id', $input['lokasi_id'])
-                        ->where('entitas_id', $input['entitas_id'])->first();
-                    if ($cekStok == null) {
-                        $qtyBaru        = $variant['qty'];
-                    } else {
-                        $qtyCurrent     = $cekStok->jumlah;
-                        $qtyBaru        = $qtyCurrent + $variant['qty'];
+                    if (empty($variant['qty']) || $variant['qty'] <= 0) {
+                        continue;
                     }
 
-                    if (!empty($variant['qty']) && $variant['qty'] > 0) {
-                        Stock::updateOrCreate(
-                            [
-                                'item_varian_id'    => $variant['id_variant'],
-                                'lokasi_id'         => $input['lokasi_id'],
-                                'entitas_id'        => $input['entitas_id'],
-                            ],
-                            [
-                                'jumlah'            => $qtyBaru,
-                            ]
-                        );
+                    $cekStok = Stock::where('item_varian_id', $variant['id_variant'])
+                        ->where('lokasi_id', $input['lokasi_id'])
+                        ->where('entitas_id', $input['entitas_id'])
+                        ->lockForUpdate()
+                        ->first();
+
+                    if ($cekStok) {
+                        $cekStok->increment('jumlah', $variant['qty']);
+                    } else {
+                        Stock::create([
+                            'item_varian_id' => $variant['id_variant'],
+                            'lokasi_id'      => $input['lokasi_id'],
+                            'entitas_id'     => $input['entitas_id'],
+                            'jumlah'         => $variant['qty'],
+                        ]);
                     }
                 }
             }

@@ -12,6 +12,7 @@ use App\Models\StockOutMaster;
 use App\Models\StockOutMasterPhoto;
 use App\Models\StockOutChild;
 use App\Models\Stock;
+use App\Models\Category;
 
 use Illuminate\Http\Request;
 use Yajra\DataTables\DataTables;
@@ -21,6 +22,7 @@ use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Auth;
 
 use App\Services\FirebaseNotificationService;
+use App\Services\TandaTerimaOutService;
 
 class OutStockController extends Controller
 {
@@ -28,6 +30,7 @@ class OutStockController extends Controller
     {
         $gudang     = Auth::user()->loc_id;
         $entitas    = Entitas::all();
+        $categories = Category::all();
 
         $stockav    = Stock::where('lokasi_id', $gudang)->get();
         $items      =
@@ -120,7 +123,7 @@ class OutStockController extends Controller
                 ->rawColumns(['action', 'updated_at', 'so_number', 'date', 'werehouse', 'entitas', 'status'])
                 ->make(true);
         }
-        return view('pages.stock.out.index', compact('gudang', 'pekerjaan', 'items', 'entitas', 'stockav', 'allGudang'));
+        return view('pages.stock.out.index', compact('gudang', 'pekerjaan', 'items', 'entitas', 'stockav', 'allGudang', 'categories'));
     }
 
     public function store(Request $request, FirebaseNotificationService $firebase)
@@ -137,6 +140,7 @@ class OutStockController extends Controller
                 'entitas_id'        => $input['entitas_id'],
                 'pekerjaan_id'      => $input['pekerjaan_id'],
                 'note'              => $input['notes'],
+                'received_by'       => $input['received_by'],
                 'status'            => "Pending",
                 'created_by'        => Auth::user()->id,
                 'approved_by'       => NULL,
@@ -230,6 +234,7 @@ class OutStockController extends Controller
             $data->entitas_id       = $input['entitas_id'];
             $data->pekerjaan_id     = $input['pekerjaan_id'];
             $data->note             = $input['notes'];
+            $data->received_by      = $input['received_by'];
             $data->save();
             DB::commit();
 
@@ -376,5 +381,13 @@ class OutStockController extends Controller
             DB::rollback();
             return response()->json(['success' => false, 'message' => "Error: " . $th->getMessage()]);
         }
+    }
+
+    public function downloadTandaTerima(int $id, TandaTerimaOutService $reportService)
+    {
+        $pdf            = $reportService->generatePdf($id);
+        $waktu          = tanggalIndoWaktu(date('Y-m-d H:i:s'));
+        $filename       = 'Tanda Terima - ' . $waktu . '.pdf';
+        return $pdf->stream($filename);
     }
 }

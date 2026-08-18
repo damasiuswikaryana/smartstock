@@ -14,6 +14,7 @@ use App\Models\Stock;
 use App\Models\Outlet;
 use App\Models\Project;
 use App\Models\User;
+use App\Models\Category;
 
 use Illuminate\Http\Request;
 use Yajra\DataTables\DataTables;
@@ -23,6 +24,7 @@ use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Auth;
 
 use App\Services\FirebaseNotificationService;
+use App\Services\TandaTerimaInService;
 
 class InOutStockController extends Controller
 {
@@ -31,6 +33,7 @@ class InOutStockController extends Controller
         $vendor     = Vendor::all();
         $entitas    = Entitas::all();
         $items      = ItemMaster::all();
+        $categories = Category::all();
         $lokasi     = Auth::user()->loc_id;
 
         if (
@@ -115,7 +118,7 @@ class InOutStockController extends Controller
                 ->rawColumns(['action', 'updated_at', 'si_number', 'entitas', 'date', 'werehouse', 'vendor', 'ptw_number', 'status'])
                 ->make(true);
         }
-        return view('pages.stock.in.index', compact('vendor', 'items', 'entitas', 'pekerjaan', 'gudang'));
+        return view('pages.stock.in.index', compact('vendor', 'items', 'entitas', 'pekerjaan', 'gudang', 'categories'));
     }
 
     public function store(Request $request, FirebaseNotificationService $firebase)
@@ -377,5 +380,13 @@ class InOutStockController extends Controller
             DB::rollback();
             return response()->json(['success' => false, 'message' => "Error: " . $th->getMessage()]);
         }
+    }
+
+    public function downloadTandaTerima(int $id, TandaTerimaInService $reportService)
+    {
+        $pdf            = $reportService->generatePdf($id);
+        $waktu          = tanggalIndoWaktu(date('Y-m-d H:i:s'));
+        $filename       = 'Tanda Terima - ' . $waktu . '.pdf';
+        return $pdf->stream($filename);
     }
 }

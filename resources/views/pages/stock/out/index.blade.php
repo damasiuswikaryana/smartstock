@@ -64,24 +64,24 @@
                         @method('POST')
                         <div class="row">
                             <div class="col-12">
-                                <div class="mb-3 row">
+                                <div class="mb-2 row">
                                     <label class="col-lg-12 col-form-label mb-0">Stock Out Number: <span
                                             class="text-danger">*</span></label>
                                     <div class="col-lg-12">
-                                        <input type="text" class="form-control" placeholder="ASTA/XXX/XXX"
-                                            name="stock_out_number" value="" required>
+                                        <input type="text" class="form-control fw-bold" placeholder="ASTA/XXX/XXX"
+                                            name="stock_out_number" value="" style="font-size:18px;" required>
                                     </div>
                                 </div>
                             </div>
                             <div class="col-12 col-lg-6">
-                                <div class="mb-3 row">
+                                <div class="mb-2 row">
                                     <label class="col-lg-4 col-form-label">Date: <span class="text-danger">*</span></label>
                                     <div class="col-lg-8">
                                         <input type="date" class="form-control" placeholder="Date stock in"
                                             name="out_date" value="" required>
                                     </div>
                                 </div>
-                                <div class="mb-3 row">
+                                <div class="mb-2 row">
                                     <label class="col-lg-4 col-form-label">SRF Number: </label>
                                     <div class="col-lg-8">
                                         <input type="text" class="form-control" placeholder="SRF Number"
@@ -91,7 +91,7 @@
                             </div>
 
                             <div class="col-12 col-lg-6">
-                                <div class="mb-3 row">
+                                <div class="mb-2 row">
                                     <label class="col-lg-4 col-form-label">Project: <span
                                             class="text-danger">*</span></label>
                                     <div class="col-lg-8">
@@ -102,7 +102,7 @@
                                         </select>
                                     </div>
                                 </div>
-                                <div class="mb-3 row">
+                                <div class="mb-2 row">
                                     <label class="col-lg-4 col-form-label">Entity: <span
                                             class="text-danger">*</span></label>
                                     <div class="col-lg-8">
@@ -111,6 +111,13 @@
                                                 <option value="{{ $et->id }}">{{ $et->entitas_name }}</option>
                                             @endforeach
                                         </select>
+                                    </div>
+                                </div>
+                                <div class="mb-2 row">
+                                    <label class="col-lg-4 col-form-label">Received by: </label>
+                                    <div class="col-lg-8">
+                                        <input type="text" class="form-control" placeholder="Diterima oleh ..."
+                                            name="received_by" value="">
                                     </div>
                                 </div>
                             </div>
@@ -128,8 +135,7 @@
                                 </div>
                             </div>
 
-                            <div class="col-12 mb-3">
-                                <h4 class="fw-bold mb-3">Notes and Documentation</h4>
+                            <div class="col-12 mb-2">
                                 <div class="mb-1 row">
                                     <div class="col-lg-12">
                                         <label class="col-form-label">Notes: <span class="text-danger">*</span></label>
@@ -146,7 +152,8 @@
                 </form>
                 <div class="modal-footer p-2">
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
-                    <button type="submit" class="btn btn-primary" form="form-tambah">Submit Data</button>
+                    <button type="submit" class="btn btn-primary" id="btn-submit" form="form-tambah">Submit
+                        Data</button>
                 </div>
             </div>
         </div>
@@ -160,8 +167,21 @@
 @endsection
 
 @push('js')
+    <script src="{{ asset('assets/js/plugins/choices.min.js') }}"></script>
     <script src="{{ asset('assets/js/plugins/dataTables.fixedColumns.min.js') }}"></script>
     <script type="text/javascript">
+        function initItemMasterChoices(element) {
+            new Choices(element, {
+                searchEnabled: true,
+                searchPlaceholderValue: 'Search item...',
+                itemSelectText: '',
+                shouldSort: false,
+                allowHTML: true,
+                placeholder: true,
+                placeholderValue: 'Select Item'
+            });
+        }
+
         $("#modalEdit").on("show.bs.modal", function(e) {
             var link = $(e.relatedTarget);
             $(this).find(".modal-content").load(link.attr("href"));
@@ -257,6 +277,13 @@
         });
 
         $('#form-tambah').on('submit', function(e) {
+            let button = $('#btn-submit');
+            if (button.prop('disabled')) {
+                return false;
+            }
+            button.prop('disabled', true);
+            button.html('<i class="fa fa-spinner fa-spin"></i> Processing...');
+
             e.preventDefault();
             $.ajax({
                 url: '{{ route('stockout.simpan') }}', // Route untuk simpan data
@@ -270,14 +297,20 @@
                         hideLoader();
                         $('#exampleModalCenter').modal('hide');
                         showToastSuccess("Data has been added");
+                        $('#btn-submit').prop('disabled', false);
+                        $('#btn-submit').html('Submit Data');
                     } else {
                         hideLoader();
                         showToastError(response.message);
+                        $('#btn-submit').prop('disabled', false);
+                        $('#btn-submit').html('Submit Data');
                     }
                 },
                 error: function(xhr) {
                     hideLoader();
                     showToastError("Error while adding data");
+                    $('#btn-submit').prop('disabled', false);
+                    $('#btn-submit').html('Submit Data');
                 }
             });
         });
@@ -318,10 +351,14 @@
             let html = `
                 <div class="row p-0 mx-0 mb-2 produk-item">
                     <div class="col-10 col-lg-11 ps-0">
-                        <select data-index="${itemMasterIndex}" class="form-control item-master" name="item[${itemMasterIndex}][id_item]" required>
+                        <select data-index="${itemMasterIndex}" class="form-control item-master" name="item[${itemMasterIndex}][id_item]" id="item-master-${itemMasterIndex}" required>
                             <option value="" selected disabled>Select Item</option>
-                            @foreach ($items as $item)
-                                <option value="{{ $item->id }}">{{ $item->nama }}</option>
+                            @foreach ($categories as $category)
+                                <optgroup label="{{ $category->title }}">
+                                    @foreach ($category->items as $item)
+                                        <option value="{{ $item->id }}">{{ $item->nama }}</option>
+                                    @endforeach
+                                </optgroup>
                             @endforeach
                         </select>
                         <div class="variant-container mt-2" id="variant-container-${itemMasterIndex}"></div>
@@ -335,6 +372,8 @@
                 `;
 
             $('#produk-container').append(html);
+            let selectElement = document.getElementById(`item-master-${itemMasterIndex}`);
+            initItemMasterChoices(selectElement);
             itemMasterIndex++;
         });
 

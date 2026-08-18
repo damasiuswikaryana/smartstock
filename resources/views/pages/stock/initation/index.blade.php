@@ -74,7 +74,7 @@
                 </form>
                 <div class="modal-footer p-2">
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
-                    <button type="submit" class="btn btn-primary" form="form-tambah">Submit Data</button>
+                    <button type="submit" class="btn btn-primary" id="btn-submit" form="form-tambah">Submit Data</button>
                 </div>
             </div>
         </div>
@@ -82,8 +82,28 @@
 @endsection
 
 @push('js')
+    <script src="{{ asset('assets/js/plugins/choices.min.js') }}"></script>
     <script type="text/javascript">
+        function initItemMasterChoices(element) {
+            new Choices(element, {
+                searchEnabled: true,
+                searchPlaceholderValue: 'Search item...',
+                itemSelectText: '',
+                shouldSort: false,
+                allowHTML: true,
+                placeholder: true,
+                placeholderValue: 'Select Item'
+            });
+        }
+
         $('#form-tambah').on('submit', function(e) {
+            let button = $('#btn-submit');
+            if (button.prop('disabled')) {
+                return false;
+            }
+            button.prop('disabled', true);
+            button.html('<i class="fa fa-spinner fa-spin"></i> Processing...');
+
             e.preventDefault();
             $.ajax({
                 url: '{{ route('stockinit.simpan') }}', // Route untuk simpan data
@@ -96,14 +116,20 @@
                         hideLoader();
                         $('#exampleModalCenter').modal('hide');
                         showToastSuccess("Data has been added");
+                        $('#btn-submit').prop('disabled', false);
+                        $('#btn-submit').html('Submit Data');
                     } else {
                         hideLoader();
                         showToastError(response.message);
+                        $('#btn-submit').prop('disabled', false);
+                        $('#btn-submit').html('Submit Data');
                     }
                 },
                 error: function(xhr) {
                     hideLoader();
                     showToastError("Error while adding data");
+                    $('#btn-submit').prop('disabled', false);
+                    $('#btn-submit').html('Submit Data');
                 }
             });
         });
@@ -118,10 +144,14 @@
             let html = `
                 <div class="row p-0 mx-0 mb-2 produk-item">
                     <div class="col-11 col-lg-11 ps-0">
-                        <select data-index="${itemMasterIndex}" class="form-control item-master" name="item[${itemMasterIndex}][id_item]" required>
+                        <select data-index="${itemMasterIndex}" class="form-control item-master" name="item[${itemMasterIndex}][id_item]" id="item-master-${itemMasterIndex}" required>
                             <option value="" selected disabled>Select Item</option>
-                            @foreach ($items as $item)
-                                <option value="{{ $item->id }}">{{ $item->nama }}</option>
+                            @foreach ($categories as $category)
+                                <optgroup label="{{ $category->title }}">
+                                    @foreach ($category->items as $item)
+                                        <option value="{{ $item->id }}">{{ $item->nama }}</option>
+                                    @endforeach
+                                </optgroup>
                             @endforeach
                         </select>
                         <div class="variant-container mt-2" id="variant-container-${itemMasterIndex}"></div>
@@ -135,6 +165,8 @@
                 `;
 
             $('#produk-container').append(html);
+            let selectElement = document.getElementById(`item-master-${itemMasterIndex}`);
+            initItemMasterChoices(selectElement);
             itemMasterIndex++;
         });
 

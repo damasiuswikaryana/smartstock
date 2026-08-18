@@ -6,6 +6,7 @@ use App\Models\Vendor;
 use App\Models\Category;
 use App\Models\ItemMaster;
 use App\Models\ItemVarian;
+use App\Models\Satuan;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
@@ -73,8 +74,9 @@ class AdmItemController extends Controller
         $category   = Category::all();
         $vendor     = Vendor::all();
         $data       = ItemMaster::where('id', $id)->first();
+        $satuan     = Satuan::all();
         try {
-            return view('pages.item.edit', compact('data', 'category', 'vendor'));
+            return view('pages.item.edit', compact('data', 'category', 'vendor', 'satuan'));
         } catch (\Throwable $th) {
             return redirect()->back()->with('error', "Error: " . $th->getMessage());
         }
@@ -198,10 +200,16 @@ class AdmItemController extends Controller
                 })->addColumn('updated_at', function ($row) {
                     return tanggalIndoWaktuLidgkap($row->updated_at);
                 })->addColumn('kode_varian', function ($row) {
-                    return '<span class="badge bg-light-secondary">' . $row->kode_varian . '</span>';
+                    return '<span class="badge bg-light-secondary f-14">' . $row->kode_varian . '</span>';
+                })->addColumn('satuan', function ($row) {
+                    if ($row->satuan_id != null) {
+                        return '<span class="badge bg-light-secondary f-14">' . $row->satuan->satuan . '</span>';
+                    } else {
+                        return "-";
+                    }
                 })->addColumn('nilai', function ($row) {
                     return rupiah($row->nilai);
-                })->rawColumns(['action', 'updated_at', 'kode_varian', 'nilai'])
+                })->rawColumns(['action', 'updated_at', 'kode_varian', 'nilai', 'satuan'])
                 ->make(true);
         }
     }
@@ -226,9 +234,10 @@ class AdmItemController extends Controller
     }
     public function varian_edit(int $id)
     {
+        $satuan         = Satuan::all();
         $data           = ItemVarian::where('id', $id)->first();
         try {
-            return view('pages.item.edit_variant', compact('data'));
+            return view('pages.item.edit_variant', compact('data', 'satuan'));
         } catch (\Throwable $th) {
             return redirect()->back()->with('error', "Error: " . $th->getMessage());
         }
@@ -242,6 +251,7 @@ class AdmItemController extends Controller
             $data->kode_varian      = $input['kode_varian'];
             $data->sku_varian       = $input['sku_varian'];
             $data->name_varian      = $input['name_varian'];
+            $data->satuan_id        = $input['satuan_id'];
             $data->nilai            = hapusTitikAngka($input['nilai']);
             $data->save();
             DB::commit();
