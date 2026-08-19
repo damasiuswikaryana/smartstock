@@ -90,7 +90,7 @@ class AdmStockCurrentController extends Controller
                             <i class="ph-duotone ph-warning-octagon me-1"></i> 
                             <span>Duplicate</span></span>';
                     }
-                    return '<div class="d-flex align-items-center">
+                    return '<div class="d-flex align-items-center justify-content-between">
                         <p class="fw-bold mb-0">' . $row->item_varian->name_varian . '</p>
                         ' . $badge . '
                     </div>';
