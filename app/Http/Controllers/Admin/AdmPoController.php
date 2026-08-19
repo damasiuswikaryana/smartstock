@@ -276,6 +276,21 @@ class AdmPoController extends Controller
     {
         $data   = Po::where('id', $id)->first();
         $input  = $request->all();
+
+        if ($input['dir_approval'] == "yes") {
+            $director       = Entitas::select('director_id')->where('id', $input['entitas_id'])->first();
+            $director_id    = $director->director_id;
+        } else {
+            $director_id    = NULL;
+        }
+        if ($input['disc_tipe'] == 'rupiah') {
+            $disc_rp    = hapusTitikAngka($input['disc']);
+            $disc_pr    = NULL;
+        } else {
+            $disc_rp    = NULL;
+            $disc_pr    = hapusTitikAngka($input['disc']);
+        }
+
         try {
             DB::beginTransaction();
             $data->po_no             = $input['po_no'];
@@ -283,9 +298,12 @@ class AdmPoController extends Controller
             $data->entitas_id        = $input['entitas_id'];
             $data->vendor_id         = $input['vendor_id'];
             $data->tax               = $input['tax'];
-            $data->disc              = hapusTitikAngka($input['disc']);
+            $data->ppn               = $input['ppn'];
+            $data->disc              = $disc_rp;
+            $data->disc_perc         = $disc_pr;
             $data->dp                = hapusTitikAngka($input['dp']);
             $data->notes             = $input['notes'];
+            $data->director_id       = $director_id;
             $data->save();
             DB::commit();
 

@@ -7,25 +7,37 @@
         <form class="row" action="#" method="post" id="form-edit" name="form-edit">
             @csrf
             @method('POST')
-            <div class="col-12 col-lg-6">
-                <div class="mb-3 row">
-                    <label class="col-lg-4 col-form-label">PO Number: <span class="text-danger">*</span></label>
-                    <div class="col-lg-8">
-                        <input type="text" class="form-control" placeholder="ASTA/XXX/XXX" name="po_no"
-                            value="{{ $data->po_no }}" required>
+            <div class="col-12 col-lg-12">
+                <div class="mb-2 row">
+                    <label class="col-lg-12 col-form-label mb-0">PO Number: <span class="text-danger">*</span></label>
+                    <div class="col-lg-12">
+                        <input type="text" class="form-control fs-5 fw-bold" placeholder="ASTA/XXX/XXX"
+                            name="po_no" value="{{ $data->po_no }}" required>
                     </div>
                 </div>
-                <div class="mb-3 row">
+            </div>
+
+            <div class="col-12 col-lg-6">
+                <div class="mb-1 row">
                     <label class="col-lg-4 col-form-label">Date: <span class="text-danger">*</span></label>
                     <div class="col-lg-8">
                         <input type="date" class="form-control" placeholder="Date stock in" name="po_date"
                             value="{{ $data->po_date }}" required>
                     </div>
                 </div>
+                <div class="mb-1 row">
+                    <label class="col-lg-4 col-form-label">Director Approval: <span class="text-danger">*</span></label>
+                    <div class="col-lg-8">
+                        <select class="form-control" name="dir_approval" required>
+                            <option @if ($data->director_id != null) selected @endif value="yes">Yes</option>
+                            <option @if ($data->director_id == null) selected @endif value="no">No</option>
+                        </select>
+                    </div>
+                </div>
             </div>
 
             <div class="col-12 col-lg-6">
-                <div class="mb-3 row">
+                <div class="mb-1 row">
                     <label class="col-lg-4 col-form-label">Vendor: <span class="text-danger">*</span></label>
                     <div class="col-lg-8">
                         <select class="form-control" name="vendor_id" required>
@@ -36,7 +48,7 @@
                         </select>
                     </div>
                 </div>
-                <div class="mb-3 row">
+                <div class="mb-1 row">
                     <label class="col-lg-4 col-form-label">Entity: <span class="text-danger">*</span></label>
                     <div class="col-lg-8">
                         <select class="form-control" name="entitas_id" required>
@@ -117,39 +129,69 @@
                 </div>
             </div>
 
-            <div class="col-12 col-lg-6 offset-lg-6">
-                <div class="mb-3 row">
-                    <label class="col-lg-4 col-form-label">Tax: <span class="text-danger">*</span></label>
-                    <div class="col-lg-8">
-                        <input type="number" class="form-control" placeholder="In percentage" name="tax"
-                            value="{{ $data->tax }}" required>
-                    </div>
-                </div>
-                <div class="mb-3 row">
-                    <label class="col-lg-4 col-form-label">Discount: <span class="text-danger">*</span></label>
-                    <div class="col-lg-8">
-                        <input type="number" class="form-control number-separator" placeholder="Discount in rupiah"
-                            name="disc" value="{{ pecahTanpaRp($data->disc) }}" required>
-                    </div>
-                </div>
-                <div class="mb-3 row">
-                    <label class="col-lg-4 col-form-label">Down Payment: <span class="text-danger">*</span></label>
-                    <div class="col-lg-8">
-                        <input type="number" class="form-control number-separator"
-                            placeholder="Down payment in rupiah" name="dp"
-                            value="{{ pecahTanpaRp($data->dp) }}" required>
+            <div class="col-12 col-lg-6">
+                <div class="mb-1 row">
+                    <div class="col-lg-12">
+                        <label class="col-form-label">Notes: <span class="text-danger">*</span></label>
+                        <textarea type="text" class="form-control" name="notes" required rows="6">{{ $data->notes }}</textarea>
                     </div>
                 </div>
             </div>
 
-            <div class="col-12 mb-3">
+            <div class="col-12 col-lg-6">
                 <div class="mb-1 row">
-                    <div class="col-lg-12">
-                        <label class="col-form-label">Notes: <span class="text-danger">*</span></label>
-                        <textarea type="text" class="form-control" name="notes" required>{{ $data->notes }}</textarea>
+                    <label class="col-lg-4 col-form-label">PPH: <span class="text-danger">*</span></label>
+                    <div class="col-lg-8">
+                        <div class="input-group">
+                            <input type="number" class="form-control" placeholder="PPH" name="tax"
+                                value="{{ $data->tax }}" required>
+                            <span class="input-group-text">%</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="mb-1 row">
+                    <label class="col-lg-4 col-form-label">PPN: <span class="text-danger">*</span></label>
+                    <div class="col-lg-8">
+                        <div class="input-group">
+                            <input type="number" class="form-control" placeholder="PPN" name="ppn"
+                                value="{{ $data->ppn }}" required>
+                            <span class="input-group-text">%</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="mb-1 row">
+                    <label class="col-lg-4 col-form-label">Discount: <span class="text-danger">*</span></label>
+                    <div class="col-lg-8">
+                        <div class="row">
+                            <div class="col-lg-3 pe-1">
+                                <select class="form-control" name="disc_tipe" required>
+                                    <option @if ($data->disc != null) selected @endif value="rupiah">Rp.
+                                    </option>
+                                    <option @if ($data->disc_perc != null) selected @endif value="percentage">%
+                                    </option>
+                                </select>
+                            </div>
+                            <div class="col-lg-9 ps-1">
+                                <input type="number" class="form-control number-separator"
+                                    placeholder="Discount value" name="disc"
+                                    value="{{ pecahTanpaRp($data->disc) }}" required>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="mb-1 row">
+                    <label class="col-lg-4 col-form-label">Down Payment: <span class="text-danger">*</span></label>
+                    <div class="col-lg-8">
+                        <div class="input-group">
+                            <span class="input-group-text">Rp.</span>
+                            <input type="number" class="form-control number-separator"
+                                placeholder="Down payment in rupiah" name="dp"
+                                value="{{ pecahTanpaRp($data->dp) }}" required>
+                        </div>
                     </div>
                 </div>
             </div>
+
             <div class="col-12">
                 <p class="mb-0 text-muted"><b>Important</b>: <span class="text-danger">*</span> fields are
                     required.</p>
