@@ -161,12 +161,14 @@
                     visible: true,
                     class: 'py-lg-0 py-sm-1 text-center',
                 },
-                {
-                    data: 'action',
-                    name: 'action',
-                    visible: true,
-                    class: 'py-lg-0 py-sm-1 text-center',
-                }
+                @hasanyrole('masteradmin')
+                    {
+                        data: 'action',
+                        name: 'action',
+                        visible: true,
+                        class: 'py-lg-0 py-sm-1 text-center',
+                    }
+                @endhasanyrole
             ],
             createdRow: function(row, data, dataIndex) {
                 var api = this.api();
