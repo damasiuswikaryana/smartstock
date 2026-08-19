@@ -148,7 +148,6 @@
                     name: 'werehouse',
                     class: 'py-lg-0 py-sm-1 text-start',
                 },
-
                 {
                     data: 'qty',
                     name: 'qty',
@@ -161,14 +160,12 @@
                     visible: true,
                     class: 'py-lg-0 py-sm-1 text-center',
                 },
-                @hasanyrole('masteradmin')
-                    {
-                        data: 'action',
-                        name: 'action',
-                        visible: true,
-                        class: 'py-lg-0 py-sm-1 text-center',
-                    }
-                @endhasanyrole
+                {
+                    data: 'action',
+                    name: 'action',
+                    visible: true,
+                    class: 'py-lg-0 py-sm-1 text-center',
+                }
             ],
             createdRow: function(row, data, dataIndex) {
                 var api = this.api();
