@@ -88,7 +88,9 @@
                                         Target
                                     </div>
                                     <div class="ms-0 me-auto fw-bold col-6">
-                                        {{ $data->gudangTarget->nama }}
+                                        {{ $data->gudangTarget->nama }}<br>
+                                        <p class="fw-medium mb-0">User Associate:
+                                            {{ getUserGudang($data->werehouse_target_id) }}</p>
                                     </div>
                                 </li>
                                 <li class="list-group-item d-flex justify-content-between align-items-start">

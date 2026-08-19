@@ -43,35 +43,42 @@
                         @csrf
                         @method('POST')
                         <div class="row">
-                            <div class="col-6">
-                                <h4 class="fw-bold mb-3">Stock Info</h4>
-                                <div class="mb-3 row">
-                                    <label class="col-lg-4 col-form-label">Stock Transfer Number: <span
+                            <div class="col-12">
+                                <div class="mb-2 row">
+                                    <label class="col-lg-12 col-form-label mb-0">Stock Transfer Number: <span
                                             class="text-danger">*</span></label>
-                                    <div class="col-lg-8">
-                                        <input type="text" class="form-control" placeholder="ASTA/XXX/XXX"
-                                            name="stock_transfer_number" value="" required>
+                                    <div class="col-lg-12">
+                                        <input type="text" class="form-control fw-bold" placeholder="ASTA/XXX/XXX"
+                                            name="stock_transfer_number" value="" style="font-size:18px;" required>
                                     </div>
                                 </div>
-                                <div class="mb-3 row">
+                            </div>
+                            <div class="col-6">
+                                <div class="mb-2 row">
                                     <label class="col-lg-4 col-form-label">Date: <span class="text-danger">*</span></label>
                                     <div class="col-lg-8">
                                         <input type="date" class="form-control" placeholder="Date stock transfer"
                                             name="transfer_date" value="" required>
                                     </div>
                                 </div>
-                                <div class="mb-3 row">
+                                <div class="mb-2 row">
                                     <label class="col-lg-4 col-form-label">SRF Number: </label>
                                     <div class="col-lg-8">
                                         <input type="text" class="form-control" placeholder="SRF Number"
                                             name="transfer_srf" value="">
                                     </div>
                                 </div>
+                                <div class="mb-2 row">
+                                    <label class="col-lg-4 col-form-label">Received by: </label>
+                                    <div class="col-lg-8">
+                                        <input type="text" class="form-control" placeholder="Diterima oleh ..."
+                                            name="received_by" value="">
+                                    </div>
+                                </div>
                             </div>
 
                             <div class="col-6">
-                                <h4 class="fw-bold mb-3">Project <span class="text-danger">*</span></h4>
-                                <div class="mb-3 row">
+                                <div class="mb-2 row">
                                     <label class="col-lg-4 col-form-label">Project:</label>
                                     <div class="col-lg-8">
                                         <select class="form-control" name="pekerjaan_id" required>
@@ -81,7 +88,7 @@
                                         </select>
                                     </div>
                                 </div>
-                                <div class="mb-3 row">
+                                <div class="mb-2 row">
                                     <label class="col-lg-4 col-form-label">Entity: <span
                                             class="text-danger">*</span></label>
                                     <div class="col-lg-8">
@@ -92,7 +99,7 @@
                                         </select>
                                     </div>
                                 </div>
-                                <div class="mb-3 row">
+                                <div class="mb-2 row">
                                     <label class="col-lg-4 col-form-label">Target: <span
                                             class="text-danger">*</span></label>
                                     <div class="col-lg-8">
@@ -105,7 +112,7 @@
                                 </div>
                             </div>
 
-                            <div class="col-12 mb-4">
+                            <div class="col-12 mb-2">
                                 <h4 class="fw-bold mb-3">Items</h4>
                                 <div id="produk-container">
 
@@ -120,8 +127,7 @@
                             </div>
 
                             <div class="col-12">
-                                <h4 class="fw-bold mb-3">Notes and Documentation</h4>
-                                <div class="mb-3 row">
+                                <div class="mb-2 row">
                                     <div class="col-lg-12">
                                         <label class="col-form-label">Notes: <span class="text-danger">*</span></label>
                                         <textarea type="text" class="form-control" name="notes" required></textarea>

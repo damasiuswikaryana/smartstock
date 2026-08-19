@@ -227,7 +227,7 @@
         {{-- items --}}
         <tr>
             <th width="20%">CODE</th>
-            <th width="45%">ITEM(S) NAME</th>
+            <th width="37%">ITEM(S) NAME</th>
             <th width="8%">SRF</th>
             <th width="8%">OUT</th>
             <th width="5%">UNIT</th>

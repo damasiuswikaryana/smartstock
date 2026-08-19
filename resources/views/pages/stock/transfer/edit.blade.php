@@ -9,35 +9,43 @@
         <form class="row" action="#" method="post" id="form-edit" name="form-edit">
             @csrf
             @method('POST')
-            <div class="col-6">
-                <h4 class="fw-bold mb-3">Stock Info</h4>
-                <div class="mb-3 row">
-                    <label class="col-lg-4 col-form-label">Stock Transfer Number: <span
+            <div class="col-12">
+                <div class="mb-2 row">
+                    <label class="col-lg-12 col-form-label mb-0">Stock Transfer Number: <span
                             class="text-danger">*</span></label>
-                    <div class="col-lg-8">
-                        <input type="text" class="form-control" placeholder="Number" name="stock_transfer_number"
-                            value="{{ $data->stock_transfer_number }}" required>
+                    <div class="col-lg-12">
+                        <input type="text" class="form-control fw-bold" placeholder="Number"
+                            name="stock_transfer_number" value="{{ $data->stock_transfer_number }}"
+                            style="font-size:18px;" required>
                     </div>
                 </div>
-                <div class="mb-3 row">
+            </div>
+            <div class="col-6">
+                <div class="mb-2 row">
                     <label class="col-lg-4 col-form-label">Date: <span class="text-danger">*</span></label>
                     <div class="col-lg-8">
                         <input type="date" class="form-control" placeholder="Date stock transfer"
                             name="transfer_date" value="{{ $data->transfer_date }}" required>
                     </div>
                 </div>
-                <div class="mb-3 row">
+                <div class="mb-2 row">
                     <label class="col-lg-4 col-form-label">SRF Number: </label>
                     <div class="col-lg-8">
                         <input type="text" class="form-control" placeholder="SRF Number" name="transfer_srf"
                             value="{{ $data->transfer_srf }}">
                     </div>
                 </div>
+                <div class="mb-2 row">
+                    <label class="col-lg-4 col-form-label">Received by: </label>
+                    <div class="col-lg-8">
+                        <input type="text" class="form-control" placeholder="Diterima oleh ..." name="received_by"
+                            value="{{ $data->received_by }}">
+                    </div>
+                </div>
             </div>
 
             <div class="col-6">
-                <h4 class="fw-bold mb-3">Project</h4>
-                <div class="mb-3 row">
+                <div class="mb-2 row">
                     <label class="col-lg-4 col-form-label">Project: <span class="text-danger">*</span></label>
                     <div class="col-lg-8">
                         <select class="form-control" name="pekerjaan_id" required>
@@ -48,7 +56,7 @@
                         </select>
                     </div>
                 </div>
-                <div class="mb-3 row">
+                <div class="mb-2 row">
                     <label class="col-lg-4 col-form-label">Entity: <span class="text-danger">*</span></label>
                     <div class="col-lg-8">
                         <select class="form-control" name="entitas_id" required>
@@ -59,7 +67,7 @@
                         </select>
                     </div>
                 </div>
-                <div class="mb-3 row">
+                <div class="mb-2 row">
                     <label class="col-lg-4 col-form-label">Target: <span class="text-danger">*</span></label>
                     <div class="col-lg-8">
                         <select class="form-control" name="werehouse_target_id" required>
@@ -72,7 +80,7 @@
                 </div>
             </div>
 
-            <div class="col-12 mb-4">
+            <div class="col-12 mb-0">
                 <h4 class="fw-bold mb-3">Items</h4>
                 <div id="produk-container-edit">
                     @foreach ($itemMasters as $itemMaster)
@@ -99,16 +107,18 @@
                                             </div>
                                             <div class="col-2">
                                                 <input type="text" class="form-control"
-                                                    value="Stock: {{ $variant->stock->sum('jumlah') }}" disabled>
+                                                    value="Stock: {{ $variant->getStockByLokasi($data->werehouse_source_id) }}"
+                                                    disabled>
                                             </div>
                                             <div class="col-2">
-                                                <input type="hidden" name="items[{{ $variant->id }}][item_varian_id]"
+                                                <input type="hidden"
+                                                    name="items[{{ $variant->id }}][item_varian_id]"
                                                     value="{{ $variant->id }}">
 
                                                 <input type="number" min="0"
-                                                    max="{{ $variant->stock->sum('jumlah') }}"
+                                                    max="{{ $variant->getStockByLokasi($data->werehouse_source_id) }}"
                                                     class="form-control qty-input"
-                                                    data-stock="{{ $variant->stock->sum('jumlah') }}"
+                                                    data-stock="{{ $variant->getStockByLokasi($data->werehouse_source_id) }}"
                                                     name="items[{{ $variant->id }}][qty]"
                                                     value="{{ $qty }}">
                                             </div>
@@ -136,22 +146,16 @@
             </div>
 
             <div class="col-12">
-                <h4 class="fw-bold mb-3">Notes and Documentation</h4>
-                <div class="mb-3 row">
+                <div class="mb-2 row">
                     <div class="col-lg-12">
                         <label class="col-form-label">Notes: <span class="text-danger">*</span></label>
                         <textarea type="text" class="form-control" name="notes" required>{{ $data->note }}</textarea>
                     </div>
                 </div>
-                <div class="mb-0">
-                    <p class="mb-0 text-muted"><b>Important</b>: <span class="text-danger">*</span> fields
-                        are
-                        required.</p>
-                </div>
             </div>
         </form>
 
-        <div class="col-12 mt-1">
+        <div class="col-12 mb-2">
             <div class="mb-0 row">
                 <div class="col-lg-12">
                     <label class="col-form-label pb-0">Documentation Upload:</label>
@@ -171,8 +175,8 @@
                     @foreach ($document as $doc)
                         <div class="col-xl-2 col-md-4 col-sm-6" id="wpdoc-{{ $doc->id }}">
                             <a class="card-gallery" data-fslightbox="gallery"
-                                href="{{ asset('storage/stock_out/' . $doc->filename) }}">
-                                <img class="img-fluid" src="{{ asset('storage/stock_out/' . $doc->filename) }}"
+                                href="{{ asset('storage/stock_transfer/' . $doc->filename) }}">
+                                <img class="img-fluid" src="{{ asset('storage/stock_transfer/' . $doc->filename) }}"
                                     alt="Documentation" />
                                 <div class="gallery-hover-data card-body justify-content-end">
                                     <div>
@@ -190,6 +194,12 @@
                 </div>
             </div>
         </div>
+
+        <div class="mb-0">
+            <p class="mb-0 text-muted"><b>Important</b>: <span class="text-danger">*</span> fields
+                are
+                required.</p>
+        </div>
     </div>
 </div>
 <div class="modal-footer p-2">
@@ -199,9 +209,9 @@
 
 <script src="{{ asset('assets/js/plugins/dropzone-amd-module.min.js') }}"></script>
 <script>
-    var stockOutId = {{ $data->id }};
+    var stockTransferId = {{ $data->id }};
     new Dropzone(".dropzone", {
-        url: "{{ route('stockout.upload', ':id') }}".replace(':id', stockOutId),
+        url: "{{ route('stocktransfer.upload', ':id') }}".replace(':id', stockTransferId),
         paramName: "file",
         maxFiles: 10,
         maxFilesize: 5, // MB
@@ -220,7 +230,7 @@
     $('#form-edit').on('submit', function(e) {
         e.preventDefault();
         const id = "{{ $data->id }}";
-        var url = "{{ route('stockout.update', ':id:') }}";
+        var url = "{{ route('stocktransfer.update', ':id:') }}";
         var url = url.replace(':id:', id);
 
         $.ajax({
@@ -252,7 +262,7 @@
 
     $(document).on('click', '.btn-delete-photo', function() {
         let id = $(this).data('id');
-        var url = "{{ route('stockout.hapusPhoto', ':id:') }}";
+        var url = "{{ route('stocktransfer.hapusPhoto', ':id:') }}";
         var url = url.replace(':id:', id);
 
         if (confirm('Delete this photo?')) {
@@ -304,7 +314,7 @@
 
     $(document).on('change', '.item-master', function() {
         let itemEditId = $(this).val();
-        let werehouseId = {{ $data->werehouse_id }};
+        let werehouseId = {{ $data->werehouse_source_id }};
         let indexEdit = $(this).data('index');
         $.ajax({
             url: "{{ route('getVariantStocks', ['id' => ':id', 'whid' => ':wh_id']) }}".replace(':id',

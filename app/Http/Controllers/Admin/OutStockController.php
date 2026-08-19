@@ -13,6 +13,7 @@ use App\Models\StockOutMasterPhoto;
 use App\Models\StockOutChild;
 use App\Models\Stock;
 use App\Models\Category;
+use App\Models\User;
 
 use Illuminate\Http\Request;
 use Yajra\DataTables\DataTables;

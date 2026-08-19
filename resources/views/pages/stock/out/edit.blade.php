@@ -10,23 +10,24 @@
             @csrf
             @method('POST')
             <div class="col-12">
-                <div class="mb-3 row">
-                    <label class="col-lg-4 col-form-label">Stock Out Number: <span class="text-danger">*</span></label>
-                    <div class="col-lg-8">
-                        <input type="text" class="form-control" placeholder="Number" name="stock_out_number"
-                            value="{{ $data->stock_out_number }}" required>
+                <div class="mb-2 row">
+                    <label class="col-lg-12 col-form-label mb-0">Stock Out Number: <span
+                            class="text-danger">*</span></label>
+                    <div class="col-lg-12">
+                        <input type="text" class="form-control fw-bold" placeholder="Number" name="stock_out_number"
+                            value="{{ $data->stock_out_number }}" style="font-size:18px;" required>
                     </div>
                 </div>
             </div>
             <div class="col-6">
-                <div class="mb-3 row">
+                <div class="mb-2 row">
                     <label class="col-lg-4 col-form-label">Date: <span class="text-danger">*</span></label>
                     <div class="col-lg-8">
                         <input type="date" class="form-control" placeholder="Date stock out" name="out_date"
                             value="{{ $data->out_date }}" required>
                     </div>
                 </div>
-                <div class="mb-3 row">
+                <div class="mb-2 row">
                     <label class="col-lg-4 col-form-label">SRF Number: </label>
                     <div class="col-lg-8">
                         <input type="text" class="form-control" placeholder="SRF Number" name="stock_out_srf"
@@ -36,8 +37,7 @@
             </div>
 
             <div class="col-6">
-                <h4 class="fw-bold mb-3">Project <span class="text-danger">*</span></h4>
-                <div class="mb-3 row">
+                <div class="mb-2 row">
                     <label class="col-lg-4 col-form-label">Project:</label>
                     <div class="col-lg-8">
                         <select class="form-control" name="pekerjaan_id" required>
@@ -48,7 +48,7 @@
                         </select>
                     </div>
                 </div>
-                <div class="mb-3 row">
+                <div class="mb-2 row">
                     <label class="col-lg-4 col-form-label">Entity: <span class="text-danger">*</span></label>
                     <div class="col-lg-8">
                         <select class="form-control" name="entitas_id" required>
@@ -59,10 +59,17 @@
                         </select>
                     </div>
                 </div>
+                <div class="mb-2 row">
+                    <label class="col-lg-4 col-form-label">Received by: </label>
+                    <div class="col-lg-8">
+                        <input type="text" class="form-control" placeholder="Diterima oleh ..." name="received_by"
+                            value="{{ $data->received_by }}">
+                    </div>
+                </div>
             </div>
 
-            <div class="col-12 mb-4">
-                <h4 class="fw-bold mb-3">Items</h4>
+            <div class="col-12 mb-0">
+                <h4 class="fw-bold mb-2">Items</h4>
                 <div id="produk-container-edit">
                     @foreach ($itemMasters as $itemMaster)
                         <div class="row p-0 mx-0 mb-2 produk-item">
@@ -88,16 +95,17 @@
                                             </div>
                                             <div class="col-2">
                                                 <input type="text" class="form-control"
-                                                    value="Stock: {{ $variant->stock->sum('jumlah') }}" disabled>
+                                                    value="Stock: {{ $variant->getStockByLokasi($data->werehouse_id) }}"
+                                                    disabled>
                                             </div>
                                             <div class="col-2">
                                                 <input type="hidden" name="items[{{ $variant->id }}][item_varian_id]"
                                                     value="{{ $variant->id }}">
 
                                                 <input type="number" min="0"
-                                                    max="{{ $variant->stock->sum('jumlah') }}"
+                                                    max="{{ $variant->getStockByLokasi($data->werehouse_id) }}"
                                                     class="form-control qty-input"
-                                                    data-stock="{{ $variant->stock->sum('jumlah') }}"
+                                                    data-stock="{{ $variant->getStockByLokasi($data->werehouse_id) }}"
                                                     name="items[{{ $variant->id }}][qty]"
                                                     value="{{ $qty }}">
                                             </div>
@@ -124,8 +132,7 @@
                 </div>
             </div>
 
-            <div class="col-12 mb-3">
-                <h4 class="fw-bold mb-3">Notes and Documentation</h4>
+            <div class="col-12 mb-2">
                 <div class="mb-1 row">
                     <div class="col-lg-12">
                         <label class="col-form-label">Notes: <span class="text-danger">*</span></label>
@@ -133,13 +140,9 @@
                     </div>
                 </div>
             </div>
-            <div class="col-12">
-                <p class="mb-0 text-muted"><b>Important</b>: <span class="text-danger">*</span> fields are
-                    required.</p>
-            </div>
         </form>
 
-        <div class="col-12 mt-1">
+        <div class="col-12 mb-2">
             <div class="mb-0 row">
                 <div class="col-lg-12">
                     <label class="col-form-label pb-0">Documentation Upload:</label>
@@ -177,6 +180,11 @@
                     @endforeach
                 </div>
             </div>
+        </div>
+
+        <div class="col-12">
+            <p class="mb-0 text-muted"><b>Important</b>: <span class="text-danger">*</span> fields are
+                required.</p>
         </div>
     </div>
 </div>

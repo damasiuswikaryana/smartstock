@@ -23,6 +23,13 @@ class ItemVarian extends Model
         return $this->hasMany(Stock::class, 'item_varian_id');
     }
 
+    public function getStockByLokasi(int $lokasiId)
+    {
+        return $this->stock()
+            ->where('lokasi_id', $lokasiId)
+            ->sum('jumlah');
+    }
+
     public function satuan(): BelongsTo
     {
         return $this->belongsTo(Satuan::class, 'satuan_id', 'id');

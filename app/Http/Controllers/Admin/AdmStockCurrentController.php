@@ -57,8 +57,26 @@ class AdmStockCurrentController extends Controller
             // get data
             $data = $data->get();
 
+            // cek duplikasi data
+            $duplicateKeys = $data
+                ->groupBy(function ($row) {
+                    return $row->item_varian_id . '-' . $row->lokasi_id . '-' . $row->entitas_id;
+                })
+                ->filter(function ($group) {
+                    return $group->count() > 1;
+                })
+                ->keys();
+
+            $data->each(function ($row) use ($duplicateKeys) {
+                $key = $row->item_varian_id . '-' . $row->lokasi_id . '-' . $row->entitas_id;
+                $row->is_duplicate = $duplicateKeys->contains($key);
+            });
+
             return DataTables::of($data)
                 ->addIndexColumn()
+                ->setRowClass(function ($row) {
+                    return $row->is_duplicate ? 'class_duplicate' : '';
+                })
                 ->addColumn('last_update', function ($row) {
                     return tanggalIndoWaktuLidgkap($row->updated_at);
                 })
@@ -66,8 +84,14 @@ class AdmStockCurrentController extends Controller
                     return $row->item_varian->sku_varian;
                 })
                 ->addColumn('item', function ($row) {
-                    return '<div class="d-flex flex-column">
+                    $badge = '';
+                    if ($row->is_duplicate) {
+                        $badge = '<span class="badge bg-danger mt-1">
+                            <i class="bi bi-exclamation-triangle me-1"></i> DUPLICATE</span>';
+                    }
+                    return '<div class="d-flex align-items-center">
                         <p class="fw-bold mb-0">' . $row->item_varian->name_varian . '</p>
+                        ' . $badge . '
                     </div>';
                 })
                 ->addColumn('variant', function ($row) {

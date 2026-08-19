@@ -2,7 +2,7 @@
 
 namespace App\Services;
 
-use App\Models\StockOutMaster;
+use App\Models\StockInMaster;
 
 use Barryvdh\DomPDF\Facade\Pdf;
 use Illuminate\Support\Facades\Storage;
@@ -11,7 +11,7 @@ class TandaTerimaInService
 {
     public function getData(int $id)
     {
-        $data           = StockOutMaster::with('child')->where('id', $id)->first();
+        $data           = StockInMaster::with('child')->where('id', $id)->first();
         return [
             'data'              => $data,
             'generated_at'      => now(),

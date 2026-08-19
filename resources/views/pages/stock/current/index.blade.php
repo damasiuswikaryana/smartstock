@@ -112,7 +112,7 @@
                 leftColumns: 1,
                 rightColumns: 1
             },
-            lengthMenu: [10, 20, 30, 40, 50, 100],
+            lengthMenu: [30, 60, 120, 180, 210, 300],
             "dom": '<"my-0"t><"d-flex justify-content-between align-items-center mx-3 mb-2"<"d-flex justify-content-start mx-2" <"me-2 pt-2"l>><"pt-2"p>>',
             order: [
                 [0, 'asc']

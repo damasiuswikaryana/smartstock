@@ -66,18 +66,18 @@
                         @method('POST')
                         <div class="row">
                             <div class="col-12">
-                                <div class="mb-3 row">
+                                <div class="mb-2 row">
                                     <label class="col-lg-12 col-form-label pt-0">Stock In Number: <span
                                             class="text-danger">*</span></label>
                                     <div class="col-lg-12">
-                                        <input type="text" class="form-control" placeholder="ASTA/XXX/XXX"
-                                            name="stock_in_number" value="" required>
+                                        <input type="text" class="form-control fw-bold" placeholder="ASTA/XXX/XXX"
+                                            name="stock_in_number" value="" style="font-size:18px;" required>
                                     </div>
                                 </div>
                             </div>
 
                             <div class="col-12 col-lg-6">
-                                <div class="mb-3 row">
+                                <div class="mb-2 row">
                                     <label class="col-lg-4 col-form-label">Werehouse: <span
                                             class="text-danger">*</span></label>
                                     <div class="col-lg-8">
@@ -88,14 +88,14 @@
                                         </select>
                                     </div>
                                 </div>
-                                <div class="mb-3 row">
+                                <div class="mb-2 row">
                                     <label class="col-lg-4 col-form-label">Date: <span class="text-danger">*</span></label>
                                     <div class="col-lg-8">
                                         <input type="date" class="form-control" placeholder="Date stock in"
                                             name="in_date" value="" required>
                                     </div>
                                 </div>
-                                <div class="mb-3 row">
+                                <div class="mb-2 row">
                                     <label class="col-lg-4 col-form-label">PTW Number:</label>
                                     <div class="col-lg-8">
                                         <input type="text" class="form-control" placeholder="Input PTW Number"
@@ -105,7 +105,7 @@
                             </div>
 
                             <div class="col-12 col-lg-6">
-                                <div class="mb-3 row">
+                                <div class="mb-2 row">
                                     <label class="col-lg-4 col-form-label">Vendor: <span
                                             class="text-danger">*</span></label>
                                     <div class="col-lg-8">
@@ -116,7 +116,7 @@
                                         </select>
                                     </div>
                                 </div>
-                                <div class="mb-3 row">
+                                <div class="mb-2 row">
                                     <label class="col-lg-4 col-form-label">Project: <span
                                             class="text-danger">*</span></label>
                                     <div class="col-lg-8">
@@ -127,7 +127,7 @@
                                         </select>
                                     </div>
                                 </div>
-                                <div class="mb-3 row">
+                                <div class="mb-2 row">
                                     <label class="col-lg-4 col-form-label">Entity: <span
                                             class="text-danger">*</span></label>
                                     <div class="col-lg-8">
@@ -140,7 +140,7 @@
                                 </div>
                             </div>
 
-                            <div class="col-12 mb-4">
+                            <div class="col-12 mb-0">
                                 <h4 class="fw-bold mb-3">Items</h4>
                                 <div id="produk-container">
 
@@ -154,8 +154,7 @@
                                 </div>
                             </div>
 
-                            <div class="col-12 mb-3">
-                                <h4 class="fw-bold mb-3">Notes and Documentation</h4>
+                            <div class="col-12 mb-2">
                                 <div class="mb-1 row">
                                     <div class="col-lg-12">
                                         <label class="col-form-label">Notes: <span class="text-danger">*</span></label>

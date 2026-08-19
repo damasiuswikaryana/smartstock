@@ -14,6 +14,7 @@ use App\Models\StockTransferChild;
 use App\Models\Stock;
 use App\Models\Category;
 use App\Models\StockOutChild;
+use App\Models\User;
 
 use Illuminate\Http\Request;
 use Yajra\DataTables\DataTables;
@@ -127,6 +128,7 @@ class TransferStockController extends Controller
                 'entitas_id'                => $input['entitas_id'],
                 'pekerjaan_id'              => $input['pekerjaan_id'],
                 'note'                      => $input['notes'],
+                'received_by'               => $input['received_by'],
                 'status'                    => "Pending",
                 'created_by'                => Auth::user()->id,
                 'approved_by'               => NULL,
@@ -176,9 +178,10 @@ class TransferStockController extends Controller
     public function edit(int $id)
     {
         $data               = StockTransferMaster::with('child')->where('id', $id)->first();
-        $gudang             = $data->werehouse_id;
+        $gudang             = $data->werehouse_source_id;
         $pekerjaan          = Project::all();
         $entitas            = Entitas::all();
+        $dataGudang         = Outlet::all();
 
         $items              =
             ItemMaster::with([
@@ -207,7 +210,7 @@ class TransferStockController extends Controller
         // Mapping qty berdasarkan item_varian_id
         $qtyData            = $data->child->keyBy('item_varian_id');
 
-        return view('pages.stock.transfer.edit', compact('data', 'pekerjaan', 'entitas', 'items', 'itemMasters', 'document', 'qtyData'));
+        return view('pages.stock.transfer.edit', compact('data', 'pekerjaan', 'entitas', 'items', 'itemMasters', 'document', 'qtyData', 'dataGudang'));
     }
 
     public function update(Request $request, int $id)
@@ -219,18 +222,19 @@ class TransferStockController extends Controller
             DB::beginTransaction();
             $data->stock_transfer_number    = $input['stock_transfer_number'];
             $data->transfer_srf             = $input['transfer_srf'];
-            $data->out_date                 = $input['out_date'];
+            $data->transfer_date            = $input['transfer_date'];
             $data->werehouse_source_id      = $gudang;
             $data->werehouse_target_id      = $input['werehouse_target_id'];;
             $data->entitas_id               = $input['entitas_id'];
             $data->pekerjaan_id             = $input['pekerjaan_id'];
             $data->note                     = $input['notes'];
+            $data->received_by              = $input['received_by'];
             $data->save();
             DB::commit();
 
             foreach ($request->items as $item) {
                 if ($item['qty'] > 0) {
-                    StockOutChild::updateOrCreate(
+                    StockTransferChild::updateOrCreate(
                         [
                             'transfer_master_id'    => $id,
                             'item_varian_id'        => $item['item_varian_id'],
@@ -298,7 +302,7 @@ class TransferStockController extends Controller
         }
     }
 
-    public function approveOut(Request $request, int $id, FirebaseNotificationService $firebase)
+    public function approveTransfer(Request $request, int $id, FirebaseNotificationService $firebase)
     {
         $data               = StockTransferMaster::where('id', $id)->first();
         $gudangAsal         = $data->werehouse_source_id;
