@@ -77,6 +77,13 @@ class AdmStockCurrentController extends Controller
                 ->setRowClass(function ($row) {
                     return $row->is_duplicate ? 'class_duplicate' : '';
                 })
+                ->addColumn('action', function ($row) {
+                    return '<ul class="list-inline mb-0">
+                                <li class="list-inline-item">
+                                    <a data-bs-toggle="tooltip" data-bs-placement="top" data-bs-original-title="Delete" href="#" class="avtar avtar-xs btn-link-danger btn-pc-default btn-delete" data-id="' . $row->id . '" type="submit"><i class="ti ti-trash f-20"></i></a>
+                                </li>
+                            </ul>';
+                })
                 ->addColumn('last_update', function ($row) {
                     return tanggalIndoWaktuLidgkap($row->updated_at);
                 })
@@ -132,5 +139,16 @@ class AdmStockCurrentController extends Controller
         $waktu          = tanggalIndoWaktu(date('Y-m-d H:i:s'));
         $filename       = 'Stock Report - ' . $werehouse . ' - ' . $waktu . '.pdf';
         return $pdf->stream($filename);
+    }
+
+    public function destroy(int $id)
+    {
+        try {
+            $data = Stock::findOrFail($id);
+            $data->delete();
+            return response()->json(['success' => true]);
+        } catch (\Throwable $th) {
+            return response()->json(['success' => false, 'message' => "Error: " . $th->getMessage()]);
+        }
     }
 }

@@ -85,7 +85,7 @@
     </div>
 
     @php
-        $thead = ['No', 'SKU', 'Item', 'Category', 'Werehouse', 'Qty', 'Last Update'];
+        $thead = ['No', 'SKU', 'Item', 'Category', 'Werehouse', 'Qty', 'Last Update', 'Action'];
     @endphp
     <x-datatable :thead=$thead :filter="null">
     </x-datatable>
@@ -160,6 +160,12 @@
                     name: 'last_update',
                     visible: true,
                     class: 'py-lg-0 py-sm-1 text-center',
+                },
+                {
+                    data: 'action',
+                    name: 'action',
+                    visible: true,
+                    class: 'py-lg-0 py-sm-1 text-center',
                 }
             ],
             createdRow: function(row, data, dataIndex) {
@@ -205,6 +211,32 @@
             link.target = '_blank';
             link.rel = 'noopener noreferrer';
             link.click();
+        });
+
+        $(document).on('click', '.btn-delete', function() {
+            let id = $(this).data('id');
+            var url = "{{ route('stockCurrent.hapus', ':id:') }}";
+            var url = url.replace(':id:', id);
+
+            if (confirm('Delete this data?')) {
+                $.ajax({
+                    url: url,
+                    type: 'DELETE',
+                    data: {
+                        _token: '{{ csrf_token() }}'
+                    },
+                    beforeSend: showLoader(),
+                    success: function(res) {
+                        table.ajax.reload(null, false);
+                        hideLoader();
+                        showToastSuccess("Data has been deleted");
+                    },
+                    error: function() {
+                        hideLoader();
+                        showToastError("Error while deleting data");
+                    }
+                });
+            }
         });
     </script>
 @endpush
