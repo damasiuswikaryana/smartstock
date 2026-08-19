@@ -8,4 +8,4 @@ Artisan::command('inspire', function () {
     $this->comment(Inspiring::quote());
 })->purpose('Display an inspiring quote')->hourly();
 
-Schedule::command('stock:monthly-report')->monthlyOn(19, '14:05');
+Schedule::command('stock:monthly-report')->monthlyOn(19, '14:12');
