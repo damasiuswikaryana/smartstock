@@ -86,8 +86,8 @@ class AdmStockCurrentController extends Controller
                 ->addColumn('item', function ($row) {
                     $badge = '';
                     if ($row->is_duplicate) {
-                        $badge = '<span class="badge bg-danger mt-1">
-                            <i class="bi bi-exclamation-triangle me-1"></i> DUPLICATE</span>';
+                        $badge = '<span class="badge bg-soft-danger">
+                            <i class="ph-duotone ph-warning-octagon ms-2"></i> Duplicate</span>';
                     }
                     return '<div class="d-flex align-items-center">
                         <p class="fw-bold mb-0">' . $row->item_varian->name_varian . '</p>
