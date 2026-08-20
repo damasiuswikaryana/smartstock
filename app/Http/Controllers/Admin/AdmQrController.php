@@ -240,6 +240,7 @@ class AdmQrController extends Controller
         $total_after_tax = $subtotal + $tax_amount + $ppn_amount;
         $disc           = $data->disc;
         if ($disc != NULL) {
+            $disc_perc          = $subtotal > 0 ? ($disc / $subtotal) * 100 : 0;
             $disc_amount        = $disc;
         } else {
             $disc_perc          = $data->disc_perc;
