@@ -185,7 +185,7 @@
                                     <tr>
                                         <td class="text-center">{{ $loop->iteration }}</td>
                                         <td class="text-center">{{ $stock->item_varian->sku_varian }}</td>
-                                        <td>{{ $stock->item_varian->nama_varian }}</td>
+                                        <td>{{ $stock->item_varian->name_varian }}</td>
                                         <td class="text-center">{{ $stock->item_varian->kode_varian }}</td>
                                         <td class="text-center">
                                             <small class="text-muted">
