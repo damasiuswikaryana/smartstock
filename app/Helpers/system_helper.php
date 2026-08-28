@@ -44,5 +44,9 @@ function getSatuanName(int $id)
 function getUserGudang(int $id)
 {
     $q = User::select('firstname', 'lastname')->where('loc_id', $id)->first();
-    return $q->firstname . ' ' . $q->lastname;
+    if ($q != null) {
+        return $q->firstname . ' ' . $q->lastname;
+    } else {
+        return "Tidak ditemukan user yang berkaitan";
+    }
 }

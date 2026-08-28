@@ -1,3 +1,5 @@
+<link rel="stylesheet" href="{{ asset('assets/css/plugins/flatpickr.min.css') }}" />
+
 <div class="modal-header">
     <h5 class="modal-title" id="modalEditTitle">Edit Purchase Order</h5>
     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
@@ -82,6 +84,7 @@
                                             $qty = optional($detail)->qty ?? 0;
                                             $satuan_id = optional($detail)->satuan_id ?? 0;
                                             $nilai = optional($detail)->unit_price ?? 0;
+                                            $pph = optional($detail)->pph;
                                         @endphp
                                         <div class="row mb-2 align-items-center">
                                             <div class="col-1 text-center">
@@ -111,6 +114,15 @@
                                                 <input type="number" min="0" class="form-control"
                                                     name="items[{{ $variant->id }}][qty]"
                                                     value="{{ $qty }}">
+                                            </div>
+                                            <div class="col-4 col-lg-2">
+                                                <select class="form-select"
+                                                    name="items[{{ $variant->id }}][pph_variant]">
+                                                    <option @if ($pph == 0) selected @endif
+                                                        value="0">Non-PPh</option>
+                                                    <option @if ($pph == 1) selected @endif
+                                                        value="1">PPh</option>
+                                                </select>
                                             </div>
                                         </div>
                                     @endforeach
@@ -209,6 +221,9 @@
     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
     <button type="submit" class="btn btn-primary" form="form-edit">Update Data</button>
 </div>
+
+<script src="{{ asset('assets/js/plugins/flatpickr.min.js') }}"></script>
+<script src="{{ asset('assets/js/plugins/choices.min.js') }}"></script>
 
 <script>
     function initItemMasterChoices(element) {
@@ -326,6 +341,27 @@
                 });
                 $('#variant-container-edit-' + indexEdit).html(htmlEdit);
             }
+        });
+    });
+
+    document.addEventListener('DOMContentLoaded', function() {
+        $('.select2').each(function() {
+            new Choices(this, {
+                searchEnabled: true,
+                searchPlaceholderValue: 'Search here...',
+                itemSelectText: '',
+                shouldSort: false,
+                allowHTML: true,
+                placeholder: true,
+            });
+        });
+
+        var text_Unique_Val = new Choices('#choices-text-unique-values', {
+            delimiter: ',',
+            paste: false,
+            duplicateItemsAllowed: false,
+            editItems: true,
+            removeItemButton: true
         });
     });
 </script>

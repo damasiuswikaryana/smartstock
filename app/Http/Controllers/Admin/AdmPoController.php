@@ -311,6 +311,7 @@ class AdmPoController extends Controller
         try {
             DB::beginTransaction();
             $data->po_no             = $input['po_no'];
+            $data->prf_number        = $input['prf_no'];
             $data->po_date           = $input['po_date'];
             $data->entitas_id        = $input['entitas_id'];
             $data->vendor_id         = $input['vendor_id'];
@@ -334,7 +335,8 @@ class AdmPoController extends Controller
                         [
                             'qty'               => $item['qty'],
                             'satuan_id'         => $item['satuan'],
-                            'unit_price'        => $item['nilai_variant']
+                            'unit_price'        => $item['nilai_variant'],
+                            'pph'               => $item['pph_variant']
                         ]
                     );
                 } else {
