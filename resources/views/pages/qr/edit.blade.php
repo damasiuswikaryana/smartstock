@@ -9,10 +9,17 @@
             @method('POST')
             <div class="col-12 col-lg-12">
                 <div class="mb-2 row">
-                    <label class="col-lg-12 col-form-label mb-0">QR Number: <span class="text-danger">*</span></label>
-                    <div class="col-lg-12">
+                    <label class="col-lg-2 col-form-label mb-0">QR Number: <span class="text-danger">*</span></label>
+                    <div class="col-lg-10">
                         <input type="text" class="form-control fs-5 fw-bold" placeholder="ASTA/XXX/XXX"
                             name="qr_no" value="{{ $data->qr_no }}" required>
+                    </div>
+                </div>
+                <div class="mb-2 row">
+                    <label class="col-lg-2 col-form-label mb-0">PRF Number: <span class="text-danger">*</span></label>
+                    <div class="col-lg-10">
+                        <input class="form-control custom class" id="choices-text-unique-values-edit" type="text"
+                            name="prf_no" value="{{ $data->prf_number }}" placeholder="Input PRF Number" required />
                     </div>
                 </div>
             </div>
@@ -27,9 +34,8 @@
                 <div class="mb-1 row">
                     <label class="col-lg-4 col-form-label">Director Approval: <span class="text-danger">*</span></label>
                     <div class="col-lg-8">
-                        <select class="form-control" name="dir_approval" required>
+                        <select class="form-control select2" name="dir_approval" required>
                             <option @if ($data->director_id != null) selected @endif value="yes">Yes</option>
-                            <option @if ($data->director_id == null) selected @endif value="no">No</option>
                         </select>
                     </div>
                 </div>
@@ -39,7 +45,7 @@
                 <div class="mb-1 row">
                     <label class="col-lg-4 col-form-label">Vendor: <span class="text-danger">*</span></label>
                     <div class="col-lg-8">
-                        <select class="form-control" name="vendor_id" required>
+                        <select class="form-control select2" name="vendor_id" required>
                             @foreach ($vendor as $vd)
                                 <option @if ($data->vendor_id == $vd->id) selected @endif value="{{ $vd->id }}">
                                     {{ $vd->nama }}</option>
@@ -50,7 +56,7 @@
                 <div class="mb-1 row">
                     <label class="col-lg-4 col-form-label">Entity: <span class="text-danger">*</span></label>
                     <div class="col-lg-8">
-                        <select class="form-control" name="entitas_id" required>
+                        <select class="form-control select2" name="entitas_id" required>
                             @foreach ($entitas as $et)
                                 <option @if ($data->entitas_id == $et->id) selected @endif value="{{ $et->id }}">
                                     {{ $et->entitas_name }}</option>
@@ -60,7 +66,7 @@
                 </div>
             </div>
 
-            <div class="col-12 mb-4">
+            <div class="col-12 mb-3">
                 <h4 class="fw-bold mb-3">Items</h4>
                 <div id="produk-container-edit">
                     @foreach ($itemMasters as $itemMaster)
@@ -79,13 +85,9 @@
                                             <div class="col-1 text-center">
                                                 <i class="fs-3 ph-duotone ph-arrow-elbow-down-right"></i>
                                             </div>
-                                            <div class="col-12 col-lg-5">
+                                            <div class="col-12 col-lg-4">
                                                 <input type="text" class="form-control"
                                                     value="{{ $variant->name_varian }}" disabled>
-                                            </div>
-                                            <div class="col-4 col-lg-2">
-                                                <input type="text" class="form-control"
-                                                    value="{{ $variant->sku_varian }}" disabled>
                                             </div>
                                             <div class="col-4 col-lg-2">
                                                 <select class="form-select" name="items[{{ $variant->id }}][satuan]">
@@ -97,13 +99,16 @@
                                                 </select>
                                             </div>
                                             <div class="col-4 col-lg-2">
+                                                <input type="text" class="form-control number-separator"
+                                                    name="items[{{ $variant->id }}][nilai_variant]"
+                                                    value="{{ pecahTanpaRp($nilai) }}">
+                                            </div>
+                                            <div class="col-4 col-lg-1">
                                                 <input type="hidden" name="items[{{ $variant->id }}][item_varian_id]"
                                                     value="{{ $variant->id }}">
                                                 <input type="number" min="0" class="form-control"
                                                     name="items[{{ $variant->id }}][qty]"
                                                     value="{{ $qty }}">
-                                                <input type="hidden" name="items[{{ $variant->id }}][nilai_variant]"
-                                                    value="{{ $nilai }}">
                                             </div>
                                         </div>
                                     @endforeach
@@ -119,74 +124,20 @@
                         </div>
                     @endforeach
                 </div>
-                <div class="row mb-0 p-2">
+                {{-- <div class="row mb-0 p-2">
                     <a href="#" id="btn-add-product-edit"
                         class="btn btn-light-primary w-100 d-flex justify-content-center align-items-center">
                         <i class="fa fa-plus-circle me-2"></i>
                         <span>Add Item</span>
                     </a>
-                </div>
+                </div> --}}
             </div>
 
-            <div class="col-12 col-lg-6">
+            <div class="col-12 col-lg-12">
                 <div class="mb-1 row">
                     <div class="col-lg-12">
                         <label class="col-form-label">Notes: <span class="text-danger">*</span></label>
                         <textarea type="text" class="form-control" name="notes" required rows="6">{{ $data->notes }}</textarea>
-                    </div>
-                </div>
-            </div>
-
-            <div class="col-12 col-lg-6">
-                <div class="mb-1 row">
-                    <label class="col-lg-4 col-form-label">PPH: <span class="text-danger">*</span></label>
-                    <div class="col-lg-8">
-                        <div class="input-group">
-                            <input type="number" class="form-control" placeholder="PPH" name="tax"
-                                value="{{ $data->tax }}" required>
-                            <span class="input-group-text">%</span>
-                        </div>
-                    </div>
-                </div>
-                <div class="mb-1 row">
-                    <label class="col-lg-4 col-form-label">PPN: <span class="text-danger">*</span></label>
-                    <div class="col-lg-8">
-                        <div class="input-group">
-                            <input type="number" class="form-control" placeholder="PPN" name="ppn"
-                                value="{{ $data->ppn }}" required>
-                            <span class="input-group-text">%</span>
-                        </div>
-                    </div>
-                </div>
-                <div class="mb-1 row">
-                    <label class="col-lg-4 col-form-label">Discount: <span class="text-danger">*</span></label>
-                    <div class="col-lg-8">
-                        <div class="row">
-                            <div class="col-lg-3 pe-1">
-                                <select class="form-control" name="disc_tipe" required>
-                                    <option @if ($data->disc != null) selected @endif value="rupiah">Rp.
-                                    </option>
-                                    <option @if ($data->disc_perc != null) selected @endif value="percentage">%
-                                    </option>
-                                </select>
-                            </div>
-                            <div class="col-lg-9 ps-1">
-                                <input type="number" class="form-control number-separator"
-                                    placeholder="Discount value" name="disc"
-                                    value="{{ pecahTanpaRp($data->disc) }}" required>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <div class="mb-1 row">
-                    <label class="col-lg-4 col-form-label">Down Payment: <span class="text-danger">*</span></label>
-                    <div class="col-lg-8">
-                        <div class="input-group">
-                            <span class="input-group-text">Rp.</span>
-                            <input type="number" class="form-control number-separator"
-                                placeholder="Down payment in rupiah" name="dp"
-                                value="{{ pecahTanpaRp($data->dp) }}" required>
-                        </div>
                     </div>
                 </div>
             </div>
@@ -200,8 +151,11 @@
 </div>
 <div class="modal-footer p-2">
     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
-    <button type="submit" class="btn btn-primary" form="form-edit">Update Data</button>
+    <button type="submit" id="btn-edit" class="btn btn-primary" form="form-edit">Update Data</button>
 </div>
+
+<script src="{{ asset('assets/js/plugins/flatpickr.min.js') }}"></script>
+<script src="{{ asset('assets/js/plugins/choices.min.js') }}"></script>
 
 <script>
     $('#form-edit').on('submit', function(e) {
@@ -209,6 +163,13 @@
         const id = "{{ $data->id }}";
         var url = "{{ route('qr.update', ':id:') }}";
         var url = url.replace(':id:', id);
+
+        let button = $('#btn-edit');
+        if (button.prop('disabled')) {
+            return false;
+        }
+        button.prop('disabled', true);
+        button.html('<i class="fa fa-spinner fa-spin"></i> Processing...');
 
         $.ajax({
             url: url,
@@ -221,14 +182,20 @@
                 if (res.success) {
                     hideLoader();
                     showToastSuccess("Data has been updated");
+                    $('#btn-edit').prop('disabled', false);
+                    $('#btn-edit').html('Submit Data');
                 } else {
                     hideLoader();
                     showToastError(res.message);
+                    $('#btn-edit').prop('disabled', false);
+                    $('#btn-edit').html('Submit Data');
                 }
             },
-            error: function() {
+            error: function(xhr, status, error) {
                 hideLoader();
-                showToastError("Error while updating data");
+                showToastError("Error: " + xhr.responseText);
+                $('#btn-edit').prop('disabled', false);
+                $('#btn-edit').html('Submit Data');
             }
         });
     });
@@ -308,5 +275,24 @@
                 $('#variant-container-edit-' + indexEdit).html(htmlEdit);
             }
         });
+    });
+
+    $('.select2').each(function() {
+        new Choices(this, {
+            searchEnabled: true,
+            searchPlaceholderValue: 'Search here...',
+            itemSelectText: '',
+            shouldSort: false,
+            allowHTML: true,
+            placeholder: true,
+        });
+    });
+
+    new Choices('#choices-text-unique-values-edit', {
+        delimiter: ',',
+        paste: false,
+        duplicateItemsAllowed: false,
+        editItems: true,
+        removeItemButton: true
     });
 </script>

@@ -1,5 +1,3 @@
-<link rel="stylesheet" href="{{ asset('assets/css/plugins/flatpickr.min.css') }}" />
-
 <div class="modal-header">
     <h5 class="modal-title" id="modalEditTitle">Edit Purchase Order</h5>
     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
@@ -20,7 +18,7 @@
                 <div class="mb-2 row">
                     <label class="col-lg-2 col-form-label mb-0">PRF Number: <span class="text-danger">*</span></label>
                     <div class="col-lg-10">
-                        <input class="form-control custom class" id="choices-text-unique-values" type="text"
+                        <input class="form-control custom class" id="choices-text-unique-values-edit" type="text"
                             name="prf_no" value="{{ $data->prf_number }}" placeholder="Input PRF Number" required />
                     </div>
                 </div>
@@ -226,18 +224,6 @@
 <script src="{{ asset('assets/js/plugins/choices.min.js') }}"></script>
 
 <script>
-    function initItemMasterChoices(element) {
-        new Choices(element, {
-            searchEnabled: true,
-            searchPlaceholderValue: 'Search item...',
-            itemSelectText: '',
-            shouldSort: false,
-            allowHTML: true,
-            placeholder: true,
-            placeholderValue: 'Select Item'
-        });
-    }
-
     $('#form-edit').on('submit', function(e) {
         e.preventDefault();
         const id = "{{ $data->id }}";
@@ -344,24 +330,22 @@
         });
     });
 
-    document.addEventListener('DOMContentLoaded', function() {
-        $('.select2').each(function() {
-            new Choices(this, {
-                searchEnabled: true,
-                searchPlaceholderValue: 'Search here...',
-                itemSelectText: '',
-                shouldSort: false,
-                allowHTML: true,
-                placeholder: true,
-            });
+    $('.select2').each(function() {
+        new Choices(this, {
+            searchEnabled: true,
+            searchPlaceholderValue: 'Search here...',
+            itemSelectText: '',
+            shouldSort: false,
+            allowHTML: true,
+            placeholder: true,
         });
+    });
 
-        var text_Unique_Val = new Choices('#choices-text-unique-values', {
-            delimiter: ',',
-            paste: false,
-            duplicateItemsAllowed: false,
-            editItems: true,
-            removeItemButton: true
-        });
+    new Choices('#choices-text-unique-values-edit', {
+        delimiter: ',',
+        paste: false,
+        duplicateItemsAllowed: false,
+        editItems: true,
+        removeItemButton: true
     });
 </script>

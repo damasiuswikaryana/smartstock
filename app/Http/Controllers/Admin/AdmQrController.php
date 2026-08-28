@@ -165,25 +165,19 @@ class AdmQrController extends Controller
         } else {
             $director_id    = NULL;
         }
-        if ($input['disc_tipe'] == 'rupiah') {
-            $disc_rp    = hapusTitikAngka($input['disc']);
-            $disc_pr    = NULL;
-        } else {
-            $disc_rp    = NULL;
-            $disc_pr    = hapusTitikAngka($input['disc']);
-        }
         try {
             DB::beginTransaction();
             $qr_master              = Qr::create([
                 'qr_no'             => $input['qr_no'],
+                'prf_number'        => $input['prf_no'],
                 'qr_date'           => $input['qr_date'],
                 'qr_status'         => "Pending",
                 'entitas_id'        => $input['entitas_id'],
                 'vendor_id'         => $input['vendor_id'],
-                'tax'               => $input['tax'],
-                'ppn'               => $input['ppn'],
-                'disc'              => $disc_rp,
-                'disc_perc'         => $disc_pr,
+                'tax'               => NULL,
+                'ppn'               => NULL,
+                'disc'              => NULL,
+                'disc_perc'         => NULL,
                 'dp'                => hapusTitikAngka($input['dp']),
                 'created_by'        => Auth::user()->id,
                 'adminInput_by'     => $keuanganAdmin->id,
@@ -209,15 +203,14 @@ class AdmQrController extends Controller
                     }
                 }
             }
-
-            // kirim notif ke keuangan
-            $targetToken    = User::role('keuangan')->select('device_token')->first();
+            // kirim notif ke admin keuangan agar dicatat ke QR Zaheer terlebih dahulu
+            $targetToken    = User::role('adminkeuangan')->select('device_token')->first();
             $dataNumber     = $qr_master->qr_no;
             $idRequestData  = $qr_master->id;
             $firebase->send(
                 $targetToken->device_token,
-                'BUTUH CHECK',
-                '[Quotation Request] - ' . $dataNumber . ' telah diinput. Butuh pengecekan Anda. Lihat pada dashboard Smartwarehouse.',
+                'QR BARU DIBUAT',
+                '[Quotation Request] - ' . $dataNumber . ' telah diinput. Butuh aksi Anda untuk tambahkan ke Zaheer. Lihat pada dashboard Smartwarehouse.',
                 ['url' => '/qr/' . $idRequestData . '/detail']
             );
             return response()->json(['success' => true]);
@@ -233,24 +226,8 @@ class AdmQrController extends Controller
         $subtotal       = $data->child->sum(function ($child) {
             return $child->unit_price * $child->qty;
         });
-        $tax            = $data->tax;
-        $tax_amount     = $tax / 100 * $subtotal;
-        $ppn            = $data->ppn;
-        $ppn_amount     = $ppn / 100 * $subtotal;
-        $total_after_tax = $subtotal + $tax_amount + $ppn_amount;
-        $disc           = $data->disc;
-        if ($disc != NULL) {
-            $disc_perc          = $subtotal > 0 ? ($disc / $subtotal) * 100 : 0;
-            $disc_amount        = $disc;
-        } else {
-            $disc_perc          = $data->disc_perc;
-            $disc_amount        = $disc_perc / 100 * $subtotal;
-        }
-        $total_after_disc   = $total_after_tax - $disc_amount;
-        $dp                 = $data->dp;
-        $total_after_dp     = $total_after_disc + $dp;
 
-        return view('pages.qr.detail', compact('data', 'subtotal', 'tax_amount', 'ppn_amount', 'total_after_tax', 'disc_perc', 'disc_amount', 'total_after_disc', 'total_after_dp'));
+        return view('pages.qr.detail', compact('data', 'subtotal'));
     }
 
     public function edit(int $id)
@@ -284,25 +261,19 @@ class AdmQrController extends Controller
         } else {
             $director_id    = NULL;
         }
-        if ($input['disc_tipe'] == 'rupiah') {
-            $disc_rp    = hapusTitikAngka($input['disc']);
-            $disc_pr    = NULL;
-        } else {
-            $disc_rp    = NULL;
-            $disc_pr    = hapusTitikAngka($input['disc']);
-        }
 
         try {
             DB::beginTransaction();
             $data->qr_no             = $input['qr_no'];
+            $data->prf_number        = $input['prf_no'];
             $data->qr_date           = $input['qr_date'];
             $data->entitas_id        = $input['entitas_id'];
             $data->vendor_id         = $input['vendor_id'];
-            $data->tax               = $input['tax'];
-            $data->ppn               = $input['ppn'];
-            $data->disc              = $disc_rp;
-            $data->disc_perc         = $disc_pr;
-            $data->dp                = hapusTitikAngka($input['dp']);
+            $data->tax               = NULL;
+            $data->ppn               = NULL;
+            $data->disc              = NULL;
+            $data->disc_perc         = NULL;
+            $data->dp                = NULL;
             $data->notes             = $input['notes'];
             $data->director_id       = $director_id;
             $data->save();
@@ -344,6 +315,35 @@ class AdmQrController extends Controller
         }
     }
 
+    public function recorded(Request $request, int $id, FirebaseNotificationService $firebase)
+    {
+        $data   = Qr::where('id', $id)->first();
+        try {
+            DB::beginTransaction();
+            $data->adminInput_date  = date("Y-m-d H:i:s");
+            $data->adminInput_by    = Auth::user()->id;
+            $data->qr_status        = "Recorded";
+            $data->save();
+            $des                   = tanggalIndoWaktuLidgkap($data->adminInput_date) . " by " . $data->adminInputBy->firstname . " " . $data->adminInputBy->lastname;
+            DB::commit();
+            // kirim notif ke finance agar dicek
+            $targetToken    = User::role('keuangan')->select('device_token')->first();
+            $dataNumber     = $data->qr_no;
+            $idRequestData  = $data->id;
+            $firebase->send(
+                $targetToken->device_token,
+                'BUTUH PENGECEKAN',
+                '[Quotation Request] - ' . $dataNumber . ' telah selesai penginputan di Zaheer. Butuh pengecekan Anda selanjutnya. Lihat pada dashboard Smartwarehouse.',
+                ['url' => '/qr/' . $idRequestData . '/detail']
+            );
+
+            return response()->json(['success' => true, 'approve' => $des]);
+        } catch (\Throwable $th) {
+            DB::rollback();
+            return response()->json(['success' => false, 'message' => "Error: " . $th->getMessage()]);
+        }
+    }
+
     public function checked(Request $request, int $id, FirebaseNotificationService $firebase)
     {
         $data   = Qr::where('id', $id)->first();
@@ -360,7 +360,7 @@ class AdmQrController extends Controller
             $des                   = tanggalIndoWaktuLidgkap($data->checked_date) . " by " . $data->checkedBy->firstname . " " . $data->checkedBy->lastname;
             DB::commit();
             if ($data->director_id != NULL) {
-                // kirim notif ke director
+                // kirim notif ke director untuk approval
                 $targetToken    = User::select('device_token')->where('id', $data->director_id)->first();
                 $dataNumber     = $data->qr_no;
                 $idRequestData  = $data->id;
@@ -368,17 +368,6 @@ class AdmQrController extends Controller
                     $targetToken->device_token,
                     'BUTUH APPROVAL',
                     '[Quotation Request] - ' . $dataNumber . ' telah selesai dicek oleh keuangan. Butuh approval Anda. Lihat pada dashboard Smartwarehouse.',
-                    ['url' => '/qr/' . $idRequestData . '/detail']
-                );
-            } else {
-                // kirim notif ke admin keuangan
-                $targetToken    = User::role('adminkeuangan')->select('device_token')->first();
-                $dataNumber     = $data->qr_no;
-                $idRequestData  = $data->id;
-                $firebase->send(
-                    $targetToken->device_token,
-                    'BUTUH APPROVAL',
-                    '[Quotation Request] - ' . $dataNumber . ' telah selesai dicek oleh keuangan. Saatnya menambahkan ke Zaheer. Lihat pada dashboard Smartwarehouse.',
                     ['url' => '/qr/' . $idRequestData . '/detail']
                 );
             }
@@ -411,47 +400,10 @@ class AdmQrController extends Controller
                     '[Quotation Request] - ' . $dataNumber . ' telah berhasil disetujui direktur. Lihat pada dashboard Smartwarehouse.',
                     ['url' => '/qr/' . $idRequestData . '/detail']
                 );
-                // kirim juga ke admin keuangan agar ditambahkan ke zaheer
-                $targetToken2    = User::role('adminkeuangan')->select('device_token')->first();
-                $firebase->send(
-                    $targetToken2->device_token,
-                    'QR DISETUJUI',
-                    '[Quotation Request] - ' . $dataNumber . ' telah berhasil disetujui direktur. Saatnya menambahkan ke Zaheer. Lihat pada dashboard Smartwarehouse.',
-                    ['url' => '/qr/' . $idRequestData . '/detail']
-                );
                 return response()->json(['success' => true, 'approve' => $des]);
             } else {
                 return response()->json(['success' => false, 'message' => "QR must be checked first by finance"]);
             }
-        } catch (\Throwable $th) {
-            DB::rollback();
-            return response()->json(['success' => false, 'message' => "Error: " . $th->getMessage()]);
-        }
-    }
-
-    public function recorded(Request $request, int $id, FirebaseNotificationService $firebase)
-    {
-        $data   = Qr::where('id', $id)->first();
-        try {
-            DB::beginTransaction();
-            $data->adminInput_date  = date("Y-m-d H:i:s");
-            $data->adminInput_by    = Auth::user()->id;
-            $data->qr_status        = "Recorded";
-            $data->save();
-            $des                   = tanggalIndoWaktuLidgkap($data->adminInput_date) . " by " . $data->adminInputBy->firstname . " " . $data->adminInputBy->lastname;
-            DB::commit();
-            // kirim notif ke finance
-            $targetToken    = User::role('keuangan')->select('device_token')->first();
-            $dataNumber     = $data->qr_no;
-            $idRequestData  = $data->id;
-            $firebase->send(
-                $targetToken->device_token,
-                'BUTUH APPROVAL',
-                '[Quotation Request] - ' . $dataNumber . ' telah selesai penginputan di sistem Zaheer. Lihat pada dashboard Smartwarehouse.',
-                ['url' => '/qr/' . $idRequestData . '/detail']
-            );
-
-            return response()->json(['success' => true, 'approve' => $des]);
         } catch (\Throwable $th) {
             DB::rollback();
             return response()->json(['success' => false, 'message' => "Error: " . $th->getMessage()]);
