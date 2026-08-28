@@ -178,7 +178,7 @@ class AdmQrController extends Controller
                 'ppn'               => NULL,
                 'disc'              => NULL,
                 'disc_perc'         => NULL,
-                'dp'                => hapusTitikAngka($input['dp']),
+                'dp'                => NULL,
                 'created_by'        => Auth::user()->id,
                 'adminInput_by'     => $keuanganAdmin->id,
                 'adminInput_date'   => NULL,
