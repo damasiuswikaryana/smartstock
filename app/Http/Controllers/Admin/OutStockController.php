@@ -351,7 +351,10 @@ class OutStockController extends Controller
                     $entitas
                 );
                 // sesudah itu update stocks current
-                $cekStok        = Stock::where('item_varian_id', $child->item_varian_id)->where('lokasi_id', $gudang)->first();
+                $cekStok        = Stock::where('item_varian_id', $child->item_varian_id)
+                    ->where('lokasi_id', $gudang)
+                    ->where('entitas_id', $entitas)
+                    ->first();
                 $qtyCurrent     = $cekStok->jumlah;
                 $qtyBaru        = $qtyCurrent - $child->qty;
                 Stock::updateOrCreate(
