@@ -195,9 +195,13 @@
                             showToastError(res.message);
                         }
                     },
-                    error: function() {
+                    error: function(xhr) {
                         hideLoader();
-                        showToastError("Error while approving data");
+                        let message = "Error while approving data";
+                        if (xhr.responseJSON && xhr.responseJSON.message) {
+                            message = xhr.responseJSON.message;
+                        }
+                        showToastError(message);
                     }
                 });
             }
