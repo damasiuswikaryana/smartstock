@@ -106,11 +106,20 @@
                         <div class="row">
                             <div class="col-12 col-lg-12">
                                 <div class="mb-2 row">
-                                    <label class="col-lg-12 col-form-label mb-0">PO Number: <span
+                                    <label class="col-lg-2 col-form-label mb-0">PO Number: <span
                                             class="text-danger">*</span></label>
-                                    <div class="col-lg-12">
+                                    <div class="col-lg-10">
                                         <input type="text" class="form-control fs-5 fw-bold" placeholder="ASTA/XXX/XXX"
                                             name="po_no" value="" required>
+                                    </div>
+                                </div>
+                                <div class="mb-2 row">
+                                    <label class="col-lg-2 col-form-label mb-0">PRF Number: <span
+                                            class="text-danger">*</span></label>
+                                    <div class="col-lg-10">
+                                        <input class="form-control custom class" id="choices-text-unique-values"
+                                            type="text" name="prf_no" value="" placeholder="Input PRF Number"
+                                            required />
                                     </div>
                                 </div>
                             </div>
@@ -128,7 +137,7 @@
                                     <label class="col-lg-4 col-form-label">Director Approval: <span
                                             class="text-danger">*</span></label>
                                     <div class="col-lg-8">
-                                        <select class="form-control" name="dir_approval" required>
+                                        <select class="form-control select2" name="dir_approval" required>
                                             <option value="yes">Yes</option>
                                             <option value="no">No</option>
                                         </select>
@@ -137,11 +146,12 @@
                             </div>
 
                             <div class="col-12 col-lg-6">
+
                                 <div class="mb-1 row">
                                     <label class="col-lg-4 col-form-label">Vendor: <span
                                             class="text-danger">*</span></label>
                                     <div class="col-lg-8">
-                                        <select class="form-control" name="vendor_id" required>
+                                        <select class="form-control select2" name="vendor_id" required>
                                             @foreach ($vendor as $vd)
                                                 <option value="{{ $vd->id }}">{{ $vd->nama }}</option>
                                             @endforeach
@@ -152,7 +162,7 @@
                                     <label class="col-lg-4 col-form-label">Entity: <span
                                             class="text-danger">*</span></label>
                                     <div class="col-lg-8">
-                                        <select class="form-control" name="entitas_id" required>
+                                        <select class="form-control select2" name="entitas_id" required>
                                             @foreach ($entitas as $et)
                                                 <option value="{{ $et->id }}">{{ $et->entitas_name }}</option>
                                             @endforeach
@@ -265,6 +275,10 @@
     <script src="{{ asset('assets/js/plugins/flatpickr.min.js') }}"></script>
     <script src="{{ asset('assets/js/plugins/choices.min.js') }}"></script>
     <script type="text/javascript">
+        function formatRupiah(angka) {
+            return Number(angka || 0).toLocaleString('id-ID');
+        }
+
         function initItemMasterChoices(element) {
             new Choices(element, {
                 searchEnabled: true,
@@ -499,8 +513,7 @@
                 success: function(res) {
                     let html = '';
                     $.each(res.variants, function(i, variant) {
-                        let satuanOptions = '<option value="">Pilih satuan</option>';
-
+                        let satuanOptions = '';
                         $.each(res.satuans, function(j, satuan) {
                             satuanOptions += `
                             <option value="${satuan.id}">
@@ -513,11 +526,8 @@
                         <div class="col-1 text-center">
                             <i class="fs-3 ph-duotone ph-arrow-elbow-down-right"></i>
                         </div>
-                        <div class="col-12 col-lg-5">
+                        <div class="col-12 col-lg-4">
                             <input type="text" class="form-control" value="${variant.name_varian}" disabled>
-                        </div>
-                        <div class="col-4 col-lg-2">
-                            <input type="text" class="form-control" value="${variant.sku_varian}" disabled>
                         </div>
                         <div class="col-4 col-lg-2">
                             <select class="form-select"
@@ -526,14 +536,43 @@
                             </select>
                         </div>
                         <div class="col-4 col-lg-2">
+                            <input type="text" name="item[${index}][variants][${variant.id}][nilai_variant]" class="form-control number-separator" value="${formatRupiah(variant.nilai)}" placeholder="Harga item" />
+                        </div>
+                        <div class="col-4 col-lg-1">
                             <input type="number" min="0" class="form-control" name="item[${index}][variants][${variant.id}][qty]" placeholder="Qty" value="0">
                             <input type="hidden" name="item[${index}][variants][${variant.id}][id_variant]" value="${variant.id}">
-                            <input type="hidden" name="item[${index}][variants][${variant.id}][nilai_variant]" value="${variant.nilai}">
+                        </div>
+                        <div class="col-4 col-lg-2">
+                            <select class="form-select" name="item[${index}][variants][${variant.id}][pph_variant]">
+                                <option value="0">Non-PPh</option>
+                                <option value="1">PPh</option>
+                            </select>
                         </div>
                     </div>`;
                     });
                     $('#variant-container-' + index).html(html);
                 }
+            });
+        });
+
+        document.addEventListener('DOMContentLoaded', function() {
+            $('.select2').each(function() {
+                new Choices(this, {
+                    searchEnabled: true,
+                    searchPlaceholderValue: 'Search here...',
+                    itemSelectText: '',
+                    shouldSort: false,
+                    allowHTML: true,
+                    placeholder: true,
+                });
+            });
+
+            var text_Unique_Val = new Choices('#choices-text-unique-values', {
+                delimiter: ',',
+                paste: false,
+                duplicateItemsAllowed: false,
+                editItems: true,
+                removeItemButton: true
             });
         });
     </script>

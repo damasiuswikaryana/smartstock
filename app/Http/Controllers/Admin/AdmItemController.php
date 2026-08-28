@@ -221,7 +221,7 @@ class AdmItemController extends Controller
             ItemVarian::create([
                 'item_master_id'       => $id,
                 'kode_varian'          => $input['kode_varian'],
-                'sku_varian'            => $input['sku_varian'],
+                'sku_varian'           => $input['sku_varian'],
                 'name_varian'          => $input['name_varian'],
                 'nilai'                => hapusTitikAngka($input['nilai']),
             ]);

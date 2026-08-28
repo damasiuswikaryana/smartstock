@@ -102,4 +102,11 @@
             }
         }
     }
+
+    function makeBadge(value) {
+        if (!value) return '';
+        return value.split(',').map(function(item) {
+            return `<span class="badge bg-primary me-1">${item.trim()}</span>`;
+        }).join('');
+    }
 </script>

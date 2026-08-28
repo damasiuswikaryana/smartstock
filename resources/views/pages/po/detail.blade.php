@@ -7,20 +7,20 @@
     </x-page-header>
 
     <div class="d-flex justify-content-between align-items-center mb-4 mt-3">
-        @if ($data->po_status == 'Pending' || $data->po_status == 'Checked' || $data->po_status == 'Recorded')
+        @if ($data->po_status == 'Pending' || $data->po_status == 'Recorded' || $data->po_status == 'Checked')
             <div class="col-12 d-flex justify-content-start align-items-center">
-                @if ($data->checked_date == null)
-                    @hasanyrole('keuangan|masteradmin|admin')
-                        <button type="button" id="checked-btn" class="btn btn-shadow btn-primary me-2 d-flex align-items-center">
-                            <i class="ph-duotone ph-check-circle icon-search me-2"></i> Process to Checked
+                @if ($data->adminInput_date == null)
+                    @hasanyrole('adminkeuangan|masteradmin|admin')
+                        <button type="button" id="recorded-btn" class="btn btn-shadow btn-primary me-2 d-flex align-items-center">
+                            <i class="ph-duotone ph-check-circle icon-search me-2"></i> Process to Recorded
                         </button>
                     @endhasanyrole
                 @endif
-                @if ($data->checked_date != null && $data->adminInput_date == null)
-                    @hasanyrole('adminkeuangan|masteradmin|admin')
-                        <button type="button" id="recorded-btn"
+                @if ($data->adminInput_date != null && $data->checked_date == null)
+                    @hasanyrole('keuangan|masteradmin|admin')
+                        <button type="button" id="checked-btn"
                             class="btn btn-shadow btn-primary me-2 d-flex align-items-center">
-                            <i class="ph-duotone ph-check-circle icon-search me-2"></i> Process to Recorded
+                            <i class="ph-duotone ph-check-circle icon-search me-2"></i> Process to Checked
                         </button>
                     @endhasanyrole
                 @endif
@@ -47,9 +47,9 @@
         <div class="col-12">
             <div class="card">
                 <div class="card-header py-3 d-flex justify-content-between align-items-center">
-                    <h4 class="mb-0 d-flex align-items-center">
-                        <code class="text-dark">PO NUMBER : {{ $data->po_no }}</code>
-                    </h4>
+                    <h3 class="mb-0 d-flex align-items-center">
+                        <code class="">PO: {{ $data->po_no }}</code>
+                    </h3>
                     <button id="btnDownload" class="btn btn-light-secondary d-flex align-items-center me-3 me-sm-0"
                         type="button">
                         <i class="ph-duotone ph-download icon-search me-2"></i>
@@ -59,6 +59,18 @@
                     <div class="row g-4">
                         <div class="col-md-12">
                             <ol class="list-group">
+                                <li class="list-group-item d-flex justify-content-between align-items-start">
+                                    <div class="ms-0 me-auto col-6">
+                                        PRF Number
+                                    </div>
+                                    <div class="ms-0 me-auto fw-bold col-6">
+                                        @foreach (explode(',', $data->prf_number) as $prf)
+                                            <span class="badge bg-primary me-1">
+                                                {{ trim($prf) }}
+                                            </span>
+                                        @endforeach
+                                    </div>
+                                </li>
                                 <li class="list-group-item d-flex justify-content-between align-items-start">
                                     <div class="ms-0 me-auto col-6">
                                         Date
@@ -92,6 +104,27 @@
                                         {{ $data->createdBy->firstname . ' ' . $data->createdBy->lastname }}
                                         <p class="fw-medium mb-0">{{ tanggalIndoWaktuLidgkap($data->created_at) }}
                                         </p>
+                                    </div>
+                                </li>
+                                <li class="list-group-item d-flex justify-content-between align-items-start">
+                                    <div class="ms-0 me-auto col-6">
+                                        Financial Record
+                                    </div>
+                                    <div class="ms-0 me-auto col-6" id="recorded_status">
+                                        @if ($data->adminInput_date == null)
+                                            <span class="f-14 badge bg-light-dark">Waiting for record ...</span>
+                                        @else
+                                            <span class="f-14 badge bg-light-success text-green">Recorded</span>
+                                        @endif
+                                        <p class="fw-medium mb-0">Pencatatan PO ke Zaheer (fitur PO)</p>
+                                        @if ($data->adminInput_by != null)
+                                            <p class="fw-medium mb-0">
+                                                @if ($data->adminInput_date != null)
+                                                    {{ tanggalIndoWaktuLidgkap($data->adminInput_date) }}
+                                                @endif by
+                                                {{ $data->adminInputBy->firstname . ' ' . $data->adminInputBy->lastname }}
+                                            </p>
+                                        @endif
                                     </div>
                                 </li>
                                 <li class="list-group-item d-flex justify-content-between align-items-start">
@@ -137,26 +170,7 @@
                                         @endif
                                     </div>
                                 </li>
-                                <li class="list-group-item d-flex justify-content-between align-items-start">
-                                    <div class="ms-0 me-auto col-6">
-                                        Financial Record
-                                    </div>
-                                    <div class="ms-0 me-auto col-6" id="recorded_status">
-                                        @if ($data->adminInput_date == null)
-                                            <span class="f-14 badge bg-light-dark">Waiting for record ...</span>
-                                        @else
-                                            <span class="f-14 badge bg-light-success text-green">Recorded</span>
-                                        @endif
-                                        @if ($data->adminInput_by != null)
-                                            <p class="fw-medium mb-0">
-                                                @if ($data->adminInput_date != null)
-                                                    {{ tanggalIndoWaktuLidgkap($data->adminInput_date) }}
-                                                @endif by
-                                                {{ $data->adminInputBy->firstname . ' ' . $data->adminInputBy->lastname }}
-                                            </p>
-                                        @endif
-                                    </div>
-                                </li>
+
                                 <li class="list-group-item d-flex justify-content-between align-items-start">
                                     <div class="ms-0 me-auto col-6">
                                         Status
@@ -190,6 +204,9 @@
                                             <div class="fw-bold">{{ $child->varian->name_varian }}</div>
                                             SKU: {{ $child->varian->sku_varian }}<br>
                                             {{ rupiah($child->unit_price) }}
+                                            @if ($child->pph)
+                                                <span class="badge bg-secondary rounded-pill">PPH</span>
+                                            @endif
                                         </div>
                                         <span class="f-14 badge bg-primary rounded-pill">x {{ $child->qty }}</span>
                                     </li>
@@ -203,6 +220,23 @@
                                     </div>
                                     <div class="ms-0 me-auto col-6 text-end">
                                         {{ rupiah($subtotal) }}
+                                    </div>
+                                </li>
+                                <li class="list-group-item d-flex justify-content-between align-items-start py-2">
+                                    <div class="ms-0 me-auto col-6">
+                                        Discount
+                                    </div>
+                                    <div class="ms-0 me-auto col-6 text-end text-green">
+                                        {{ $data->disc_perc != null ? $data->disc_perc . '%' : '' }}
+                                        {!! ' &nbsp; - ' . rupiah($disc_amount) !!}
+                                    </div>
+                                </li>
+                                <li class="list-group-item d-flex justify-content-between align-items-start py-2">
+                                    <div class="ms-0 me-auto col-6">
+                                        <i class="me-2 ph-duotone ph-arrow-right"></i> Total After Discount
+                                    </div>
+                                    <div class="ms-0 me-auto col-6 text-end text-green">
+                                        {{ rupiah($total_after_disc) }}
                                     </div>
                                 </li>
                                 <li class="list-group-item d-flex justify-content-between align-items-start py-2">
@@ -227,23 +261,6 @@
                                     </div>
                                     <div class="ms-0 me-auto col-6 text-end text-danger">
                                         {{ rupiah($total_after_tax) }}
-                                    </div>
-                                </li>
-                                <li class="list-group-item d-flex justify-content-between align-items-start py-2">
-                                    <div class="ms-0 me-auto col-6">
-                                        Discount
-                                    </div>
-                                    <div class="ms-0 me-auto col-6 text-end text-green">
-                                        {{ $data->disc_perc != null ? $data->disc_perc . '%' : '' }}
-                                        {!! ' &nbsp; (' . rupiah($disc_amount) . ')' !!}
-                                    </div>
-                                </li>
-                                <li class="list-group-item d-flex justify-content-between align-items-start py-2">
-                                    <div class="ms-0 me-auto col-6">
-                                        <i class="me-2 ph-duotone ph-arrow-right"></i> Total After Discount
-                                    </div>
-                                    <div class="ms-0 me-auto col-6 text-end text-green">
-                                        {{ rupiah($total_after_disc) }}
                                     </div>
                                 </li>
                                 <li class="list-group-item d-flex justify-content-between align-items-start py-2">

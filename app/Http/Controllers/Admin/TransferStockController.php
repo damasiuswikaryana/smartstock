@@ -147,19 +147,19 @@ class TransferStockController extends Controller
                     }
                 }
             }
-            if ($stock_master->werehouse_target_id == 1) {
-                $targetToken    = User::role('gudang')->select('device_token')->first();
-            } else {
-                $targetToken    = User::where('loc_id', $stock_master->werehouse_target_id)->select('device_token')->first();
-            }
-            $dataNumber     = $stock_master->stock_transfer_number;
-            $idRequestData  = $stock_master->id;
-            $firebase->send(
-                $targetToken->device_token,
-                'BUTUH APPROVAL',
-                '[Stock Transfer] - ' . $dataNumber . ' telah diinput. Dari : ' . namaLokasi($gudang) . ' - Ke : ' . namaLokasi($stock_master->werehouse_target_id) . ' Butuh approval Anda. Lihat pada dashboard Smartwarehouse.',
-                ['url' => '/stock/transfer/' . $idRequestData . '/detail']
-            );
+            // if ($stock_master->werehouse_target_id == 1) {
+            //     $targetToken    = User::role('gudang')->select('device_token')->first();
+            // } else {
+            //     $targetToken    = User::where('loc_id', $stock_master->werehouse_target_id)->select('device_token')->first();
+            // }
+            // $dataNumber     = $stock_master->stock_transfer_number;
+            // $idRequestData  = $stock_master->id;
+            // $firebase->send(
+            //     $targetToken->device_token,
+            //     'BUTUH APPROVAL',
+            //     '[Stock Transfer] - ' . $dataNumber . ' telah diinput. Dari : ' . namaLokasi($gudang) . ' - Ke : ' . namaLokasi($stock_master->werehouse_target_id) . ' Butuh approval Anda. Lihat pada dashboard Smartwarehouse.',
+            //     ['url' => '/stock/transfer/' . $idRequestData . '/detail']
+            // );
 
             return response()->json(['success' => true]);
         } catch (\Throwable $th) {

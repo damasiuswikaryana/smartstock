@@ -9,10 +9,17 @@
             @method('POST')
             <div class="col-12 col-lg-12">
                 <div class="mb-2 row">
-                    <label class="col-lg-12 col-form-label mb-0">PO Number: <span class="text-danger">*</span></label>
-                    <div class="col-lg-12">
+                    <label class="col-lg-2 col-form-label mb-0">PO Number: <span class="text-danger">*</span></label>
+                    <div class="col-lg-10">
                         <input type="text" class="form-control fs-5 fw-bold" placeholder="ASTA/XXX/XXX"
                             name="po_no" value="{{ $data->po_no }}" required>
+                    </div>
+                </div>
+                <div class="mb-2 row">
+                    <label class="col-lg-2 col-form-label mb-0">PRF Number: <span class="text-danger">*</span></label>
+                    <div class="col-lg-10">
+                        <input class="form-control custom class" id="choices-text-unique-values" type="text"
+                            name="prf_no" value="{{ $data->prf_number }}" placeholder="Input PRF Number" required />
                     </div>
                 </div>
             </div>
@@ -28,7 +35,7 @@
                 <div class="mb-1 row">
                     <label class="col-lg-4 col-form-label">Director Approval: <span class="text-danger">*</span></label>
                     <div class="col-lg-8">
-                        <select class="form-control" name="dir_approval" required>
+                        <select class="form-control select2" name="dir_approval" required>
                             <option @if ($data->director_id != null) selected @endif value="yes">Yes</option>
                             <option @if ($data->director_id == null) selected @endif value="no">No</option>
                         </select>
@@ -40,7 +47,7 @@
                 <div class="mb-1 row">
                     <label class="col-lg-4 col-form-label">Vendor: <span class="text-danger">*</span></label>
                     <div class="col-lg-8">
-                        <select class="form-control" name="vendor_id" required>
+                        <select class="form-control select2" name="vendor_id" required>
                             @foreach ($vendor as $vd)
                                 <option @if ($data->vendor_id == $vd->id) selected @endif value="{{ $vd->id }}">
                                     {{ $vd->nama }}</option>
@@ -51,7 +58,7 @@
                 <div class="mb-1 row">
                     <label class="col-lg-4 col-form-label">Entity: <span class="text-danger">*</span></label>
                     <div class="col-lg-8">
-                        <select class="form-control" name="entitas_id" required>
+                        <select class="form-control select2" name="entitas_id" required>
                             @foreach ($entitas as $et)
                                 <option @if ($data->entitas_id == $et->id) selected @endif value="{{ $et->id }}">
                                     {{ $et->entitas_name }}</option>
@@ -80,13 +87,9 @@
                                             <div class="col-1 text-center">
                                                 <i class="fs-3 ph-duotone ph-arrow-elbow-down-right"></i>
                                             </div>
-                                            <div class="col-12 col-lg-5">
+                                            <div class="col-12 col-lg-4">
                                                 <input type="text" class="form-control"
                                                     value="{{ $variant->name_varian }}" disabled>
-                                            </div>
-                                            <div class="col-4 col-lg-2">
-                                                <input type="text" class="form-control"
-                                                    value="{{ $variant->sku_varian }}" disabled>
                                             </div>
                                             <div class="col-4 col-lg-2">
                                                 <select class="form-select" name="items[{{ $variant->id }}][satuan]">
@@ -98,13 +101,16 @@
                                                 </select>
                                             </div>
                                             <div class="col-4 col-lg-2">
+                                                <input type="text" class="form-control number-separator"
+                                                    name="items[{{ $variant->id }}][nilai_variant]"
+                                                    value="{{ pecahTanpaRp($nilai) }}">
+                                            </div>
+                                            <div class="col-4 col-lg-1">
                                                 <input type="hidden" name="items[{{ $variant->id }}][item_varian_id]"
                                                     value="{{ $variant->id }}">
                                                 <input type="number" min="0" class="form-control"
                                                     name="items[{{ $variant->id }}][qty]"
                                                     value="{{ $qty }}">
-                                                <input type="hidden" name="items[{{ $variant->id }}][nilai_variant]"
-                                                    value="{{ $nilai }}">
                                             </div>
                                         </div>
                                     @endforeach
@@ -120,13 +126,13 @@
                         </div>
                     @endforeach
                 </div>
-                <div class="row mb-0 p-2">
+                {{-- <div class="row mb-0 p-2">
                     <a href="#" id="btn-add-product-edit"
                         class="btn btn-light-primary w-100 d-flex justify-content-center align-items-center">
                         <i class="fa fa-plus-circle me-2"></i>
                         <span>Add Item</span>
                     </a>
-                </div>
+                </div> --}}
             </div>
 
             <div class="col-12 col-lg-6">
@@ -205,6 +211,18 @@
 </div>
 
 <script>
+    function initItemMasterChoices(element) {
+        new Choices(element, {
+            searchEnabled: true,
+            searchPlaceholderValue: 'Search item...',
+            itemSelectText: '',
+            shouldSort: false,
+            allowHTML: true,
+            placeholder: true,
+            placeholderValue: 'Select Item'
+        });
+    }
+
     $('#form-edit').on('submit', function(e) {
         e.preventDefault();
         const id = "{{ $data->id }}";
