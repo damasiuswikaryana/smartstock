@@ -51,6 +51,33 @@ class InitationStockController extends Controller
                             'jumlah'         => $variant['qty'],
                         ]);
                     }
+
+                    // masukin ke stock mutasi, agar dapat ditrack
+                    $namaGudang = namaLokasi($input['lokasi_id']);
+                    $tipe       = 'Initiation';
+                    $pekerjaan  = NULL;
+                    $source     = 'External';
+                    $source_id  = NULL;
+                    if ($input['lokasi_id'] == 1) {
+                        $target = "Central";
+                    } else {
+                        $target = "Cabang";
+                    }
+                    $target_id  = $input['lokasi_id'];
+                    $keterangan = 'Inisiasi awal stok masuk dari external ke ' . $namaGudang;
+                    $entitas    = $input['entitas_id'];
+                    storeMutation(
+                        $tipe,
+                        $pekerjaan,
+                        $source,
+                        $source_id,
+                        $target,
+                        $target_id,
+                        $variant['id_variant'],
+                        $variant['qty'],
+                        $keterangan,
+                        $entitas
+                    );
                 }
             }
             DB::commit();

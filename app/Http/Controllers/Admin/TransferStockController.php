@@ -355,6 +355,7 @@ class TransferStockController extends Controller
                 // sesudah itu update stocks current (pertama kurangi jumlah stok pada gudang asal)
                 $cekStok        = Stock::where('item_varian_id', $child->item_varian_id)
                     ->where('lokasi_id', $gudangAsal)
+                    ->where('entitas_id', $entitas)
                     ->first();
                 $qtyCurrent     = $cekStok->jumlah;
                 $qtyBaru        = $qtyCurrent - $child->qty;
@@ -372,6 +373,7 @@ class TransferStockController extends Controller
                 // sesudah itu tambahkan stock pada gudang target
                 $cekStokTarget          = Stock::where('item_varian_id', $child->item_varian_id)
                     ->where('lokasi_id', $gudangTarget)
+                    ->where('entitas_id', $entitas)
                     ->first();
                 if ($cekStokTarget != null) {
                     $qtyCurrentTarget       = $cekStokTarget->jumlah;

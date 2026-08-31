@@ -5,7 +5,7 @@ use App\Models\StockMutation;
 use App\Models\Satuan;
 use App\Models\User;
 
-function storeMutation(string $tipe, string $pekerjaan_id, string $source, mixed $source_id, string $target, mixed $target_id, int $item_id, int $item_qty, string $keterangan, int $entitas_id)
+function storeMutation(string $tipe, ?string $pekerjaan_id, string $source, mixed $source_id, string $target, mixed $target_id, int $item_id, int $item_qty, string $keterangan, int $entitas_id)
 {
     try {
         DB::beginTransaction();

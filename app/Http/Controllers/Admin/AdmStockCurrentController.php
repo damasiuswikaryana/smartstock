@@ -83,6 +83,9 @@ class AdmStockCurrentController extends Controller
                                 <li class="list-inline-item">
                                     <a data-bs-toggle="tooltip" data-bs-placement="top" data-bs-original-title="Delete" href="#" class="avtar avtar-xs btn-link-danger btn-pc-default btn-delete" data-id="' . $row->id . '" type="submit"><i class="ti ti-trash f-20"></i></a>
                                 </li>
+                                <li class="list-inline-item">
+                                    <a data-bs-toggle="modal" data-bs-target="#modalEdit" data-bs-placement="top" title="Edit" href="' . route('stockCurrent.ubah', $row->id) . '" class="avtar avtar-xs btn-link-success btn-pc-default btn-edit"><i class="ti ti-edit f-20"></i></a>
+                                </li>
                             </ul>';
                     } else {
                         return "";
@@ -143,6 +146,42 @@ class AdmStockCurrentController extends Controller
         $waktu          = tanggalIndoWaktu(date('Y-m-d H:i:s'));
         $filename       = 'Stock Report - ' . $werehouse . ' - ' . $waktu . '.pdf';
         return $pdf->stream($filename);
+    }
+
+    public function edit(int $id)
+    {
+        $data               = Stock::where('id', $id)->first();
+        $entitas            = Entitas::all();
+        $gudang             = Outlet::all();
+
+        return view('pages.stock.current.edit', compact('data', 'entitas', 'gudang'));
+    }
+
+    public function update(Request $request, int $id)
+    {
+        $data   = Stock::where('id', $id)->first();
+        $input  = $request->all();
+        try {
+            $cek = Stock::where('item_varian_id', $data->item_varian_id)
+                ->where('lokasi_id', $input['werehouse_id'])
+                ->where('entitas_id', $input['entitas_id'])
+                ->where('id', '!=', $id)
+                ->first();
+            if ($cek == null) {
+                DB::beginTransaction();
+                $data->lokasi_id        = $input['werehouse_id'];
+                $data->jumlah           = $input['jumlah'];
+                $data->entitas_id       = $input['entitas_id'];
+                $data->save();
+                DB::commit();
+            } else {
+                return response()->json(['success' => false, 'message' => "Error: Item sudah terdaftar pada lokasi dan entitas yang sama"]);
+            }
+            return response()->json(['success' => true]);
+        } catch (\Throwable $th) {
+            DB::rollback();
+            return response()->json(['success' => false, 'message' => "Error: " . $th->getMessage()]);
+        }
     }
 
     public function destroy(int $id)

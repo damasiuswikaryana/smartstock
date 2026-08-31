@@ -89,11 +89,23 @@
     @endphp
     <x-datatable :thead=$thead :filter="null">
     </x-datatable>
+
+    <div id="modalEdit" class="modal fade" data-backdrop="static" data-keyboard="false" tabindex="-1" role="dialog"
+        aria-labelledby="modalEditTitle">
+        <div class="modal-dialog modal-md modal-dialog-centered" role="document">
+            <div class="modal-content"></div>
+        </div>
+    </div>
 @endsection
 
 @push('js')
     <script src="{{ asset('assets/js/plugins/dataTables.fixedColumns.min.js') }}"></script>
     <script type="text/javascript">
+        $("#modalEdit").on("show.bs.modal", function(e) {
+            var link = $(e.relatedTarget);
+            $(this).find(".modal-content").load(link.attr("href"));
+        });
+
         let table = $('#myTable').DataTable({
             processing: true,
             serverSide: true,

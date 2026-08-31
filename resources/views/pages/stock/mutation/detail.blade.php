@@ -12,12 +12,20 @@
                             Type
                         </div>
                         <div class="ms-0 me-auto col-6">
-                            <span class="fs-6 badge bg-light-secondary">Stock {{ $data->tipe }}</span>
+                            @if ($data->tipe == 'Masuk')
+                                <span class="fs-6 badge bg-light-success text-green">Stock {{ $data->tipe }}</span>
+                            @elseif ($data->tipe == 'Keluar')
+                                <span class="fs-6 badge bg-light-danger">Stock {{ $data->tipe }}</span>
+                            @elseif ($data->tipe == 'Transfer')
+                                <span class="fs-6 badge bg-light-primary">Stock {{ $data->tipe }}</span>
+                            @else
+                                <span class="fs-6 badge bg-light-secondary">Stock {{ $data->tipe }}</span>
+                            @endif
                         </div>
                     </li>
                     <li class="list-group-item d-flex justify-content-between align-items-start">
                         <div class="ms-0 me-auto col-6">
-                            Source
+                            Source <i class="fs-5 mx-3 ti ti-arrow-bar-right"></i> Destination
                         </div>
                         <div class="d-flex align-items-center ms-0 me-auto col-6">
                             @if ($data->source_id == null)
@@ -25,17 +33,9 @@
                             @else
                                 <span>{{ namaLokasi($data->source_id) }}</span>
                             @endif
-                            <i class="fs-5 ms-3 ti ti-arrow-bar-right"></i>
-                        </div>
-                    </li>
-                    <li class="list-group-item d-flex justify-content-between align-items-start">
-                        <div class="ms-0 me-auto col-6">
-                            Destination
-                        </div>
-                        <div class="d-flex align-items-center ms-0 me-auto col-6">
-                            <i class="fs-5 me-3 ti ti-arrow-bar-to-right"></i>
+                            <i class="fs-5 mx-3 ti ti-arrow-bar-right"></i>
                             @if ($data->target_id == null)
-                                {{ $data->target_id }}
+                                {{ $data->target_type }}
                             @else
                                 {{ namaLokasi($data->target_id) }}
                             @endif
@@ -49,12 +49,13 @@
                             {{ $data->entitas->entitas_name }}
                         </div>
                     </li>
-                    <li class="list-group-item d-flex justify-content-between align-items-start">
+                    <li class="list-group-item d-flex justify-content-between align-items-center">
                         <div class="ms-0 me-auto col-6">
                             Item
                         </div>
                         <div class="ms-0 me-auto fw-bold col-6">
-                            {{ $data->item_varian->name_varian }}
+                            {{ $data->item_varian->sku_varian }} <br> {{ $data->item_varian->name_varian }} <br> <small
+                                class="fw-medium">{{ $data->item_varian->itemMaster->category->title }}</small>
                         </div>
                     </li>
                     <li class="list-group-item d-flex justify-content-between align-items-start">

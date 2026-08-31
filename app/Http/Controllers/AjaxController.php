@@ -11,7 +11,7 @@ use App\Models\Project;
 use App\Models\Stock;
 use App\Models\Satuan;
 use App\Models\Category;
-
+use App\Models\Entitas;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Auth;
@@ -40,13 +40,15 @@ class AjaxController extends Controller
         ]);
     }
 
-    public function getVariantStocks(int $id, int $gudang_id)
+    public function getVariantStocks(int $id, int $gudang_id, int $entitas_id)
     {
-        $item = ItemMaster::with([
-            'varian' => function ($q) use ($gudang_id) {
+        $entitas    = Entitas::where('entitas_name', 'Global')->orWhere('id', $entitas_id)->get();
+        $item       = ItemMaster::with([
+            'varian' => function ($q) use ($gudang_id, $entitas_id) {
                 $q->with([
-                    'stock' => function ($q) use ($gudang_id) {
-                        $q->where('lokasi_id', $gudang_id);
+                    'stock' => function ($q) use ($gudang_id, $entitas_id) {
+                        $q->where('lokasi_id', $gudang_id)
+                            ->where('entitas_id', $entitas_id);
                     }
                 ]);
             }
@@ -63,7 +65,8 @@ class AjaxController extends Controller
 
         return response()->json([
             'success'   => true,
-            'variants'  => $variants
+            'variants'  => $variants,
+            'entitas'   => $entitas,
         ]);
     }
 
