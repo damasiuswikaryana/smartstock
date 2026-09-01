@@ -70,6 +70,24 @@ class AjaxController extends Controller
         ]);
     }
 
+    public function getStockbyEntityItem(int $id, int $gudang_id, int $entitas_id)
+    {
+        $stock = Stock::select('jumlah')
+            ->where('item_varian_id', $id)
+            ->where('lokasi_id', $gudang_id)
+            ->where('entitas_id', $entitas_id)
+            ->first();
+        if ($stock == null) {
+            $stock_jum = 0;
+        } else {
+            $stock_jum = $stock->jumlah;
+        }
+        return response()->json([
+            'success'   => true,
+            'stock'     => $stock_jum,
+        ]);
+    }
+
     public function getStockIn(Request $request)
     {
         $lokasi         = $request->warehouse_id;

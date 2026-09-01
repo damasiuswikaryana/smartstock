@@ -26,9 +26,10 @@ Route::group(['middleware' => ['isAdmin', 'auth']], function () {
     Route::get('log-activity',              [HomeController::class, 'logActivity'])->name('log-activity');
     Route::post('save-fcm-token',           [HomeController::class, 'saveFcmToken'])->name('saveFcmToken');
     // ajax
-    Route::get('get-item-variant/{id}',                     [AjaxController::class, 'getVariants'])->name('getVariants');
-    Route::get('get-item-variant-stocks/{id}/{whid}/{eid}', [AjaxController::class, 'getVariantStocks'])->name('getVariantStocks');
-    Route::get('get-item-by-category/{id}',                 [AjaxController::class, 'getItembyCategory'])->name('getItembyCategory');
+    Route::get('get-item-variant/{id}',                         [AjaxController::class, 'getVariants'])->name('getVariants');
+    Route::get('get-item-variant-stocks/{id}/{whid}/{eid}',     [AjaxController::class, 'getVariantStocks'])->name('getVariantStocks');
+    Route::get('get-item-by-category/{id}',                     [AjaxController::class, 'getItembyCategory'])->name('getItembyCategory');
+    Route::get('get-stock-by-item-entitiy/{id}/{whid}/{eid}',   [AjaxController::class, 'getStockbyEntityItem'])->name('getStockByEntitas');
     // ajax dashboard
     Route::get('dashboard-get-stock-in',                [AjaxController::class, 'getStockIn'])->name('getDashboardStockIn');
     Route::get('dashboard-get-stock-out',               [AjaxController::class, 'getStockOut'])->name('getDashboardStockOut');

@@ -404,8 +404,10 @@
                             <i class="fs-3 ph-duotone ph-arrow-elbow-down-right"></i>
                         </div>
                         <div class="col-12 col-lg-2">
-                            <select class="form-select"
-                                name="item[${index}][variants][${variant.id}][entitas]">
+                            <select class="form-select entitas-select"
+                                name="item[${index}][variants][${variant.id}][entitas]"
+                                data-variant-id="${variant.id}"
+                                data-gudang-id="${werehouseId}">
                                 ${entitasOptions}
                             </select>
                         </div>
@@ -416,7 +418,7 @@
                             <input type="text" class="form-control" value="${variant.sku_varian}" disabled>
                         </div>
                         <div class="col-4 col-lg-2 text-center">
-                            <input type="text" class="form-control" value="Stock: ${variant.stok}" disabled>
+                            <input type="text" class="form-control stock-display" value="Stock: ${variant.stok}" disabled>
                         </div>
                         <div class="col-2 col-lg-1">
                             <input type="number" min="0" max="${variant.stok}" class="form-control qty-input" data-stock="${variant.stok}" name="item[${index}][variants][${variant.id}][qty]" placeholder="Qty" value="0">
@@ -430,15 +432,47 @@
         });
 
         $(document).on('input change', '.qty-input', function() {
-            let stock = parseInt($(this).data('stock'));
+            let stock = parseInt($(this).attr('data-stock')) || 0;
             let qty = parseInt($(this).val()) || 0;
             if (qty > stock) {
                 $(this).val(stock);
                 showToastError("Stock tidak mencukupi");
+                return;
             }
             if (qty < 0) {
                 $(this).val(0);
             }
+        });
+
+        $(document).on('change', '.entitas-select', function() {
+            const $select = $(this);
+            const variantId = $select.data('variant-id');
+            const gudangId = $select.data('gudang-id');
+            const entitasId = $select.val();
+            const $row = $select.closest('.row');
+            const $stockDisplay = $row.find('.stock-display');
+            const $qtyInput = $row.find('.qty-input');
+            //
+            $.ajax({
+                url: `/get-stock-by-item-entitiy/${variantId}/${gudangId}/${entitasId}`,
+                type: 'GET',
+                success: function(response) {
+                    const stock = parseInt(response.stock) || 0;
+                    $stockDisplay.val(`Stock: ${stock}`);
+                    $qtyInput.attr('max', stock).attr('data-stock', stock);
+                    if (parseInt($qtyInput.val()) > stock) {
+                        $qtyInput.val(stock);
+                    }
+                },
+                error: function() {
+                    $stockDisplay.val('Stock: 0');
+                    $qtyInput
+                        .val(0)
+                        .attr('max', 0)
+                        .attr('data-stock', 0);
+                    showToastError("Error while get data stock");
+                }
+            });
         });
     </script>
 @endpush

@@ -156,6 +156,7 @@ class OutStockController extends Controller
                             'out_master_id'     => $stock_master->id,
                             'item_varian_id'    => $variant['id_variant'],
                             'qty'               => $variant['qty'],
+                            'entitas_id'        => $variant['entitas'],
                         ]);
                     }
                 }
@@ -246,7 +247,10 @@ class OutStockController extends Controller
                             'out_master_id'     => $id,
                             'item_varian_id'    => $item['item_varian_id'],
                         ],
-                        ['qty'                  => $item['qty']]
+                        [
+                            'qty'               => $item['qty'],
+                            'entitas_id'        => $item['entitas'],
+                        ]
                     );
                 } else {
                     StockOutChild::where('out_master_id', $id)->where('item_varian_id', $item['item_varian_id'])->delete();
@@ -334,10 +338,11 @@ class OutStockController extends Controller
             $target     = 'External';
             $target_id  = NULL;
             $keterangan = 'Item keluar habis pakai dari gudang ' . $namaGudang . ' ke External';
-            $entitas    = $data->entitas_id;
+            $entitas_target = $data->entitas_id;
             $pekerjaan  = $data->pekerjaan_id;
             $dataChild  = $data->child()->get();
             foreach ($dataChild as $child) {
+                $entitas_asal_item = $child->entitas_id;
                 storeMutation(
                     $tipe,
                     $pekerjaan,
@@ -348,12 +353,12 @@ class OutStockController extends Controller
                     $child->item_varian_id,
                     $child->qty,
                     $keterangan,
-                    $entitas
+                    $entitas_target
                 );
                 // sesudah itu update stocks current
                 $cekStok        = Stock::where('item_varian_id', $child->item_varian_id)
                     ->where('lokasi_id', $gudang)
-                    ->where('entitas_id', $entitas)
+                    ->where('entitas_id', $entitas_asal_item)
                     ->first();
                 $qtyCurrent     = $cekStok->jumlah;
                 $qtyBaru        = $qtyCurrent - $child->qty;
@@ -361,7 +366,7 @@ class OutStockController extends Controller
                     [
                         'item_varian_id'    => $child->item_varian_id,
                         'lokasi_id'         => $gudang,
-                        'entitas_id'        => $entitas,
+                        'entitas_id'        => $entitas_asal_item,
                     ],
                     [
                         'jumlah'            => $qtyBaru,

@@ -92,7 +92,7 @@
                                     <label class="col-lg-4 col-form-label">Entity: <span
                                             class="text-danger">*</span></label>
                                     <div class="col-lg-8">
-                                        <select class="form-control" name="entitas_id" required>
+                                        <select class="form-control" id="target_entitas" name="entitas_id" required>
                                             @foreach ($entitas as $et)
                                                 <option value="{{ $et->id }}">{{ $et->entitas_name }}</option>
                                             @endforeach
@@ -354,29 +354,47 @@
         $(document).on('change', '.item-master', function() {
             let itemId = $(this).val();
             let werehouseId = {{ $gudang }};
+            let entitasId = $("#target_entitas").val();
             let index = $(this).data('index');
             $.ajax({
-                url: "{{ route('getVariantStocks', ['id' => ':id', 'whid' => ':wh_id']) }}".replace(':id',
-                    itemId).replace(':wh_id', werehouseId),
+                url: "{{ route('getVariantStocks', ['id' => ':id', 'whid' => ':wh_id', 'eid' => ':eid']) }}"
+                    .replace(':id',
+                        itemId).replace(':wh_id', werehouseId).replace(':eid', entitasId),
                 type: "GET",
                 success: function(res) {
                     let html = '';
                     $.each(res.variants, function(i, variant) {
+                        let entitasOptions = '';
+                        $.each(res.entitas, function(j, entitas) {
+                            entitasOptions += `
+                            <option value="${entitas.id}">
+                                ${entitas.entitas_name}
+                            </option>`;
+                        });
+
                         html += `
                     <div class="row mb-2 align-items-center">
                         <div class="col-1 text-center">
                             <i class="fs-3 ph-duotone ph-arrow-elbow-down-right"></i>
                         </div>
-                        <div class="col-2">
-                            <input type="text" class="form-control" value="${variant.sku_varian}" disabled>
+                        <div class="col-12 col-lg-2">
+                            <select class="form-select entitas-select"
+                                name="item[${index}][variants][${variant.id}][entitas]"
+                                data-variant-id="${variant.id}"
+                                data-gudang-id="${werehouseId}">
+                                ${entitasOptions}
+                            </select>
                         </div>
-                        <div class="col-5">
+                        <div class="col-12 col-lg-4">
                             <input type="text" class="form-control" value="${variant.name_varian}" disabled>
                         </div>
-                        <div class="col-2 text-center">
-                            <input type="text" class="form-control" value="Stock: ${variant.stok}" disabled>
+                        <div class="col-6 col-lg-2">
+                            <input type="text" class="form-control" value="${variant.sku_varian}" disabled>
                         </div>
-                        <div class="col-2">
+                        <div class="col-4 col-lg-2 text-center">
+                            <input type="text" class="form-control stock-display" value="Stock: ${variant.stok}" disabled>
+                        </div>
+                        <div class="col-2 col-lg-1">
                             <input type="number" min="0" max="${variant.stok}" class="form-control qty-input" data-stock="${variant.stok}" name="item[${index}][variants][${variant.id}][qty]" placeholder="Qty" value="0">
                             <input type="hidden" name="item[${index}][variants][${variant.id}][id_variant]" value="${variant.id}">
                         </div>
@@ -388,15 +406,47 @@
         });
 
         $(document).on('input change', '.qty-input', function() {
-            let stock = parseInt($(this).data('stock'));
+            let stock = parseInt($(this).attr('data-stock')) || 0;
             let qty = parseInt($(this).val()) || 0;
             if (qty > stock) {
                 $(this).val(stock);
                 showToastError("Stock tidak mencukupi");
+                return;
             }
             if (qty < 0) {
                 $(this).val(0);
             }
+        });
+
+        $(document).on('change', '.entitas-select', function() {
+            const $select = $(this);
+            const variantId = $select.data('variant-id');
+            const gudangId = $select.data('gudang-id');
+            const entitasId = $select.val();
+            const $row = $select.closest('.row');
+            const $stockDisplay = $row.find('.stock-display');
+            const $qtyInput = $row.find('.qty-input');
+            //
+            $.ajax({
+                url: `/get-stock-by-item-entitiy/${variantId}/${gudangId}/${entitasId}`,
+                type: 'GET',
+                success: function(response) {
+                    const stock = parseInt(response.stock) || 0;
+                    $stockDisplay.val(`Stock: ${stock}`);
+                    $qtyInput.attr('max', stock).attr('data-stock', stock);
+                    if (parseInt($qtyInput.val()) > stock) {
+                        $qtyInput.val(stock);
+                    }
+                },
+                error: function() {
+                    $stockDisplay.val('Stock: 0');
+                    $qtyInput
+                        .val(0)
+                        .attr('max', 0)
+                        .attr('data-stock', 0);
+                    showToastError("Error while get data stock");
+                }
+            });
         });
     </script>
 @endpush

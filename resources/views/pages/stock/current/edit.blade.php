@@ -83,9 +83,9 @@
                     showToastError(res.message);
                 }
             },
-            error: function() {
+            error: function(xhr) {
                 hideLoader();
-                showToastError("Error while updating data");
+                showToastError(xhr.responseJSON.message);
             }
         });
     });
