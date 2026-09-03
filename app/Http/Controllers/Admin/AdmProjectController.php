@@ -54,6 +54,8 @@ class AdmProjectController extends Controller
                 'entitas_id'            => $input['entitas_id'],
                 'werehouse_id'          => $input['werehouse_id'],
                 'no_kontrak'            => $input['no_kontrak'],
+                'no_kontrak_2'          => $input['no_kontrak_2'],
+                'no_kontrak_3'          => $input['no_kontrak_3'],
                 'jangka_waktu'          => $input['jangka_waktu'],
                 'date_join'             => $input['date_join'],
                 'status'                => $input['status'],
@@ -88,6 +90,8 @@ class AdmProjectController extends Controller
             $data->entitas_id        = $input['entitas_id'];
             $data->werehouse_id      = $input['werehouse_id'];
             $data->no_kontrak        = $input['no_kontrak'];
+            $data->no_kontrak_2      = $input['no_kontrak_2'];
+            $data->no_kontrak_3      = $input['no_kontrak_3'];
             $data->jangka_waktu      = $input['jangka_waktu'];
             $data->date_join         = $input['date_join'];
             $data->status            = $input['status'];

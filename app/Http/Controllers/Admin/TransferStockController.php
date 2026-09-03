@@ -182,6 +182,7 @@ class TransferStockController extends Controller
         $gudang             = $data->werehouse_source_id;
         $pekerjaan          = Project::all();
         $entitas            = Entitas::all();
+        $entitasGlobal      = Entitas::where('entitas_global', 1)->first();
         $dataGudang         = Outlet::all();
 
         $items              =
@@ -211,7 +212,7 @@ class TransferStockController extends Controller
         // Mapping qty berdasarkan item_varian_id
         $qtyData            = $data->child->keyBy('item_varian_id');
 
-        return view('pages.stock.transfer.edit', compact('data', 'pekerjaan', 'entitas', 'items', 'itemMasters', 'document', 'qtyData', 'dataGudang'));
+        return view('pages.stock.transfer.edit', compact('data', 'pekerjaan', 'entitas', 'items', 'itemMasters', 'document', 'qtyData', 'dataGudang', 'entitasGlobal'));
     }
 
     public function update(Request $request, int $id)

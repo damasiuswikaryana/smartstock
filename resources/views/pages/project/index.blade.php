@@ -78,6 +78,22 @@
                             </div>
                         </div>
                         <div class="mb-3 row">
+                            <label class="col-lg-4 col-form-label">Contract Number: <span
+                                    class="text-danger">*</span></label>
+                            <div class="col-lg-8">
+                                <input type="text" class="form-control" placeholder="Other Contract Number"
+                                    name="no_kontrak_2" required />
+                            </div>
+                        </div>
+                        <div class="mb-3 row">
+                            <label class="col-lg-4 col-form-label">Contract Number: <span
+                                    class="text-danger">*</span></label>
+                            <div class="col-lg-8">
+                                <input type="text" class="form-control" placeholder="Other Contract Number"
+                                    name="no_kontrak_3" required />
+                            </div>
+                        </div>
+                        <div class="mb-3 row">
                             <label class="col-lg-4 col-form-label">Contract Date Join: <span
                                     class="text-danger">*</span></label>
                             <div class="col-lg-8">

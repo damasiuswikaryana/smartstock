@@ -92,33 +92,51 @@
                                         @php
                                             $detail = $qtyData->get($variant->id);
                                             $qty = optional($detail)->qty ?? 0;
+                                            if ($variant->entitas_id == null) {
+                                                $entitasParam = $data->entitas_id;
+                                            } else {
+                                                $entitasParam = $variant->entitas_id;
+                                            }
                                         @endphp
                                         <div class="row mb-2 align-items-center">
                                             <div class="col-1 text-center">
                                                 <i class="fs-3 ph-duotone ph-arrow-elbow-down-right"></i>
                                             </div>
-                                            <div class="col-2">
-                                                <input type="text" class="form-control"
-                                                    value="{{ $variant->sku_varian }}" disabled>
+                                            <div class="col-12 col-lg-2">
+                                                <select class="form-select entitas-select"
+                                                    name="items[{{ $variant->id }}][entitas]"
+                                                    data-variant-id="{{ $variant->id }}"
+                                                    data-gudang-id="{{ $data->werehouse_source_id }}">
+                                                    <option @if ($entitasParam == $entitasGlobal->id) selected @endif
+                                                        value="{{ $entitasGlobal->id }}">
+                                                        {{ $entitasGlobal->entitas_name }}</option>
+                                                    <option @if ($entitasParam == $data->entitas_id) selected @endif
+                                                        value="{{ $data->entitas_id }}">
+                                                        {{ namaEntitas($data->entitas_id) }}</option>
+                                                </select>
                                             </div>
-                                            <div class="col-5">
+                                            <div class="col-12 col-lg-4">
                                                 <input type="text" class="form-control"
                                                     value="{{ $variant->name_varian }}" disabled>
                                             </div>
-                                            <div class="col-2">
+                                            <div class="col-6 col-lg-2">
                                                 <input type="text" class="form-control"
-                                                    value="Stock: {{ $variant->getStockByLokasi($data->werehouse_source_id) }}"
+                                                    value="{{ $variant->sku_varian }}" disabled>
+                                            </div>
+                                            <div class="col-4 col-lg-2 text-center">
+                                                <input type="text" class="form-control stock-display"
+                                                    value="Stock: {{ $variant->getStockByLokasiandEntitas($data->werehouse_source_id, $entitasParam) }}"
                                                     disabled>
                                             </div>
-                                            <div class="col-2">
+                                            <div class="col-2 col-lg-1">
                                                 <input type="hidden"
                                                     name="items[{{ $variant->id }}][item_varian_id]"
                                                     value="{{ $variant->id }}">
 
                                                 <input type="number" min="0"
-                                                    max="{{ $variant->getStockByLokasi($data->werehouse_source_id) }}"
+                                                    max="{{ $variant->getStockByLokasiandEntitas($data->werehouse_source_id, $entitasParam) }}"
                                                     class="form-control qty-input"
-                                                    data-stock="{{ $variant->getStockByLokasi($data->werehouse_source_id) }}"
+                                                    data-stock="{{ $variant->getStockByLokasiandEntitas($data->werehouse_source_id, $entitasParam) }}"
                                                     name="items[{{ $variant->id }}][qty]"
                                                     value="{{ $qty }}">
                                             </div>
@@ -136,13 +154,13 @@
                         </div>
                     @endforeach
                 </div>
-                <div class="row mb-0 p-2">
+                {{-- <div class="row mb-0 p-2">
                     <a href="#" id="btn-add-product-edit"
                         class="btn btn-light-primary w-100 d-flex justify-content-center align-items-center">
                         <i class="fa fa-plus-circle me-2"></i>
                         <span>Add Item</span>
                     </a>
-                </div>
+                </div> --}}
             </div>
 
             <div class="col-12">
@@ -325,21 +343,37 @@
             success: function(res) {
                 let htmlEdit = '';
                 $.each(res.variants, function(i, variant) {
+                    let entitasOptions = '';
+                    $.each(res.entitas, function(j, entitas) {
+                        entitasOptions += `
+                            <option value="${entitas.id}">
+                                ${entitas.entitas_name}
+                            </option>`;
+                    });
+
                     htmlEdit += `
                     <div class="row mb-2 align-items-center">
                         <div class="col-1 text-center">
                             <i class="fs-3 ph-duotone ph-arrow-elbow-down-right"></i>
                         </div>
-                        <div class="col-2">
-                            <input type="text" class="form-control" value="${variant.sku_varian}" disabled>
+                        <div class="col-12 col-lg-2">
+                            <select class="form-select entitas-select"
+                                name="item[${index}][variants][${variant.id}][entitas]"
+                                data-variant-id="${variant.id}"
+                                data-gudang-id="${werehouseId}">
+                                ${entitasOptions}
+                            </select>
                         </div>
-                        <div class="col-5">
+                        <div class="col-12 col-lg-4">
                             <input type="text" class="form-control" value="${variant.name_varian}" disabled>
                         </div>
-                        <div class="col-2">
-                            <input type="text" class="form-control" value="Stock: ${variant.stok}" disabled>
+                        <div class="col-6 col-lg-2">
+                            <input type="text" class="form-control" value="${variant.sku_varian}" disabled>
                         </div>
-                        <div class="col-2">
+                        <div class="col-4 col-lg-2 text-center">
+                            <input type="text" class="form-control stock-display" value="Stock: ${variant.stok}" disabled>
+                        </div>
+                        <div class="col-2 col-lg-1">
                             <input type="number" min="0" max="${variant.stok}" class="form-control qty-input" data-stock="${variant.stok}" name="item[${indexEdit}][variants][${variant.id}][qty]" placeholder="Qty" value="0">
                             <input type="hidden" name="item[${indexEdit}][variants][${variant.id}][id_variant]" value="${variant.id}">
                         </div>
@@ -351,14 +385,46 @@
     });
 
     $(document).on('input change', '.qty-input', function() {
-        let stock = parseInt($(this).data('stock'));
+        let stock = parseInt($(this).attr('data-stock')) || 0;
         let qty = parseInt($(this).val()) || 0;
         if (qty > stock) {
             $(this).val(stock);
             showToastError("Stock tidak mencukupi");
+            return;
         }
         if (qty < 0) {
             $(this).val(0);
         }
+    });
+
+    $(document).on('change', '.entitas-select', function() {
+        const $select = $(this);
+        const variantId = $select.data('variant-id');
+        const gudangId = $select.data('gudang-id');
+        const entitasId = $select.val();
+        const $row = $select.closest('.row');
+        const $stockDisplay = $row.find('.stock-display');
+        const $qtyInput = $row.find('.qty-input');
+        //
+        $.ajax({
+            url: `/get-stock-by-item-entitiy/${variantId}/${gudangId}/${entitasId}`,
+            type: 'GET',
+            success: function(response) {
+                const stock = parseInt(response.stock) || 0;
+                $stockDisplay.val(`Stock: ${stock}`);
+                $qtyInput.attr('max', stock).attr('data-stock', stock);
+                if (parseInt($qtyInput.val()) > stock) {
+                    $qtyInput.val(stock);
+                }
+            },
+            error: function() {
+                $stockDisplay.val('Stock: 0');
+                $qtyInput
+                    .val(0)
+                    .attr('max', 0)
+                    .attr('data-stock', 0);
+                showToastError("Error while get data stock");
+            }
+        });
     });
 </script>
