@@ -4,6 +4,7 @@ use App\Models\Outlet;
 use App\Models\StockMutation;
 use App\Models\Satuan;
 use App\Models\User;
+use App\Models\Entitas;
 
 function storeMutation(string $tipe, ?string $pekerjaan_id, string $source, mixed $source_id, string $target, mixed $target_id, int $item_id, int $item_qty, string $keterangan, int $entitas_id, ?int $entitas_source)
 {
@@ -34,6 +35,16 @@ function namaLokasi(int $id)
 {
     $q = Outlet::select('nama')->where('id', $id)->first();
     return $q->nama;
+}
+
+function namaEntitas(int $id)
+{
+    $q = Entitas::select('entitas_name')->where('id', $id)->first();
+    if ($q) {
+        return $q->entitas_name;
+    } else {
+        return "Belum ada entitas terpilih";
+    }
 }
 
 function getSatuanName(int $id)

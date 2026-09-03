@@ -23,10 +23,11 @@ class ItemVarian extends Model
         return $this->hasMany(Stock::class, 'item_varian_id');
     }
 
-    public function getStockByLokasi(int $lokasiId)
+    public function getStockByLokasiandEntitas(int $lokasiId, ?int $entitasId)
     {
         return $this->stock()
             ->where('lokasi_id', $lokasiId)
+            ->where('entitas_id', $entitasId)
             ->sum('jumlah');
     }
 

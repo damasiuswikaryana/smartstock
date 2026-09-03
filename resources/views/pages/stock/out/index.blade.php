@@ -88,6 +88,13 @@
                                             name="stock_out_srf" value="">
                                     </div>
                                 </div>
+                                <div class="mb-2 row">
+                                    <label class="col-lg-4 col-form-label">Received by: </label>
+                                    <div class="col-lg-8">
+                                        <input type="text" class="form-control" placeholder="Diterima oleh ..."
+                                            name="received_by" value="">
+                                    </div>
+                                </div>
                             </div>
 
                             <div class="col-12 col-lg-6">
@@ -111,13 +118,6 @@
                                                 <option value="{{ $et->id }}">{{ $et->entitas_name }}</option>
                                             @endforeach
                                         </select>
-                                    </div>
-                                </div>
-                                <div class="mb-2 row">
-                                    <label class="col-lg-4 col-form-label">Received by: </label>
-                                    <div class="col-lg-8">
-                                        <input type="text" class="form-control" placeholder="Diterima oleh ..."
-                                            name="received_by" value="">
                                     </div>
                                 </div>
                             </div>

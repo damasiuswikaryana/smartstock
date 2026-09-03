@@ -59,7 +59,7 @@
                 <div class="mb-2 row">
                     <label class="col-lg-4 col-form-label">Entity: <span class="text-danger">*</span></label>
                     <div class="col-lg-8">
-                        <select class="form-control" name="entitas_id" required>
+                        <select class="form-control" id="target_entitas" name="entitas_id" required>
                             @foreach ($entitas as $et)
                                 <option @if ($data->entitas_id == $et->id) selected @endif value="{{ $et->id }}">
                                     {{ $et->entitas_name }}</option>
@@ -315,10 +315,12 @@
     $(document).on('change', '.item-master', function() {
         let itemEditId = $(this).val();
         let werehouseId = {{ $data->werehouse_source_id }};
+        let entitasId = $("#target_entitas").val();
         let indexEdit = $(this).data('index');
         $.ajax({
-            url: "{{ route('getVariantStocks', ['id' => ':id', 'whid' => ':wh_id']) }}".replace(':id',
-                itemEditId).replace(':wh_id', werehouseId),
+            url: "{{ route('getVariantStocks', ['id' => ':id', 'whid' => ':wh_id', 'eid' => ':eid']) }}"
+                .replace(':id',
+                    itemEditId).replace(':wh_id', werehouseId).replace(':eid', entitasId),
             type: "GET",
             success: function(res) {
                 let htmlEdit = '';

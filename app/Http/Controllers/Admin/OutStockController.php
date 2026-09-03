@@ -191,6 +191,7 @@ class OutStockController extends Controller
         $gudang             = $data->werehouse_id;
         $pekerjaan          = Project::all();
         $entitas            = Entitas::all();
+        $entitasGlobal      = Entitas::where('entitas_global', 1)->first();
 
         $items              =
             ItemMaster::with([
@@ -219,7 +220,7 @@ class OutStockController extends Controller
         // Mapping qty berdasarkan item_varian_id
         $qtyData            = $data->child->keyBy('item_varian_id');
 
-        return view('pages.stock.out.edit', compact('data', 'pekerjaan', 'entitas', 'items', 'itemMasters', 'document', 'qtyData'));
+        return view('pages.stock.out.edit', compact('data', 'pekerjaan', 'entitas', 'items', 'itemMasters', 'document', 'qtyData', 'entitasGlobal'));
     }
 
     public function update(Request $request, int $id)
