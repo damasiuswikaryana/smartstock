@@ -328,6 +328,7 @@ class InOutStockController extends Controller
             $keterangan = 'Item masuk dari external ke ' . $namaGudang;
             $entitas    = $data->entitas_id;
             $dataChild  = $data->child()->get();
+            $entitas_sorce = NULL;
             foreach ($dataChild as $child) {
                 storeMutation(
                     $tipe,
@@ -339,7 +340,8 @@ class InOutStockController extends Controller
                     $child->item_varian_id,
                     $child->qty,
                     $keterangan,
-                    $entitas
+                    $entitas,
+                    $entitas_sorce,
                 );
                 // sesudah itu update stocks current
                 $cekStok = Stock::where('item_varian_id', $child->item_varian_id)

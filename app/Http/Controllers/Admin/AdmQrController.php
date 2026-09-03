@@ -34,7 +34,7 @@ class AdmQrController extends Controller
         $lokasi     = Auth::user()->loc_id;
         $categories = Category::all();
         $user       = User::where('id', Auth::user()->id)->first();
-        $data       = Qr::with('child')->whereMonth('qr_date', $bulan)->whereYear('qr_date', $tahun);
+        $data       = Qr::with('child');
 
         if ($request->ajax()) {
             // filter werehouse
@@ -75,6 +75,8 @@ class AdmQrController extends Controller
                 } else {
                     $data = $data->whereDate('qr_date', $startDate);
                 }
+            } else {
+                $data->whereMonth('qr_date', $bulan)->whereYear('qr_date', $tahun);
             }
             // filter director
             if ($request->director) {
@@ -198,7 +200,7 @@ class AdmQrController extends Controller
                             'item_varian_id'    => $variant['id_variant'],
                             'qty'               => $variant['qty'],
                             'satuan_id'         => $variant['satuan'],
-                            'unit_price'        => $variant['nilai_variant'],
+                            'unit_price'        => hapusTitikAngka($variant['nilai_variant']),
                         ]);
                     }
                 }
@@ -289,7 +291,7 @@ class AdmQrController extends Controller
                         [
                             'qty'               => $item['qty'],
                             'satuan_id'         => $item['satuan'],
-                            'unit_price'        => $item['nilai_variant']
+                            'unit_price'        => hapusTitikAngka($item['nilai_variant'])
                         ]
                     );
                 } else {

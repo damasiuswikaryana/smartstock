@@ -143,6 +143,7 @@ class TransferStockController extends Controller
                             'transfer_master_id'    => $stock_master->id,
                             'item_varian_id'        => $variant['id_variant'],
                             'qty'                   => $variant['qty'],
+                            'entitas_id'            => $variant['entitas'],
                         ]);
                     }
                 }
@@ -239,7 +240,10 @@ class TransferStockController extends Controller
                             'transfer_master_id'    => $id,
                             'item_varian_id'        => $item['item_varian_id'],
                         ],
-                        ['qty'                      => $item['qty']]
+                        [
+                            'qty'                   => $item['qty'],
+                            'entitas_id'            => $item['entitas'],
+                        ]
                     );
                 } else {
                     StockTransferChild::where('transfer_master_id', $id)->where('item_varian_id', $item['item_varian_id'])->delete();
@@ -335,11 +339,12 @@ class TransferStockController extends Controller
                 $target_id  = $gudangTarget;
             }
 
-            $keterangan = 'Item transfer dari gudang ' . $namaGudangAsal . ' ke gudang ' . $namaGudangTarget;
-            $entitas    = $data->entitas_id;
-            $pekerjaan  = $data->pekerjaan_id;
-            $dataChild  = $data->child()->get();
+            $keterangan     = 'Item transfer dari gudang ' . $namaGudangAsal . ' ke gudang ' . $namaGudangTarget;
+            $entitas_target = $data->entitas_id;
+            $pekerjaan      = $data->pekerjaan_id;
+            $dataChild      = $data->child()->get();
             foreach ($dataChild as $child) {
+                $entitas_asal_item = $child->entitas_id;
                 storeMutation(
                     $tipe,
                     $pekerjaan,
@@ -350,12 +355,13 @@ class TransferStockController extends Controller
                     $child->item_varian_id,
                     $child->qty,
                     $keterangan,
-                    $entitas
+                    $entitas_target,
+                    $entitas_asal_item
                 );
                 // sesudah itu update stocks current (pertama kurangi jumlah stok pada gudang asal)
                 $cekStok        = Stock::where('item_varian_id', $child->item_varian_id)
                     ->where('lokasi_id', $gudangAsal)
-                    ->where('entitas_id', $entitas)
+                    ->where('entitas_id', $entitas_asal_item)
                     ->first();
                 $qtyCurrent     = $cekStok->jumlah;
                 $qtyBaru        = $qtyCurrent - $child->qty;
@@ -364,7 +370,7 @@ class TransferStockController extends Controller
                     [
                         'item_varian_id'    => $child->item_varian_id,
                         'lokasi_id'         => $gudangAsal,
-                        'entitas_id'        => $entitas,
+                        'entitas_id'        => $entitas_asal_item,
                     ],
                     [
                         'jumlah'            => $qtyBaru,
@@ -373,7 +379,7 @@ class TransferStockController extends Controller
                 // sesudah itu tambahkan stock pada gudang target
                 $cekStokTarget          = Stock::where('item_varian_id', $child->item_varian_id)
                     ->where('lokasi_id', $gudangTarget)
-                    ->where('entitas_id', $entitas)
+                    ->where('entitas_id', $entitas_target)
                     ->first();
                 if ($cekStokTarget != null) {
                     $qtyCurrentTarget       = $cekStokTarget->jumlah;
@@ -385,7 +391,7 @@ class TransferStockController extends Controller
                     [
                         'item_varian_id'    => $child->item_varian_id,
                         'lokasi_id'         => $gudangTarget,
-                        'entitas_id'        => $entitas,
+                        'entitas_id'        => $entitas_target,
                     ],
                     [
                         'jumlah'            => $qtyBaruTarget,

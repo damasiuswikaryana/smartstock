@@ -5,12 +5,13 @@ use App\Models\StockMutation;
 use App\Models\Satuan;
 use App\Models\User;
 
-function storeMutation(string $tipe, ?string $pekerjaan_id, string $source, mixed $source_id, string $target, mixed $target_id, int $item_id, int $item_qty, string $keterangan, int $entitas_id)
+function storeMutation(string $tipe, ?string $pekerjaan_id, string $source, mixed $source_id, string $target, mixed $target_id, int $item_id, int $item_qty, string $keterangan, int $entitas_id, ?int $entitas_source)
 {
     try {
         DB::beginTransaction();
         $insert = StockMutation::create([
             'entitas_id'            => $entitas_id,
+            'entitas_id_source'     => $entitas_source,
             'pekerjaan_id'          => $pekerjaan_id,
             'source_type'           => $source,
             'source_id'             => $source_id,

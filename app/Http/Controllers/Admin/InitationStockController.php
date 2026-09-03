@@ -66,6 +66,7 @@ class InitationStockController extends Controller
                     $target_id  = $input['lokasi_id'];
                     $keterangan = 'Inisiasi awal stok masuk dari external ke ' . $namaGudang;
                     $entitas    = $input['entitas_id'];
+                    $entitas_sorce = NULL;
                     storeMutation(
                         $tipe,
                         $pekerjaan,
@@ -76,7 +77,8 @@ class InitationStockController extends Controller
                         $variant['id_variant'],
                         $variant['qty'],
                         $keterangan,
-                        $entitas
+                        $entitas,
+                        $entitas_sorce
                     );
                 }
             }

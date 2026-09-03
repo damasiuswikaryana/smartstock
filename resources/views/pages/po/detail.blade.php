@@ -208,7 +208,12 @@
                                                 <span class="badge bg-secondary rounded-pill">PPH</span>
                                             @endif
                                         </div>
-                                        <span class="f-14 badge bg-primary rounded-pill">x {{ $child->qty }}</span>
+                                        <div>
+                                            <span class="f-14 badge bg-primary rounded-pill me-2">x
+                                                {{ $child->qty }}</span>
+                                            <span class="f-14 badge bg-light-secondary rounded-pill">
+                                                {{ rupiah($child->unit_price * $child->qty) }}</span>
+                                        </div>
                                     </li>
                                 @endforeach
                             </ol>

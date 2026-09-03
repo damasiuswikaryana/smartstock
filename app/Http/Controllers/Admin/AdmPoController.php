@@ -34,7 +34,7 @@ class AdmPoController extends Controller
         $lokasi     = Auth::user()->loc_id;
         $categories = Category::all();
         $user       = User::where('id', Auth::user()->id)->first();
-        $data       = Po::with('child')->whereMonth('po_date', $bulan)->whereYear('po_date', $tahun);
+        $data       = Po::with('child');
 
         if ($request->ajax()) {
             // filter werehouse
@@ -75,6 +75,8 @@ class AdmPoController extends Controller
                 } else {
                     $data = $data->whereDate('po_date', $startDate);
                 }
+            } else {
+                $data->whereMonth('po_date', $bulan)->whereYear('po_date', $tahun);
             }
             // filter director
             if ($request->director) {
@@ -264,7 +266,7 @@ class AdmPoController extends Controller
         $total_after_tax = $total_after_disc + $tax_amount + $ppn_amount;
 
         $dp                 = $data->dp;
-        $total_after_dp     = $total_after_tax + $dp;
+        $total_after_dp     = $total_after_tax - $dp;
 
         return view('pages.po.detail', compact('data', 'subtotal', 'tax_amount', 'ppn_amount', 'total_after_tax', 'disc_perc', 'disc_amount', 'total_after_disc', 'total_after_dp'));
     }
@@ -335,7 +337,7 @@ class AdmPoController extends Controller
                         [
                             'qty'               => $item['qty'],
                             'satuan_id'         => $item['satuan'],
-                            'unit_price'        => $item['nilai_variant'],
+                            'unit_price'        => hapusTitikAngka($item['nilai_variant']),
                             'pph'               => $item['pph_variant']
                         ]
                     );

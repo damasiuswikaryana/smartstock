@@ -327,7 +327,7 @@ class OutStockController extends Controller
             DB::commit();
 
             // masukin ke stock mutasi, agar dapat ditrack
-            $tipe       = 'Keluar';
+            $tipe           = 'Keluar';
             if ($gudang == 1) {
                 $source     = 'Central';
                 $source_id  = $gudang;
@@ -353,7 +353,8 @@ class OutStockController extends Controller
                     $child->item_varian_id,
                     $child->qty,
                     $keterangan,
-                    $entitas_target
+                    $entitas_target,
+                    $entitas_asal_item,
                 );
                 // sesudah itu update stocks current
                 $cekStok        = Stock::where('item_varian_id', $child->item_varian_id)

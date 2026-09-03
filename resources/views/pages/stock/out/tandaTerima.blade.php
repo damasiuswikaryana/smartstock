@@ -246,7 +246,7 @@
         <tr>
             <td colspan="6" style="padding:10px;">
                 <span>Notes :</span><br><br>
-                {{ $data->notes }}
+                {{ $data->note }}
             </td>
         </tr>
         <tr>
