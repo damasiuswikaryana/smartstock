@@ -12,6 +12,7 @@ use App\Models\Stock;
 use App\Models\Satuan;
 use App\Models\Category;
 use App\Models\Entitas;
+use App\Models\Po;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Auth;
@@ -85,6 +86,15 @@ class AjaxController extends Controller
         return response()->json([
             'success'   => true,
             'stock'     => $stock_jum,
+        ]);
+    }
+
+    public function getPoAjax(int $id)
+    {
+        $po = Po::with(['child.varian', 'vendor', 'entitas', 'createdBy'])->findOrFail($id);
+        return response()->json([
+            'success'   => true,
+            'data_po'   => $po,
         ]);
     }
 

@@ -384,7 +384,7 @@ class TransferStockController extends Controller
                     ->first();
                 if ($cekStokTarget != null) {
                     $qtyCurrentTarget       = $cekStokTarget->jumlah;
-                    $qtyBaruTarget          = $qtyCurrentTarget - $child->qty;
+                    $qtyBaruTarget          = $qtyCurrentTarget + $child->qty;
                 } else {
                     $qtyBaruTarget          = $child->qty;
                 }

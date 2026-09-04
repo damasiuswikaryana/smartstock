@@ -18,4 +18,9 @@ class Ptw extends Model
     {
         return $this->hasMany(PtwChild::class, 'ptw_id', 'id');
     }
+
+    public function project(): BelongsTo
+    {
+        return $this->belongsTo(Project::class, 'project_id', 'id');
+    }
 }
