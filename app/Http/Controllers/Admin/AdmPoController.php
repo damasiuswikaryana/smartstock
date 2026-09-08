@@ -271,6 +271,12 @@ class AdmPoController extends Controller
         return view('pages.po.detail', compact('data', 'subtotal', 'tax_amount', 'ppn_amount', 'total_after_tax', 'disc_perc', 'disc_amount', 'total_after_disc', 'total_after_dp'));
     }
 
+    public function modalDetail(int $id)
+    {
+        $data   = Po::with('child')->where('id', $id)->first();
+        return view('pages.po.detailModal', compact('data'));
+    }
+
     public function edit(int $id)
     {
         $vendor             = Vendor::all();

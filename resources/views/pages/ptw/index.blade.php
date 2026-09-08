@@ -153,12 +153,6 @@
             </div>
         </div>
     </div>
-    <div id="modalEdit" class="modal fade" data-backdrop="static" data-keyboard="false" tabindex="-1" role="dialog"
-        aria-labelledby="modalEditTitle">
-        <div class="modal-dialog modal-xl modal-dialog-centered" role="document">
-            <div class="modal-content"></div>
-        </div>
-    </div>
 @endsection
 
 @push('js')

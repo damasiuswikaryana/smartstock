@@ -3,17 +3,10 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
-use App\Models\Entitas;
-use App\Models\ItemMaster;
-use App\Models\ItemVarian;
-use App\Models\Vendor;
 use App\Models\Po;
 use App\Models\PoChild;
 use App\Models\Ptw;
 use App\Models\PtwChild;
-use App\Models\Satuan;
-use App\Models\User;
-use App\Models\Category;
 use App\Models\Project;
 use Illuminate\Http\Request;
 use Yajra\DataTables\DataTables;
@@ -59,9 +52,6 @@ class AdmPtwController extends Controller
                     return '<ul class="list-inline mb-0">
                                 <li class="list-inline-item">
                                     <a data-bs-placement="top" title="Detail" href="' . route('ptw.detail', $row->id) . '" class="avtar avtar-xs btn-link-success btn-pc-default btn-edit"><i class="ti ti-eye f-20"></i></a>
-                                </li>
-                                <li class="list-inline-item">
-                                    <a data-bs-toggle="modal" data-bs-target="#modalEdit" data-bs-placement="top" title="Edit" href="' . route('ptw.ubah', $row->id) . '" class="avtar avtar-xs btn-link-success btn-pc-default btn-edit"><i class="ti ti-edit f-20"></i></a>
                                 </li>
                                 <li class="list-inline-item">
                                     <a data-bs-toggle="tooltip" data-bs-placement="top" data-bs-original-title="Delete" href="#" class="avtar avtar-xs btn-link-danger btn-pc-default btn-delete" data-id="' . $row->id . '" type="submit"><i class="ti ti-trash f-20"></i></a>
@@ -119,6 +109,17 @@ class AdmPtwController extends Controller
                     ]);
                 }
             }
+            // kirim notif ke gudang untuk di cek
+            $targetToken    = User::role('gudang')->select('device_token')->first();
+            $dataNumber     = $ptw_master->ptw_number;
+            $idRequestData  = $ptw_master->id;
+            $firebase->send(
+                $targetToken->device_token,
+                'PROCUREMENT TO WAREHOUSE',
+                '[PTW] - ' . $dataNumber . ' telah diterbitkan oleh team pengadaaan. Lihat pada dashboard Smartwarehouse.',
+                ['url' => '/ptw/' . $idRequestData . '/detail']
+            );
+
             return response()->json(['success' => true]);
         } catch (\Throwable $th) {
             DB::rollback();
@@ -128,89 +129,87 @@ class AdmPtwController extends Controller
 
     public function detail(int $id)
     {
-        $data           = Ptw::with('child')->where('id', $id)->first();
-        return view('pages.ptw.detail', compact('data'));
+        $po             = Po::all();
+        $data           = Ptw::with(['child.poMaster', 'child.varian'])->where('id', $id)->first();
+
+        foreach ($data->child as $child) {
+            $child->qty_po = PoChild::where('po_id', $child->po_id)
+                ->where('item_varian_id', $child->item_varian_id)
+                ->value('qty');
+        }
+        return view('pages.ptw.detail', compact('data', 'po'));
     }
 
     public function edit(int $id)
     {
-        $vendor             = Vendor::all();
-        $entitas            = Entitas::all();
-        $items              = ItemMaster::all();
-        $satuan             = Satuan::all();
-        $lokasi             = Auth::user()->loc_id;
-        $data               = Po::with('child')->where('id', $id)->first();
-        $dataVarian         = $data->child->pluck('item_varian_id')->toArray();
+        $project    = Project::all();
+        $data       = Ptw::with('child')->where('id', $id)->first();
 
-        $variants           = ItemVarian::whereIn('id', $dataVarian)->with('itemMaster')->get();
-        $groupedVariants    = $variants->groupBy('item_master_id');
-        // Ambil master yang terlibat
-        $itemMasterIds      = ItemVarian::whereIn('id', $dataVarian)->pluck('item_master_id')->unique();
-        $itemMasters        = ItemMaster::with('varian')->whereIn('id', $itemMasterIds)->get();
-        $qtyData            = $data->child->keyBy('item_varian_id');
-
-        return view('pages.po.edit', compact('data', 'vendor', 'entitas', 'items', 'itemMasters', 'qtyData', 'satuan'));
+        return view('pages.ptw.edit', compact('data', 'project'));
     }
 
     public function update(Request $request, int $id)
     {
-        $data   = Po::where('id', $id)->first();
+        $data   = Ptw::where('id', $id)->first();
         $input  = $request->all();
-
-        if ($input['dir_approval'] == "yes") {
-            $director       = Entitas::select('director_id')->where('id', $input['entitas_id'])->first();
-            $director_id    = $director->director_id;
-        } else {
-            $director_id    = NULL;
-        }
-        if ($input['disc_tipe'] == 'rupiah') {
-            $disc_rp    = hapusTitikAngka($input['disc']);
-            $disc_pr    = NULL;
-        } else {
-            $disc_rp    = NULL;
-            $disc_pr    = hapusTitikAngka($input['disc']);
-        }
 
         try {
             DB::beginTransaction();
-            $data->po_no             = $input['po_no'];
-            $data->prf_number        = $input['prf_no'];
-            $data->po_date           = $input['po_date'];
-            $data->entitas_id        = $input['entitas_id'];
-            $data->vendor_id         = $input['vendor_id'];
-            $data->tax               = $input['tax'];
-            $data->ppn               = $input['ppn'];
-            $data->disc              = $disc_rp;
-            $data->disc_perc         = $disc_pr;
-            $data->dp                = hapusTitikAngka($input['dp']);
-            $data->notes             = $input['notes'];
-            $data->director_id       = $director_id;
+            $data->ptw_number      = $input['ptw_number'];
+            $data->ptw_date        = $input['ptw_date'];
+            $data->project_id      = $input['project_id'];
+            $data->note            = $input['notes'];
+            $data->ptw_status      = $input['status'];
             $data->save();
             DB::commit();
 
-            foreach ($request->items as $item) {
-                if ($item['qty'] > 0) {
-                    PoChild::updateOrCreate(
-                        [
-                            'po_id'             => $id,
-                            'item_varian_id'    => $item['item_varian_id'],
-                        ],
-                        [
-                            'qty'               => $item['qty'],
-                            'satuan_id'         => $item['satuan'],
-                            'unit_price'        => hapusTitikAngka($item['nilai_variant']),
-                            'pph'               => $item['pph_variant']
-                        ]
-                    );
-                } else {
-                    PoChild::where('po_id', $id)
-                        ->where('item_varian_id', $item['item_varian_id'])->delete();
-                }
-            }
             return response()->json(['success' => true]);
         } catch (\Throwable $th) {
             DB::rollback();
             return response()->json(['success' => false, 'message' => "Error: " . $th->getMessage()]);
+        }
+    }
+
+    public function addPo(Request $request, int $id)
+    {
+        $input              = $request->all();
+        try {
+            $poId           = $input['po_id'];
+            $purchaseOrder  = Po::find($poId);
+            foreach ($purchaseOrder->child as $itemVarian) {
+                PtwChild::create([
+                    'ptw_id'            => $id,
+                    'po_id'             => $poId,
+                    'item_varian_id'    => $itemVarian->item_varian_id,
+                    'prf_jum'           => 0,
+                    'note'              => NULL,
+                ]);
+            }
+            return redirect()->route('ptw.detail', $id)->with('success', 'PO successfuly added');
+        } catch (\Throwable $th) {
+            return redirect()->route('ptw.detail', $id)->with('error',  $th->getMessage());
+        }
+    }
+
+    public function updateItem(Request $request)
+    {
+        try {
+            foreach ($request->items as $item) {
+                PtwChild::where('id', $item['child_id'])
+                    ->update([
+                        'prf_jum' => $item['prf_jum'],
+                        'note'    => $item['note'],
+                    ]);
+            }
+            return response()->json([
+                'success' => true,
+                'message' => 'Data berhasil disimpan.'
+            ]);
+        } catch (\Throwable $th) {
+            return response()->json([
+                'success' => false,
+                'message' => $th->getMessage()
+            ], 500);
         }
     }
 
@@ -225,13 +224,24 @@ class AdmPtwController extends Controller
         }
     }
 
-    public function downloadPtw(int $id, PoDownloladService $poService)
+    public function destroyPo(int $id)
     {
-        $data           = Po::select('po_no')->where('id', $id)->first();
-        $namaPo         = str_replace('/', '_', $data->po_no);
-        $pdf            = $poService->generatePdf($id);
+        try {
+            $data = PtwChild::where('po_id', $id);
+            $data->delete();
+            return response()->json(['success' => true]);
+        } catch (\Throwable $th) {
+            return response()->json(['success' => false, 'message' => "Error: " . $th->getMessage()]);
+        }
+    }
+
+    public function downloadPtw(int $id, PtwDownloladService $ptwService)
+    {
+        $data           = Ptw::select('ptw_number')->where('id', $id)->first();
+        $namaPtw        = str_replace('/', '_', $data->ptw_number);
+        $pdf            = $ptwService->generatePdf($id);
         $waktu          = tanggalIndoWaktu(date('Y-m-d H:i:s'));
-        $filename       = 'Purchase_Order_' . $namaPo . '_' . $waktu . '.pdf';
+        $filename       = 'Procurement_to_Warehouse_' . $namaPtw . '_' . $waktu . '.pdf';
         return $pdf->stream($filename);
     }
 }

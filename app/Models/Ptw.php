@@ -23,4 +23,9 @@ class Ptw extends Model
     {
         return $this->belongsTo(Project::class, 'project_id', 'id');
     }
+
+    public function createdBy(): BelongsTo
+    {
+        return $this->belongsTo(User::class, 'created_by', 'id');
+    }
 }

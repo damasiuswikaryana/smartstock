@@ -7,6 +7,7 @@ Route::controller(AdmPoController::class)->name('po.')->prefix('po')->group(func
     Route::get('/', 'index')->name('index');
     Route::post('/simpan', 'store')->name('simpan');
     Route::get('/{id}/detail', 'detail')->name('detail');
+    Route::get('/{id}/modal-detail', 'modalDetail')->name('modalDetail');
     Route::get('/{id}/ubah', 'edit')->name('ubah');
     Route::put('/{id}/update', 'update')->name('update');
     Route::delete('/{id}/hapus', 'destroy')->name('hapus');
