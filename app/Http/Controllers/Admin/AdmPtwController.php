@@ -94,6 +94,7 @@ class AdmPtwController extends Controller
                 'ptw_date'          => $input['ptw_date'],
                 'ptw_status'        => "Pending",
                 'note'              => $input['notes'],
+                'created_by'        => Auth::user()->id,
             ]);
             DB::commit();
             foreach ($poData as $po) {
