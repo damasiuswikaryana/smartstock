@@ -66,12 +66,25 @@
                         @method('POST')
                         <div class="row">
                             <div class="col-12">
+                                <h6 class="fw-bold mb-2">General</h6>
                                 <div class="mb-2 row">
-                                    <label class="col-lg-12 col-form-label pt-0">Stock In Number: <span
+                                    <label class="col-lg-2 col-form-label">Stock In Number: <span
                                             class="text-danger">*</span></label>
-                                    <div class="col-lg-12">
+                                    <div class="col-lg-10">
                                         <input type="text" class="form-control fw-bold" placeholder="ASTA/XXX/XXX"
                                             name="stock_in_number" value="" style="font-size:18px;" required>
+                                    </div>
+                                </div>
+                                <div class="mb-2 row">
+                                    <label class="col-lg-2 col-form-label">PTW Number: <span
+                                            class="text-danger">*</span></label>
+                                    <div class="col-lg-10">
+                                        <select class="select2 form-control" name="ptw_id" id="ptw_id" required>
+                                            <option value="#" selected disabled>Select PTW</option>
+                                            @foreach ($ptw as $dptw)
+                                                <option value="{{ $dptw->id }}">{{ $dptw->ptw_number }}</option>
+                                            @endforeach
+                                        </select>
                                     </div>
                                 </div>
                             </div>
@@ -81,7 +94,7 @@
                                     <label class="col-lg-4 col-form-label">Werehouse: <span
                                             class="text-danger">*</span></label>
                                     <div class="col-lg-8">
-                                        <select class="form-control" name="werehouse_id" required>
+                                        <select class="select2 form-control" name="werehouse_id" required>
                                             @foreach ($gudang as $wh)
                                                 <option value="{{ $wh->id }}">{{ $wh->nama }}</option>
                                             @endforeach
@@ -95,32 +108,14 @@
                                             name="in_date" value="" required>
                                     </div>
                                 </div>
-                                <div class="mb-2 row">
-                                    <label class="col-lg-4 col-form-label">PTW Number:</label>
-                                    <div class="col-lg-8">
-                                        <input type="text" class="form-control" placeholder="Input PTW Number"
-                                            name="ptw_number" value="">
-                                    </div>
-                                </div>
                             </div>
 
-                            <div class="col-12 col-lg-6">
-                                <div class="mb-2 row">
-                                    <label class="col-lg-4 col-form-label">Vendor: <span
-                                            class="text-danger">*</span></label>
-                                    <div class="col-lg-8">
-                                        <select class="form-control" name="vendor_id" required>
-                                            @foreach ($vendor as $vd)
-                                                <option value="{{ $vd->id }}">{{ $vd->nama }}</option>
-                                            @endforeach
-                                        </select>
-                                    </div>
-                                </div>
+                            <div class="col-12 col-lg-6 mb-3">
                                 <div class="mb-2 row">
                                     <label class="col-lg-4 col-form-label">Project: <span
                                             class="text-danger">*</span></label>
                                     <div class="col-lg-8">
-                                        <select class="form-control" name="pekerjaan_id" required>
+                                        <select class="select2 form-control" name="pekerjaan_id" required>
                                             @foreach ($pekerjaan as $pr)
                                                 <option value="{{ $pr->id }}">{{ $pr->name }}</option>
                                             @endforeach
@@ -131,7 +126,7 @@
                                     <label class="col-lg-4 col-form-label">Entity: <span
                                             class="text-danger">*</span></label>
                                     <div class="col-lg-8">
-                                        <select class="form-control" name="entitas_id" required>
+                                        <select class="select2 form-control" name="entitas_id" required>
                                             @foreach ($entitas as $et)
                                                 <option value="{{ $et->id }}">{{ $et->entitas_name }}</option>
                                             @endforeach
@@ -139,9 +134,19 @@
                                     </div>
                                 </div>
                             </div>
+                            <hr>
 
                             <div class="col-12 mb-0">
-                                <h4 class="fw-bold mb-3">Items</h4>
+                                <h6 class="fw-bold mb-1">Items From PTW</h6>
+                                <ol class="list-group my-2" id="produk-ptw-container">
+                                    <p class="mb-3 text-muted">Items based on PTW goes here. Select PTW number first.</p>
+                                </ol>
+                            </div>
+                            <hr>
+
+                            <div class="col-12 mb-0">
+                                <h6 class="fw-bold mb-1">Custom Items</h6>
+                                <p class="mb-3 text-muted">Add more items exclude from PTW.</p>
                                 <div id="produk-container">
 
                                 </div>
@@ -153,6 +158,7 @@
                                     </a>
                                 </div>
                             </div>
+                            <hr>
 
                             <div class="col-12 mb-2">
                                 <div class="mb-1 row">
@@ -205,7 +211,6 @@
             var link = $(e.relatedTarget);
             $(this).find(".modal-content").load(link.attr("href"));
         });
-
 
         let table = $('#myTable').DataTable({
             processing: true,
@@ -435,6 +440,65 @@
                     });
                     $('#variant-container-' + index).html(html);
                 }
+            });
+        });
+
+        let indexItemPtw = 0;
+        $(document).on('change', '#ptw_id', function() {
+            let itemId = $(this).val();
+            $.ajax({
+                url: "{{ route('getItemsPtw', ':id') }}".replace(':id', itemId),
+                type: "GET",
+                success: function(res) {
+                    let html = '';
+                    html += `<li class="list-group-item d-flex justify-content-between align-items-center row py-2 bg-light">
+                            <div class="col-5">
+                                PTW Number
+                                <h5 class="fw-bold mb-0 text-primary">${res.ptw_master.ptw_number}</h5>
+                            </div>  
+                            <div class="col-7">
+                                Project
+                                <h5 class="fw-bold mb-0 text-primary">${res.ptw_master.project.name}</h5>
+                            </div>      
+                        </li>`
+                    $.each(res.items, function(i, item) {
+                        html += `
+                        <li class="list-group-item d-flex justify-content-between align-items-center row">
+                            <div class="col-5">
+                                ${item.varian.item_master.category.title}
+                                <div class="fw-bold">${item.varian.name_varian}</div>
+                                ${item.varian.sku_varian}<br>
+                            </div>
+                            <div class="col-5">
+                                <label class="mb-1">Vendor</label>
+                                <div class="fw-bold">${item.varian.item_master.vendor.nama}</div>
+                            </div>
+                            <div class="col-1">
+                                <label class="mb-1">PO</label>
+                                <input type="number" disabled class="form-control" value="${item.qty_po}">
+                            </div>
+                            <div class="col-1">
+                                <label class="mb-1">IN</label>
+                                <input type="number" name="items_ptw[${item.varian.id}][qty_in]" class="form-control" value="${item.qty_po}" >
+                            </div>            
+                        </li>`;
+                    });
+                    $('#produk-ptw-container').html(html);
+                    indexItemPtw++;
+                }
+            });
+        });
+
+        document.addEventListener('DOMContentLoaded', function() {
+            $('.select2').each(function() {
+                new Choices(this, {
+                    searchEnabled: true,
+                    searchPlaceholderValue: 'Search here...',
+                    itemSelectText: '',
+                    shouldSort: false,
+                    allowHTML: true,
+                    placeholder: true,
+                });
             });
         });
     </script>

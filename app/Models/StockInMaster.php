@@ -29,6 +29,11 @@ class StockInMaster extends Model
         return $this->belongsTo(Vendor::class, 'vendor_id', 'id');
     }
 
+    public function ptw(): BelongsTo
+    {
+        return $this->belongsTo(Ptw::class, 'ptw_id', 'id');
+    }
+
     public function pekerjaan(): BelongsTo
     {
         return $this->belongsTo(Project::class, 'pekerjaan_id', 'id');

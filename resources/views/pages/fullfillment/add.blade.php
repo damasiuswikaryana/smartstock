@@ -14,7 +14,7 @@
 
     <section class="">
         <div class="row">
-            <div class="col-12 col-lg-6 mb-4">
+            <div class="col-12 col-lg-12 mb-4">
                 <div class="row g-4">
                     <div class="col-md-12">
                         <ol class="list-group">
@@ -79,71 +79,30 @@
                 </div>
             </div>
 
-            <div class="col-12 col-lg-6">
+            <div class="col-12 col-lg-12">
                 <div class="card">
                     <div class="card-header py-3">
                         <h4 class="mb-0">Add More Items</h4>
                     </div>
-                    <div class="card-body">
+                    <div class="card-body py-2">
                         <form action="{{ route('fullfillment.storeItem', $data->id) }}" method="POST" class=""
                             id="form-tambah-item">
                             @csrf
                             @method('POST')
-                            <div class="mb-3 row">
-                                <label class="col-lg-4 col-form-label">Category:</label>
-                                <div class="col-lg-8">
-                                    <div class="">
-                                        <select class="form-control" name="category_id" id="category_id" required>
-                                            <option value="" disabled selected>-- Selecet Category --</option>
-                                            @foreach ($category as $c)
-                                                <option value="{{ $c->id }}">
-                                                    {{ $c->title }}</option>
-                                            @endforeach
-                                        </select>
-                                    </div>
-                                </div>
+                            <div id="items-container">
+
                             </div>
-                            <div class="mb-3 row">
-                                <label class="col-lg-4 col-form-label">Items:</label>
-                                <div class="col-lg-8">
-                                    <div class="">
-                                        <select class="form-control" name="item_master_id" id="item_master_id" required>
-                                            <option value="">-- Selecet Category --</option>
-                                        </select>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="mb-3 row">
-                                <label class="col-lg-4 col-form-label">Quantity:</label>
-                                <div class="col-lg-8">
-                                    <div class="">
-                                        <input type="number" class="form-control" placeholder="Quantity" name="qty"
-                                            required />
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="mb-3 row">
-                                <label class="col-lg-4 col-form-label">Contract Value:</label>
-                                <div class="col-lg-8">
-                                    <div class="">
-                                        <input type="text" class="form-control number-separator"
-                                            placeholder="Value per item (in rupiah)" name="harga" required />
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="mb-0 row">
-                                <label class="col-lg-4 col-form-label">Company Value:</label>
-                                <div class="col-lg-8">
-                                    <div class="">
-                                        <input type="text" class="form-control number-separator"
-                                            placeholder="Value per item (in rupiah)" name="harga_company" required />
-                                    </div>
-                                </div>
+                            <div class="row mb-0 p-2 pt-0 justify-content-center">
+                                <a href="#" id="btn-add-product"
+                                    class="btn btn-light-dark w-auto d-flex justify-content-center align-items-center">
+                                    <i class="fa fa-plus-circle me-2"></i>
+                                    <span>Add More Item</span>
+                                </a>
                             </div>
                         </form>
                     </div>
                     <div class="card-footer p-2">
-                        <button type="submit" class="btn btn-light-primary w-100" form="form-tambah-item">Add Item</button>
+                        <button type="submit" class="btn btn-light-primary w-100" form="form-tambah-item">Save All</button>
                     </div>
                 </div>
             </div>
@@ -188,7 +147,8 @@
                                                 </p>
                                             </td>
                                             <td class="text-end">
-                                                <button class="btn avtar avtar-xs btn-light-danger"><i
+                                                <button data-id="{{ $item->id }}"
+                                                    class="btn avtar avtar-xs btn-light-danger btn-delete"><i
                                                         class="ti ti-x"></i></button>
                                             </td>
                                         </tr>
@@ -230,9 +190,86 @@
 @endsection
 
 @push('js')
+    <script src="{{ asset('assets/js/plugins/choices.min.js') }}"></script>
     <script type="text/javascript">
-        $(document).on('change', '#category_id', function() {
+        function formatRupiah(angka) {
+            return Number(angka || 0).toLocaleString('id-ID');
+        }
+
+        function initItemMasterChoices(element) {
+            new Choices(element, {
+                searchEnabled: true,
+                searchPlaceholderValue: 'Search item...',
+                itemSelectText: '',
+                shouldSort: false,
+                allowHTML: true,
+                placeholder: true,
+                placeholderValue: 'Select Item'
+            });
+        }
+
+        let itemMasterIndex = 0;
+        $('#btn-add-product').on('click', function(e) {
+            e.preventDefault();
+            let html = `
+                <div class="mb-2 row align-items-center contract-item">
+                    <div class="col-6 mb-2">
+                        <label class="col-form-label">Category:</label>
+                        <div class="">
+                            <select data-index="${itemMasterIndex}" class="form-control select-category select2" name="item[${itemMasterIndex}][category_id]" id="category-id-${itemMasterIndex}"
+                                required>
+                                <option value="" disabled selected>-- Select Category --</option>
+                                @foreach ($category as $c)
+                                    <option value="{{ $c->id }}">
+                                        {{ $c->title }}</option>
+                                @endforeach
+                            </select>
+                        </div>
+                    </div>
+                    <div class="col-6 mb-2">
+                        <label class="col-lg-4 col-form-label">Items:</label>
+                        <div class="">
+                            <select class="form-control" name="item[${itemMasterIndex}][item_master_id]" id="item_master_id-${itemMasterIndex}" required>
+                                <option value="">-- Select Category --</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="col-3">
+                        <div class="">
+                            <input type="number" class="form-control" placeholder="Qty" name="item[${itemMasterIndex}][qty]"
+                                required />
+                        </div>
+                    </div>
+                    <div class="col-3">
+                        <div class="">
+                            <input type="text" class="form-control number-separator"
+                                placeholder="Value per item (in rupiah)" name="item[${itemMasterIndex}][harga]" required />
+                        </div>
+                    </div>
+                    <div class="col-3">
+                        <div class="">
+                            <input type="text" class="form-control number-separator"
+                                placeholder="Value per item (in rupiah)" name="item[${itemMasterIndex}][harga_company]" required />
+                        </div>
+                    </div>
+                    <div class="col-1 text-center">
+                        <button id="btn-delete-${itemMasterIndex}" type="button" class="btn btn-rounded btn-light-danger btn-delete-produk" style="font-size:20px;">
+                            <i class="ti ti-trash"></i>
+                        </button>
+                    </div>
+                    <hr class="mt-3">
+                </div>
+                `;
+
+            $('#items-container').append(html);
+            let selectElement = document.getElementById(`category-id-${itemMasterIndex}`);
+            initItemMasterChoices(selectElement);
+            itemMasterIndex++;
+        });
+
+        $(document).on('change', '.select-category', function() {
             let catId = $(this).val();
+            let index = $(this).data('index');
             $.ajax({
                 url: "{{ route('getItembyCategory', ':id') }}".replace(':id', catId),
                 type: "GET",
@@ -241,9 +278,59 @@
                     $.each(res.items, function(i, row) {
                         html += `<option value='${row.id}'>${row.nama}</option>`;
                     });
-                    $('#item_master_id').html(html);
+                    $('#item_master_id-' + index).html(html);
                 }
             });
+        });
+
+        $(document).on('click', '.btn-delete-produk', function() {
+            $(this).closest('.contract-item').remove();
+        });
+
+        document.addEventListener('DOMContentLoaded', function() {
+            $('.select2').each(function() {
+                new Choices(this, {
+                    searchEnabled: true,
+                    searchPlaceholderValue: 'Search here...',
+                    itemSelectText: '',
+                    shouldSort: false,
+                    allowHTML: true,
+                    placeholder: true,
+                });
+            });
+        });
+
+        $(document).on('click', '.btn-delete', function() {
+            let id = $(this).data('id');
+            var url = "{{ route('fullfillment.hapus', ':id:') }}";
+            var url = url.replace(':id:', id);
+
+            if (confirm('Delete this data?')) {
+                $.ajax({
+                    url: url,
+                    type: 'DELETE',
+                    data: {
+                        _token: '{{ csrf_token() }}'
+                    },
+                    beforeSend: showLoader(),
+                    success: function(res) {
+                        if (res.success) {
+                            hideLoader();
+                            showToastSuccess("Data has been deleted");
+                            setTimeout(function() {
+                                location.reload();
+                            }, 1000);
+                        } else {
+                            hideLoader();
+                            showToastError(res.message);
+                        }
+                    },
+                    error: function() {
+                        hideLoader();
+                        showToastError("Error while deleting data");
+                    }
+                });
+            }
         });
     </script>
 @endpush

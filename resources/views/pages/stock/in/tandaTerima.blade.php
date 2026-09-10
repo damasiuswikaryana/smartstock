@@ -210,12 +210,12 @@
                     <tr>
                         <td>Vendor</td>
                         <td>:</td>
-                        <td>{{ $data->vendor->nama }}</td>
+                        <td>{{ $data->vendor_id != null ? $data->vendor->nama : '-' }}</td>
                     </tr>
                     <tr>
                         <td>Address</td>
                         <td>:</td>
-                        <td>{{ $data->vendor->alamat }}</td>
+                        <td>{{ $data->vendor_id != null ? $data->vendor->alamat : '-' }}</td>
                     </tr>
                 </table>
             </td>
@@ -271,7 +271,7 @@
                         <br><br>
                         <br><br>
                         <br><br>
-                        {{ '(' . $data->vendor->pic_name . ')' }}
+                        {{ $data->vendor_id != null ? '(' . $data->vendor->pic_name . ')' : '-' }}
                     </div>
                     <div class="col-3 text-center">
                         <b>Diterima Oleh</b>

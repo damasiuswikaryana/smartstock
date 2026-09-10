@@ -62,17 +62,28 @@ class AdmFullfillmentController extends Controller
     public function storeItem(Request $request, int $id)
     {
         $input      = $request->all();
+        $items      = $request->input('item', []);
         try {
             DB::beginTransaction();
-            $stock_master = ProjectItems::create([
-                'pekerjaan_id'          => $id,
-                'item_master_id'        => $input['item_master_id'],
-                'req_qty'               => $input['qty'],
-                'req_nominal'           => hapusTitikAngka($input['harga']),
-                'req_nominal_company'   => hapusTitikAngka($input['harga_company']),
-            ]);
+
+            foreach ($items as $item) {
+                $itemMasterId = $item['item_master_id'] ?? null;
+                $categoryId   = $item['category_id'] ?? null;
+                $qty          = $item['qty'] ?? 0;
+                $harga        = $item['harga'] ?? 0;
+                $hargaCompany = $item['harga_company'] ?? 0;
+
+                $stock_master = ProjectItems::create([
+                    'pekerjaan_id'          => $id,
+                    'item_master_id'        => $itemMasterId,
+                    'req_qty'               => $qty,
+                    'req_nominal'           => hapusTitikAngka($harga),
+                    'req_nominal_company'   => hapusTitikAngka($hargaCompany),
+                ]);
+            }
+
             DB::commit();
-            return redirect()->back()->with('success', '1 item added');
+            return redirect()->back()->with('success', 'Contract items added');
         } catch (\Throwable $th) {
             DB::rollback();
             return redirect()->back()->with('error', "Error: " . $th->getMessage());
@@ -180,5 +191,17 @@ class AdmFullfillmentController extends Controller
         $waktu          = tanggalIndoWaktu(date('Y-m-d H:i:s'));
         $filename       = 'Mutation History - ' . $project . ' - ' . $waktu . '.pdf';
         return $pdf->stream($filename);
+    }
+
+    public function destroy(int $id)
+    {
+        try {
+            $data = ProjectItems::findOrFail($id);
+            $data->delete();
+
+            return response()->json(['success' => true]);
+        } catch (\Throwable $th) {
+            return response()->json(['success' => false, 'message' => "Error: " . $th->getMessage()]);
+        }
     }
 }

@@ -13,6 +13,8 @@ use App\Models\Satuan;
 use App\Models\Category;
 use App\Models\Entitas;
 use App\Models\Po;
+use App\Models\PoChild;
+use App\Models\Ptw;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Auth;
@@ -38,6 +40,22 @@ class AjaxController extends Controller
             'success'   => true,
             'variants'  => $item->varian,
             'satuans'   => $satuans,
+        ]);
+    }
+
+    public function getItemsPtw(int $id)
+    {
+        $ptw    = Ptw::with(['project', 'child.varian.itemMaster.vendor', 'child.varian.itemMaster.category'])->findOrFail($id);
+        foreach ($ptw->child as $child) {
+            $child->qty_po = PoChild::where('po_id', $child->po_id)
+                ->where('item_varian_id', $child->item_varian_id)
+                ->value('qty');
+        }
+
+        return response()->json([
+            'success'       => true,
+            'items'         => $ptw->child,
+            'ptw_master'    => $ptw,
         ]);
     }
 

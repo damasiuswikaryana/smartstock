@@ -15,6 +15,7 @@ use App\Models\Outlet;
 use App\Models\Project;
 use App\Models\User;
 use App\Models\Category;
+use App\Models\Ptw;
 
 use Illuminate\Http\Request;
 use Yajra\DataTables\DataTables;
@@ -34,6 +35,7 @@ class InOutStockController extends Controller
         $entitas    = Entitas::all();
         $items      = ItemMaster::all();
         $categories = Category::all();
+        $ptw        = Ptw::all();
         $lokasi     = Auth::user()->loc_id;
 
         if (
@@ -100,7 +102,11 @@ class InOutStockController extends Controller
                     return tanggalIndo($row->in_date);
                 })
                 ->addColumn('vendor', function ($row) {
-                    return $row->vendor->nama;
+                    if ($row->vendor_id != NULL) {
+                        return $row->vendor->nama;
+                    } else {
+                        return '-';
+                    }
                 })
                 ->addColumn('ptw_number', function ($row) {
                     return "<code>" . $row->ptw_number . "</code>";
@@ -118,7 +124,7 @@ class InOutStockController extends Controller
                 ->rawColumns(['action', 'updated_at', 'si_number', 'entitas', 'date', 'werehouse', 'vendor', 'ptw_number', 'status'])
                 ->make(true);
         }
-        return view('pages.stock.in.index', compact('vendor', 'items', 'entitas', 'pekerjaan', 'gudang', 'categories'));
+        return view('pages.stock.in.index', compact('vendor', 'items', 'entitas', 'pekerjaan', 'gudang', 'categories', 'ptw'));
     }
 
     public function store(Request $request, FirebaseNotificationService $firebase)
@@ -128,33 +134,54 @@ class InOutStockController extends Controller
             DB::beginTransaction();
             $stock_master = StockInMaster::create([
                 'stock_in_number'   => $input['stock_in_number'],
+                'ptw_id'            => $input['ptw_id'],
                 'in_date'           => $input['in_date'],
-                'vendor_id'         => $input['vendor_id'],
+                'vendor_id'         => NULL,
                 'entitas_id'        => $input['entitas_id'],
                 'werehouse_id'      => $input['werehouse_id'],
                 'pekerjaan_id'      => $input['pekerjaan_id'],
-                'ptw_number'        => $input['ptw_number'],
+                'ptw_number'        => NULL,
                 'note'              => $input['notes'],
                 'status'            => "Pending",
                 'created_by'        => Auth::user()->id,
                 'approved_by'       => NULL,
                 'approved_date'     => NULL,
             ]);
-            DB::commit();
 
-            foreach ($request->item as $item) {
-                foreach ($item['variants'] as $variant) {
-                    if (!empty($variant['qty']) && $variant['qty'] > 0) {
-                        StockInChild::create([
-                            // 'id_item'           => $item['id_item'],
-                            'in_master_id'      => $stock_master->id,
-                            'item_varian_id'    => $variant['id_variant'],
-                            'qty'               => $variant['qty'],
-                        ]);
+            // PTW ITEMS
+            $itemsPtw = $request->input('items_ptw', []);
+            foreach ($itemsPtw as $itemPtwVarianId => $itemPtw) {
+                $qtyIn = (int) ($itemPtw['qty_in'] ?? 0);
+                if ($qtyIn <= 0) {
+                    continue;
+                }
+                StockInChild::create([
+                    'in_master_id'   => $stock_master->id,
+                    'item_varian_id' => $itemPtwVarianId,
+                    'qty'            => $qtyIn,
+                ]);
+            }
+
+            // CUSTOM ITEMS
+            $items = $request->input('item', []);
+            foreach ($items as $item) {
+                $variants = $item['variants'] ?? [];
+                foreach ($variants as $variant) {
+                    $qty = (int) ($variant['qty'] ?? 0);
+                    if ($qty <= 0) {
+                        continue;
                     }
+                    StockInChild::create([
+                        'in_master_id'   => $stock_master->id,
+                        'item_varian_id' => $variant['id_variant'],
+                        'qty'            => $qty,
+                    ]);
                 }
             }
 
+            DB::commit();
+
+            // NOTIFICATION
             $targetToken    = User::role('gudang')->select('device_token')->first();
             $dataNumber     = $stock_master->stock_in_number;
             $idRequestData  = $stock_master->id;

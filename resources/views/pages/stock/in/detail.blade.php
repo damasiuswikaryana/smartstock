@@ -53,15 +53,23 @@
                                         PTW Number
                                     </div>
                                     <div class="ms-0 me-auto fw-bold col-6">
-                                        <code>{{ $data->ptw_number }}</code>
+                                        @if ($data->ptw_id != null)
+                                            <a title="Click to see PTW detail"
+                                                href="{{ route('ptw.detail', $data->ptw_id) }}" target="_blank"
+                                                class="">{{ $data->ptw->ptw_number }} <i
+                                                    class="f-16 ms-1 ph-duotone ph-arrow-square-out"></i></a>
+                                        @else
+                                            <code>{{ $data->ptw_number }}</code>
+                                        @endif
                                     </div>
                                 </li>
                                 <li class="list-group-item d-flex justify-content-between align-items-start">
                                     <div class="ms-0 me-auto col-6">
-                                        Entity
+                                        Project / Entity
                                     </div>
                                     <div class="ms-0 me-auto fw-bold col-6">
-                                        {{ $data->entitas->entitas_name }}
+                                        {{ $data->pekerjaan->name }}
+                                        <p class="fw-medium mb-0">{{ $data->entitas->entitas_name }}</p>
                                     </div>
                                 </li>
                                 <li class="list-group-item d-flex justify-content-between align-items-start">
@@ -69,7 +77,7 @@
                                         Vendor
                                     </div>
                                     <div class="ms-0 me-auto fw-bold col-6">
-                                        {{ $data->vendor->nama }}
+                                        {{ $data->vendor_id != null ? $data->vendor->nama : '-' }}
                                     </div>
                                 </li>
                                 <li class="list-group-item d-flex justify-content-between align-items-start">
@@ -93,7 +101,8 @@
                                             <span class="f-14 badge bg-success">Approved</span>
                                         @endif
                                         @if ($data->approved_by != null)
-                                            <p class="fw-medium mb-0">{{ tanggalIndoWaktuLidgkap($data->approved_date) }} by
+                                            <p class="fw-medium mb-0">{{ tanggalIndoWaktuLidgkap($data->approved_date) }}
+                                                by
                                                 {{ $data->approvedBy->firstname . ' ' . $data->approvedBy->lastname }}</p>
                                         @endif
                                     </div>
@@ -116,8 +125,9 @@
                                 @foreach ($data->child as $child)
                                     <li class="list-group-item d-flex justify-content-between align-items-center">
                                         <div class="ms-2 me-auto">
+                                            <p class="mb-0">{{ $child->varian->itemMaster->category->title }}</p>
                                             <div class="fw-bold">{{ $child->varian->name_varian }}</div>
-                                            Code: {{ $child->varian->kode_varian }}
+                                            <p class="mb-0 text-danger">{{ $child->varian->sku_varian }}</p>
                                         </div>
                                         <span class="f-14 badge bg-primary rounded-pill">x {{ $child->qty }}</span>
                                     </li>
