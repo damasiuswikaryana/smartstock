@@ -44,8 +44,8 @@
                     <div class="form-search w-100">
                         <i class="ph-duotone ph-house icon-search"></i>
                         <select class="form-control w-100" id="fl_status">
-                            <option value="">All Status</option>
-                            <option value="Active" selected>Active</option>
+                            <option value="" selected>All Status</option>
+                            <option value="Active">Active</option>
                             <option value="Inactive">Inactive</option>
                         </select>
                     </div>
@@ -92,7 +92,11 @@
     <script>
         function renderPekerjaan(data) {
             let html = '';
-            console.log(data);
+            var class_one = "";
+            var class_tm = "";
+            var class_dis = "";
+            var class_opa50 = "";
+
             data.forEach(function(item) {
                 let totalQty = 0;
                 if (item.items) {
@@ -108,12 +112,18 @@
                 let percentageOut = totalQty > 0 ?
                     Math.round((realityQtyOut / totalQty) * 100) :
                     0;
+                if (item.status == "Inactive") {
+                    var class_one = "bg-light-secondary";
+                    var class_tm = "text-muted";
+                    var class_dis = "disabled";
+                    var class_opa50 = "opacity-50";
+                }
                 html += `
                 <div class="col-12 col-lg-4 mb-3">
                     <div class="card user-card h-100">
                         <div class="card-body">
                             <div class="d-flex align-items-center justify-content-between mb-3">
-                                <h5 class="mb-0">
+                                <h5 class="mb-0 ${class_opa50}">
                                     ${item.name ?? '-'}
                                 </h5>
                                 <div class="dropdown">
@@ -124,26 +134,26 @@
                                     </a>
                                     <div class="dropdown-menu dropdown-menu-end">
                                         <a class="dropdown-item"
-                                        href="/fullfillment/detail/${item.id}">
+                                        href="/fullfillment/${item.id}/detail">
                                             Detail
                                         </a>
                                     </div>
                                 </div>
                             </div>
                             <div>
-                                <code>${item.no_kontrak ?? '-'}</code>
+                                <code class="${class_opa50}">${item.no_kontrak ?? '-'}</code>
                             </div>
                             <ul class="list-group list-group-flush">
                                 <!-- Contract Items -->
-                                <li class="list-group-item px-0">
+                                <li class="list-group-item px-0 ${class_dis}">
                                     <div class="row g-1">
                                         <div class="col-6">
-                                            <h6 class="mb-0">Contract Items</h6>
-                                            <p class="text-muted mb-0">
+                                            <h6 class="mb-0 ${class_opa50}">Contract Items</h6>
+                                            <p class="text-muted mb-0 ${class_opa50}">
                                                 <small>All items in contract</small>
                                             </p>
                                         </div>
-                                        <div class="col-6 text-end">
+                                        <div class="col-6 text-end ${class_opa50}">
                                             <h6 class="mb-1">
                                                 ${totalQty}
                                             </h6>
@@ -151,18 +161,18 @@
                                     </div>
                                 </li>
                                 <!-- Items In -->
-                                <li class="list-group-item px-0">
+                                <li class="list-group-item px-0 ${class_dis}">
                                     <div class="row g-1">
                                         <div class="col-10">
-                                            <h6 class="mb-0">Items In</h6>
-                                            <p class="text-muted mb-0">
+                                            <h6 class="mb-0 ${class_opa50}">Items In</h6>
+                                            <p class="text-muted mb-0 ${class_opa50}">
                                                 <small>
                                                     All items in to warehouse as stock
                                                 </small>
                                             </p>
                                         </div>
                                         <div class="col-2 text-end">
-                                            <h6 class="mb-1">
+                                            <h6 class="mb-1 ${class_opa50}">
                                                 ${realityQty}
                                             </h6>
                                         </div>
@@ -176,7 +186,7 @@
                                                     </div>
                                                 </div>
                                                 <div class="flex-shrink-0">
-                                                    <h6 class="mb-0">
+                                                    <h6 class="mb-0 ${class_opa50}">
                                                         ${percentageIn}%
                                                     </h6>
                                                 </div>
@@ -186,18 +196,18 @@
                                 </li>
 
                                 <!-- Items Completed -->
-                                <li class="list-group-item px-0">
+                                <li class="list-group-item px-0 ${class_dis}">
                                     <div class="row g-1">
                                         <div class="col-10">
-                                            <h6 class="mb-0">Items Completed</h6>
-                                            <p class="text-muted mb-0">
+                                            <h6 class="mb-0 ${class_opa50}">Items Completed</h6>
+                                            <p class="text-muted mb-0 ${class_opa50}">
                                                 <small>
                                                     All items issued and distributed to employee
                                                 </small>
                                             </p>
                                         </div>
                                         <div class="col-2 text-end">
-                                            <h6 class="mb-1">
+                                            <h6 class="mb-1 ${class_opa50}">
                                                 ${realityQtyOut}
                                             </h6>
                                         </div>
@@ -211,7 +221,7 @@
                                                     </div>
                                                 </div>
                                                 <div class="flex-shrink-0">
-                                                    <h6 class="mb-0">
+                                                    <h6 class="mb-0 ${class_opa50}">
                                                         ${percentageOut}%
                                                     </h6>
                                                 </div>
@@ -221,8 +231,8 @@
                                 </li>
                                 <!-- Add Items -->
                                 <li class="list-group-item px-0 pb-0">
-                                    <a href="/fullfillment/add/${item.id}"
-                                    class="btn btn-light-primary w-100 mb-0">
+                                    <a href="/fullfillment/${item.id}/add"
+                                    class="btn btn-light-primary w-100 mb-0 ${class_dis}" ${class_dis}=${class_dis}>
                                         Add Items
                                     </a>
                                 </li>
@@ -232,6 +242,43 @@
                 </div>`;
             });
             $('#pekerjaan-container').html(html);
+        }
+
+        function renderPagination(pagination) {
+            let current = pagination.current_page;
+            let last = pagination.last_page;
+            if (last <= 1) {
+                $('#pekerjaan-pagination').html('');
+                return;
+            }
+            let html = `<nav>
+            <ul class="pagination justify-content-center">`;
+            // Previous
+            html += `
+            <li class="page-item ${current === 1 ? 'disabled' : ''}">
+                <a href="javascript:void(0)" class="page-link" onclick="loadPekerjaan(${current - 1})">Previous</a>
+            </li>`;
+            // Pages
+            for (let i = 1; i <= last; i++) {
+                html += `<li class="page-item ${i === current ? 'active' : ''}">
+                    <a href="javascript:void(0)"
+                    class="page-link"
+                    onclick="loadPekerjaan(${i})">
+                        ${i}
+                    </a>
+                </li>`;
+            }
+            // Next
+            html += `<li class="page-item ${current === last ? 'disabled' : ''}">
+                <a href="javascript:void(0)"
+                class="page-link"
+                onclick="loadPekerjaan(${current + 1})">
+                    Next
+                </a>
+            </li>`;
+
+            html += `</ul></nav>`;
+            $('#pekerjaan-pagination').html(html);
         }
 
         let currentPage = 1;
@@ -252,10 +299,10 @@
                 },
                 success: function(res) {
                     if (res.success) {
-                        renderPekerjaan(res.data);
+                        renderPekerjaan(res.pekerjaan);
                         currentPage = res.pagination.current_page;
                         renderPagination(res.pagination);
-                        if (res.data.length === 0) {
+                        if (res.pekerjaan.length === 0) {
                             $('#pekerjaan-container').html('');
                             $('#pekerjaan-empty').removeClass('d-none');
                         }
