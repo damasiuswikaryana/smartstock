@@ -11,11 +11,18 @@
             @method('POST')
             <div class="col-12">
                 <div class="mb-2 row">
-                    <label class="col-lg-12 col-form-label mb-0">Stock Out Number: <span
+                    <label class="col-lg-2 col-form-label mb-0">Stock Out Number: <span
                             class="text-danger">*</span></label>
-                    <div class="col-lg-12">
+                    <div class="col-lg-10">
                         <input type="text" class="form-control fw-bold" placeholder="Number" name="stock_out_number"
                             value="{{ $data->stock_out_number }}" style="font-size:18px;" required>
+                    </div>
+                </div>
+                <div class="mb-2 row">
+                    <label class="col-lg-2 col-form-label">SRF Number: </label>
+                    <div class="col-lg-10">
+                        <input type="text" class="form-control" placeholder="SRF Number" name="stock_out_srf"
+                            value="{{ $data->out_srf }}">
                     </div>
                 </div>
             </div>
@@ -25,13 +32,6 @@
                     <div class="col-lg-8">
                         <input type="date" class="form-control" placeholder="Date stock out" name="out_date"
                             value="{{ $data->out_date }}" required>
-                    </div>
-                </div>
-                <div class="mb-2 row">
-                    <label class="col-lg-4 col-form-label">SRF Number: </label>
-                    <div class="col-lg-8">
-                        <input type="text" class="form-control" placeholder="SRF Number" name="stock_out_srf"
-                            value="{{ $data->out_srf }}">
                     </div>
                 </div>
                 <div class="mb-2 row">
@@ -69,7 +69,8 @@
             </div>
 
             <div class="col-12 mb-0">
-                <h4 class="fw-bold mb-2">Items</h4>
+                <h6 class="fw-bold mb-1">Items</h6>
+                <p class="mb-3 text-muted">Add more items to stock out.</p>
                 <div id="produk-container-edit">
                     @foreach ($itemMasters as $itemMaster)
                         <div class="row p-0 mx-0 mb-2 produk-item">

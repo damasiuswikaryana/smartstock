@@ -45,9 +45,9 @@
                         <div class="row">
                             <div class="col-12">
                                 <div class="mb-2 row">
-                                    <label class="col-lg-12 col-form-label mb-0">Stock Transfer Number: <span
+                                    <label class="col-lg-2 col-form-label mb-0">Transfer Number: <span
                                             class="text-danger">*</span></label>
-                                    <div class="col-lg-12">
+                                    <div class="col-lg-10">
                                         <input type="text" class="form-control fw-bold" placeholder="ASTA/XXX/XXX"
                                             name="stock_transfer_number" value="" style="font-size:18px;" required>
                                     </div>
@@ -113,7 +113,8 @@
                             </div>
 
                             <div class="col-12 mb-2">
-                                <h4 class="fw-bold mb-3">Items</h4>
+                                <h6 class="fw-bold mb-1">Items</h6>
+                                <p class="mb-3 text-muted">Add more items to stock transfer.</p>
                                 <div id="produk-container">
 
                                 </div>
