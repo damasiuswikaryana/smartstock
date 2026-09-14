@@ -11,20 +11,31 @@
             @method('POST')
             <div class="col-12">
                 <div class="mb-2 row">
-                    <label class="col-lg-12 col-form-label pt-0">Stock In Number: <span
-                            class="text-danger">*</span></label>
-                    <div class="col-lg-12">
+                    <label class="col-lg-2 col-form-label">Stock In Number: <span class="text-danger">*</span></label>
+                    <div class="col-lg-10">
                         <input type="text" class="form-control fw-bold" placeholder="ASTA/XXX/XXX"
-                            name="stock_in_number" value="{{ $data->stock_in_number }}" style="font-size: 18px;"
+                            name="stock_in_number" value="{{ $data->stock_in_number }}" style="font-size:18px;"
                             required>
                     </div>
                 </div>
             </div>
             <div class="col-6">
                 <div class="mb-2 row">
+                    <label class="col-lg-4 col-form-label">PTW Number:</label>
+                    <div class="col-lg-8">
+                        <select class="select2 form-control" name="ptw_id" id="ptw_id">
+                            <option value="#" selected disabled>Select PTW</option>
+                            @foreach ($ptw as $dptw)
+                                <option @if ($data->ptw_id == $dptw->id) selected @endif value="{{ $dptw->id }}">
+                                    {{ $dptw->ptw_number }}</option>
+                            @endforeach
+                        </select>
+                    </div>
+                </div>
+                <div class="mb-2 row">
                     <label class="col-lg-4 col-form-label">Werehouse: <span class="text-danger">*</span></label>
                     <div class="col-lg-8">
-                        <select class="form-control" name="werehouse_id" required>
+                        <select class="form-control select2" name="werehouse_id" required>
                             @foreach ($gudang as $wh)
                                 <option @if ($data->werehouse_id == $wh->id) selected @endif value="{{ $wh->id }}">
                                     {{ $wh->nama }}</option>
@@ -40,32 +51,20 @@
                             value="{{ $data->in_date }}" required>
                     </div>
                 </div>
+            </div>
 
+            <div class="col-6">
                 <div class="mb-2 row">
-                    <label class="col-lg-4 col-form-label">PTW Number:</label>
+                    <label class="col-lg-4 col-form-label">Manual PTW:</label>
                     <div class="col-lg-8">
                         <input type="text" class="form-control" placeholder="Input PTW Number" name="ptw_number"
                             value="{{ $data->ptw_number }}">
                     </div>
                 </div>
-            </div>
-
-            <div class="col-6">
-                <div class="mb-2 row">
-                    <label class="col-lg-4 col-form-label">Vendor: <span class="text-danger">*</span></label>
-                    <div class="col-lg-8">
-                        <select class="form-control" name="vendor_id" required>
-                            @foreach ($vendor as $vd)
-                                <option @if ($data->vendor_id == $vd->id) selected @endif value="{{ $vd->id }}">
-                                    {{ $vd->nama }}</option>
-                            @endforeach
-                        </select>
-                    </div>
-                </div>
                 <div class="mb-2 row">
                     <label class="col-lg-4 col-form-label">Project: <span class="text-danger">*</span></label>
                     <div class="col-lg-8">
-                        <select class="form-control" name="pekerjaan_id" required>
+                        <select class="form-control select2" name="pekerjaan_id" required>
                             @foreach ($pekerjaan as $pr)
                                 <option @if ($data->pekerjaan_id == $pr->id) selected @endif value="{{ $pr->id }}">
                                     {{ $pr->name }}</option>
@@ -76,7 +75,7 @@
                 <div class="mb-2 row">
                     <label class="col-lg-4 col-form-label">Entity: <span class="text-danger">*</span></label>
                     <div class="col-lg-8">
-                        <select class="form-control" name="entitas_id" required>
+                        <select class="form-control select2" name="entitas_id" required>
                             @foreach ($entitas as $et)
                                 <option @if ($data->entitas_id == $et->id) selected @endif value="{{ $et->id }}">
                                     {{ $et->entitas_name }}</option>
@@ -104,7 +103,11 @@
                                             <div class="col-1 text-center">
                                                 <i class="fs-3 ph-duotone ph-arrow-elbow-down-right"></i>
                                             </div>
-                                            <div class="col-8">
+                                            <div class="col-3">
+                                                <input type="text" class="form-control"
+                                                    value="{{ $variant->sku_varian }}" disabled>
+                                            </div>
+                                            <div class="col-5">
                                                 <input type="text" class="form-control"
                                                     value="{{ $variant->name_varian }}" disabled>
                                             </div>
@@ -121,22 +124,22 @@
 
                                 </div>
                             </div>
-                            <div class="col-1 col-lg-1 mx-0 pe-0">
+                            {{-- <div class="col-1 col-lg-1 mx-0 pe-0">
                                 <button type="button" class="btn btn-rounded btn-light-danger btn-delete-produk"
                                     style="font-size:20px;">
                                     <i class="ti ti-trash"></i>
                                 </button>
-                            </div>
+                            </div> --}}
                         </div>
                     @endforeach
                 </div>
-                <div class="row mb-0 p-2">
+                {{-- <div class="row mb-0 p-2">
                     <a href="#" id="btn-add-product-edit"
                         class="btn btn-light-primary w-100 d-flex justify-content-center align-items-center">
                         <i class="fa fa-plus-circle me-2"></i>
                         <span>Add Item</span>
                     </a>
-                </div>
+                </div> --}}
             </div>
 
             <div class="col-12 mb-2">
@@ -200,6 +203,7 @@
     <button type="submit" class="btn btn-primary" form="form-edit">Update Data</button>
 </div>
 
+<script src="{{ asset('assets/js/plugins/choices.min.js') }}"></script>
 <script src="{{ asset('assets/js/plugins/dropzone-amd-module.min.js') }}"></script>
 <script>
     var stockInId = {{ $data->id }};
@@ -333,6 +337,17 @@
                 });
                 $('#variant-container-edit-' + indexEdit).html(htmlEdit);
             }
+        });
+    });
+
+    $('.select2').each(function() {
+        new Choices(this, {
+            searchEnabled: true,
+            searchPlaceholderValue: 'Search here...',
+            itemSelectText: '',
+            shouldSort: false,
+            allowHTML: true,
+            placeholder: true,
         });
     });
 </script>

@@ -109,7 +109,11 @@ class InOutStockController extends Controller
                     }
                 })
                 ->addColumn('ptw_number', function ($row) {
-                    return "<code>" . $row->ptw_number . "</code>";
+                    if ($row->ptw_number == NULL) {
+                        return "<a href='" . route('ptw.detail', $row->ptw->id) . "' target='_blank'><code>" . $row->ptw->ptw_number . "</code></a>";
+                    } else {
+                        return "<code>" . $row->ptw_number . "</code>";
+                    }
                 })
                 ->addColumn('items', function ($row) {
                     return $row->child->count();
@@ -134,13 +138,13 @@ class InOutStockController extends Controller
             DB::beginTransaction();
             $stock_master = StockInMaster::create([
                 'stock_in_number'   => $input['stock_in_number'],
-                'ptw_id'            => $input['ptw_id'],
+                'ptw_id'            => $input['ptw_id'] ?? NULL,
                 'in_date'           => $input['in_date'],
                 'vendor_id'         => NULL,
                 'entitas_id'        => $input['entitas_id'],
                 'werehouse_id'      => $input['werehouse_id'],
                 'pekerjaan_id'      => $input['pekerjaan_id'],
-                'ptw_number'        => NULL,
+                'ptw_number'        => $input['ptw_number'] ?? NULL,
                 'note'              => $input['notes'],
                 'status'            => "Pending",
                 'created_by'        => Auth::user()->id,
@@ -215,6 +219,7 @@ class InOutStockController extends Controller
         $data           = StockInMaster::with('child')->where('id', $id)->first();
         $document       = StockInMasterPhoto::where('stock_in_m_id', $id)->get();
         $dataVarian     = $data->child->pluck('item_varian_id')->toArray();
+        $ptw            = Ptw::all();
 
         if (
             Auth::user()->roles[0]->name == "masteradmin"
@@ -238,7 +243,7 @@ class InOutStockController extends Controller
         // Mapping qty berdasarkan item_varian_id
         $qtyData        = $data->child->keyBy('item_varian_id');
 
-        return view('pages.stock.in.edit', compact('data', 'vendor', 'entitas', 'items', 'itemMasters', 'document', 'qtyData', 'pekerjaan', 'gudang'));
+        return view('pages.stock.in.edit', compact('data', 'vendor', 'entitas', 'items', 'itemMasters', 'document', 'qtyData', 'pekerjaan', 'gudang', 'ptw'));
     }
 
     public function update(Request $request, int $id)
@@ -248,12 +253,13 @@ class InOutStockController extends Controller
         try {
             DB::beginTransaction();
             $data->stock_in_number  = $input['stock_in_number'];
+            $data->ptw_id           = $input['ptw_id'] ?? NULL;
             $data->in_date          = $input['in_date'];
-            $data->vendor_id        = $input['vendor_id'];
+            $data->vendor_id        = NULL;
             $data->entitas_id       = $input['entitas_id'];
             $data->werehouse_id     = $input['werehouse_id'];
             $data->pekerjaan_id     = $input['pekerjaan_id'];
-            $data->ptw_number       = $input['ptw_number'];
+            $data->ptw_number       = $input['ptw_number'] ?? NULL;
             $data->note             = $input['notes'];
             $data->save();
             DB::commit();

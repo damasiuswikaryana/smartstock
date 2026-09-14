@@ -271,4 +271,71 @@ class AjaxController extends Controller
             'items'      => $data,
         ]);
     }
+
+    public function getFullfillmentAjax(Request $request)
+    {
+        $query = Project::with(['items', 'entitas',]);
+        if ($request->filled('status')) {
+            $query->where('status', $request->status);
+        }
+        if ($request->filled('entitas')) {
+            $query->where('entitas_id', $request->entitas);
+        }
+
+        // Pagination
+        $pekerjaan      = $query->latest()->paginate(12);
+        $pekerjaanData  = collect($pekerjaan->items());
+        $pekerjaanIds   = $pekerjaanData->pluck('id');
+
+        $stockSummary = StockMutation::query()
+            ->join('item_varian', 'item_varian.id', '=', 'stock_mutations.item_id')
+            ->join('pekerjaan', 'pekerjaan.id', '=', 'stock_mutations.pekerjaan_id')
+            ->whereIn('stock_mutations.pekerjaan_id', $pekerjaanIds)
+            ->selectRaw("
+            stock_mutations.pekerjaan_id,
+            SUM(
+                CASE
+                    WHEN (
+                        stock_mutations.tipe = 'Masuk'
+                        AND stock_mutations.target_id = pekerjaan.werehouse_id
+                    )
+                    OR (
+                        stock_mutations.tipe = 'Transfer'
+                        AND stock_mutations.target_id = pekerjaan.werehouse_id
+                    )
+                    THEN stock_mutations.jumlah
+                    ELSE 0
+                END
+            ) AS reality_qty,
+            SUM(
+                CASE
+                    WHEN stock_mutations.tipe = 'Keluar'
+                    THEN stock_mutations.jumlah
+                    ELSE 0
+                END
+            ) AS reality_qty_out
+            ")
+            ->groupBy('stock_mutations.pekerjaan_id')
+            ->get()
+            ->keyBy('pekerjaan_id');
+
+
+        $data           = $pekerjaanData->map(function ($project) use ($stockSummary) {
+            $summary                    = $stockSummary->get($project->id);
+            $project->reality_qty       = (float) ($summary->reality_qty ?? 0);
+            $project->reality_qty_out   = (float) ($summary->reality_qty_out ?? 0);
+            return $project;
+        });
+
+        return response()->json([
+            'success' => true,
+            'pekerjaan' => $data->values(),
+            'pagination' => [
+                'current_page' => $pekerjaan->currentPage(),
+                'last_page' => $pekerjaan->lastPage(),
+                'per_page' => $pekerjaan->perPage(),
+                'total' => $pekerjaan->total(),
+            ],
+        ]);
+    }
 }

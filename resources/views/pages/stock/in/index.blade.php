@@ -75,11 +75,13 @@
                                             name="stock_in_number" value="" style="font-size:18px;" required>
                                     </div>
                                 </div>
+                            </div>
+
+                            <div class="col-12 col-lg-6">
                                 <div class="mb-2 row">
-                                    <label class="col-lg-2 col-form-label">PTW Number: <span
-                                            class="text-danger">*</span></label>
-                                    <div class="col-lg-10">
-                                        <select class="select2 form-control" name="ptw_id" id="ptw_id" required>
+                                    <label class="col-lg-4 col-form-label">PTW Number: </label>
+                                    <div class="col-lg-8">
+                                        <select class="select2 form-control" name="ptw_id" id="ptw_id">
                                             <option value="#" selected disabled>Select PTW</option>
                                             @foreach ($ptw as $dptw)
                                                 <option value="{{ $dptw->id }}">{{ $dptw->ptw_number }}</option>
@@ -87,9 +89,6 @@
                                         </select>
                                     </div>
                                 </div>
-                            </div>
-
-                            <div class="col-12 col-lg-6">
                                 <div class="mb-2 row">
                                     <label class="col-lg-4 col-form-label">Werehouse: <span
                                             class="text-danger">*</span></label>
@@ -111,6 +110,13 @@
                             </div>
 
                             <div class="col-12 col-lg-6 mb-3">
+                                <div class="mb-2 row">
+                                    <label class="col-lg-4 col-form-label">Manual PTW: </label>
+                                    <div class="col-lg-8">
+                                        <input type="text" class="form-control" placeholder="Input PTW Number"
+                                            name="ptw_number" value="">
+                                    </div>
+                                </div>
                                 <div class="mb-2 row">
                                     <label class="col-lg-4 col-form-label">Project: <span
                                             class="text-danger">*</span></label>

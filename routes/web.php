@@ -32,6 +32,7 @@ Route::group(['middleware' => ['isAdmin', 'auth']], function () {
     Route::get('get-item-by-category/{id}',                     [AjaxController::class, 'getItembyCategory'])->name('getItembyCategory');
     Route::get('get-stock-by-item-entitiy/{id}/{whid}/{eid}',   [AjaxController::class, 'getStockbyEntityItem'])->name('getStockByEntitas');
     Route::get('get-po/{id}',                                   [AjaxController::class, 'getPoAjax'])->name('getPoAjax');
+    Route::get('get-contract-fullfillment',                     [AjaxController::class, 'getFullfillmentAjax'])->name('getFullfillmentAjax');
 
     // ajax dashboard
     Route::get('dashboard-get-stock-in',                [AjaxController::class, 'getStockIn'])->name('getDashboardStockIn');
