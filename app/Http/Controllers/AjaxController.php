@@ -281,6 +281,9 @@ class AjaxController extends Controller
         if ($request->filled('entitas')) {
             $query->where('entitas_id', $request->entitas);
         }
+        if ($request->filled('keyword')) {
+            $query->where('name', 'like', '%' . $request->keyword . '%');
+        }
 
         // Pagination
         $pekerjaan      = $query->latest()->paginate(12);

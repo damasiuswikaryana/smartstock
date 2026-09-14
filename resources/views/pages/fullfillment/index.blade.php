@@ -38,7 +38,7 @@
     </div>
 
     <div class="border-0 mb-3">
-        <div class="collapse" id="collapseExample">
+        <div class="collapse show" id="collapseExample">
             <div class="row">
                 <div class="col-12 col-lg-3 text-start mb-2 mb-lg-0">
                     <div class="form-search w-100">
@@ -286,6 +286,7 @@
         function loadPekerjaan(page = 1) {
             let status = $('#fl_status').val();
             let entitas = $('#fl_entitas').val();
+            let search = $('#search').val();
             $('#pekerjaan-loading').removeClass('d-none');
             $('#pekerjaan-empty').addClass('d-none');
 
@@ -295,6 +296,7 @@
                 data: {
                     status: status,
                     entitas: entitas,
+                    keyword: search,
                     page: page
                 },
                 success: function(res) {
@@ -321,6 +323,10 @@
         }
 
         $('#fl_status, #fl_entitas').on('change', function() {
+            loadPekerjaan(1);
+        });
+
+        $('#search').keyup(function() {
             loadPekerjaan(1);
         });
 
