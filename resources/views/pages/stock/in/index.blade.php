@@ -214,6 +214,7 @@
         }
 
         $('input[type="number"]').on('wheel', function(e) {
+            alert("damas");
             $(this).blur();
         });
 
