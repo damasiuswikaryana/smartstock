@@ -213,6 +213,10 @@
             });
         }
 
+        $('input[type="number"]').on('wheel', function(e) {
+            $(this).blur();
+        });
+
         $("#modalEdit").on("show.bs.modal", function(e) {
             var link = $(e.relatedTarget);
             $(this).find(".modal-content").load(link.attr("href"));
