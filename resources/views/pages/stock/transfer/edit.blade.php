@@ -246,6 +246,10 @@
         }
     });
 
+    $(document).on('wheel', 'input[type="number"]', function() {
+        $(this).blur();
+    });
+
     $('#form-edit').on('submit', function(e) {
         e.preventDefault();
         const id = "{{ $data->id }}";
