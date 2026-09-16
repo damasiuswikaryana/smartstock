@@ -213,8 +213,7 @@
             });
         }
 
-        $('input[type="number"]').on('wheel', function(e) {
-            alert("damas");
+        $(document).on('wheel', 'input[type="number"]', function() {
             $(this).blur();
         });
 
