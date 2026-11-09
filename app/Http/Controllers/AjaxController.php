@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\ItemMaster;
+use App\Models\ItemVarian;
 use App\Models\StockInMaster;
 use App\Models\StockOutMaster;
 use App\Models\StockTransferMaster;
@@ -28,6 +29,15 @@ class AjaxController extends Controller
         return response()->json([
             'success'   => true,
             'items'     => $items
+        ]);
+    }
+
+    public function getVariantbyMaster(int $id)
+    {
+        $items = ItemVarian::where('item_master_id', $id)->get();
+        return response()->json([
+            'success'       => true,
+            'variants'      => $items
         ]);
     }
 

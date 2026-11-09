@@ -68,6 +68,7 @@ class AdmFullfillmentController extends Controller
 
             foreach ($items as $item) {
                 $itemMasterId = $item['item_master_id'] ?? null;
+                $itemVarianId = $item['item_varian_id'] ?? null;
                 $categoryId   = $item['category_id'] ?? null;
                 $qty          = $item['qty'] ?? 0;
                 $harga        = $item['harga'] ?? 0;
@@ -76,6 +77,7 @@ class AdmFullfillmentController extends Controller
                 $stock_master = ProjectItems::create([
                     'pekerjaan_id'          => $id,
                     'item_master_id'        => $itemMasterId,
+                    'item_variant_id'       => $itemVarianId,
                     'req_qty'               => $qty,
                     'req_nominal'           => hapusTitikAngka($harga),
                     'req_nominal_company'   => hapusTitikAngka($hargaCompany),

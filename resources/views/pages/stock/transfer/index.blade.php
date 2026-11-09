@@ -145,7 +145,8 @@
                 </form>
                 <div class="modal-footer p-2">
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
-                    <button type="submit" class="btn btn-primary" form="form-tambah">Submit Data</button>
+                    <button type="submit" id="btn-submit" class="btn btn-primary" form="form-tambah">Submit
+                        Data</button>
                 </div>
             </div>
         </div>
@@ -269,6 +270,13 @@
         });
 
         $('#form-tambah').on('submit', function(e) {
+            let button = $('#btn-submit');
+            if (button.prop('disabled')) {
+                return false;
+            }
+            button.prop('disabled', true);
+            button.html('<i class="fa fa-spinner fa-spin"></i> Processing...');
+
             e.preventDefault();
             $.ajax({
                 url: '{{ route('stocktransfer.simpan') }}', // Route untuk simpan data
@@ -282,14 +290,20 @@
                         hideLoader();
                         $('#exampleModalCenter').modal('hide');
                         showToastSuccess("Data has been added");
+                        $('#btn-submit').prop('disabled', false);
+                        $('#btn-submit').html('Submit Data');
                     } else {
                         hideLoader();
                         showToastError(response.message);
+                        $('#btn-submit').prop('disabled', false);
+                        $('#btn-submit').html('Submit Data');
                     }
                 },
                 error: function(xhr) {
                     hideLoader();
                     showToastError("Error while adding data");
+                    $('#btn-submit').prop('disabled', false);
+                    $('#btn-submit').html('Submit Data');
                 }
             });
         });

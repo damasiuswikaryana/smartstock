@@ -121,8 +121,15 @@
                                             <td>
                                                 <div class="d-inline-block align-middle">
                                                     <div class="d-inline-block">
-                                                        <h6 class="m-b-0">{{ $item->itemMaster->nama }}</h6>
-                                                        <p class="m-b-0">{{ $item->itemMaster->category->title }}</p>
+                                                        @if ($item->item_variant_id != null)
+                                                            <h6 class="m-b-0">{{ $item->itemVariant->name_varian }}</h6>
+                                                            <p class="m-b-0">{{ $item->itemVariant->sku_varian }} -
+                                                                {{ $item->itemMaster->category->title }}</p>
+                                                        @else
+                                                            <h6 class="m-b-0">{{ $item->itemMaster->nama }}</h6>
+                                                            <p class="m-b-0">{{ $item->itemMaster->category->title }}</p>
+                                                        @endif
+
                                                     </div>
                                                 </div>
                                             </td>
@@ -227,12 +234,17 @@
                         </div>
                     </div>
                     <div class="col-6 mb-2">
-                        <label class="col-lg-4 col-form-label">Items:</label>
+                        <label class="col-lg-4 col-form-label">Master Items:</label>
                         <div class="">
-                            <select class="form-control" name="item[${itemMasterIndex}][item_master_id]" id="item_master_id-${itemMasterIndex}" required>
-                                <option value="">-- Select Category --</option>
+                            <select data-index="${itemMasterIndex}" class="form-control select-master-item" name="item[${itemMasterIndex}][item_master_id]" id="item_master_id-${itemMasterIndex}" required>
+                                <option value="">-- Select Product --</option>
                             </select>
                         </div>
+                    </div>
+                    <div class="col-12 mb-2">
+                        <select class="form-control select-item-variant" name="item[${itemMasterIndex}][item_varian_id]" id="item-variant-${itemMasterIndex}" required>
+                            <option value="">-- Select Variant --</option>
+                        </select>
                     </div>
                     <div class="col-3">
                         <div class="">
@@ -274,11 +286,34 @@
                 url: "{{ route('getItembyCategory', ':id') }}".replace(':id', catId),
                 type: "GET",
                 success: function(res) {
-                    let html = '';
+                    let html = '<option value="">-- Select Master Item --</option>';
                     $.each(res.items, function(i, row) {
                         html += `<option value='${row.id}'>${row.nama}</option>`;
                     });
                     $('#item_master_id-' + index).html(html);
+                }
+            });
+        });
+
+        $(document).on('change', '.select-master-item', function() {
+            let itemMasterId = $(this).val();
+            let index = $(this).data('index');
+            let variantSelect = $('#item-variant-' + index);
+            variantSelect.html('<option value="">Loading...</option>');
+            $.ajax({
+                url: "{{ route('getVariantbyMaster', ':id') }}".replace(':id', itemMasterId),
+                type: "GET",
+                success: function(res) {
+                    let html = '<option value="">-- Select Variant --</option>';
+                    $.each(res.variants, function(i, row) {
+                        html += `
+                            <option value="${row.id}">${row.sku_varian} - ${row.name_varian}</option>
+                        `;
+                    });
+                    variantSelect.html(html);
+                },
+                error: function() {
+                    variantSelect.html('<option value="">Failed to load variants</option>');
                 }
             });
         });

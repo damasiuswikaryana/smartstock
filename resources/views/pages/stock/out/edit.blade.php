@@ -210,7 +210,7 @@
 </div>
 <div class="modal-footer p-2">
     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
-    <button type="submit" class="btn btn-primary" form="form-edit">Update Data</button>
+    <button type="submit" id="btn-edit" class="btn btn-primary" form="form-edit">Update Data</button>
 </div>
 
 <script src="{{ asset('assets/js/plugins/dropzone-amd-module.min.js') }}"></script>

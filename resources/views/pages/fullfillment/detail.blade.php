@@ -60,8 +60,14 @@
                                             <td>
                                                 <div class="d-inline-block align-middle">
                                                     <div class="d-inline-block">
-                                                        <h6 class="m-b-0">{{ $item->itemMaster->nama }}</h6>
-                                                        <p class="m-b-0">{{ $item->itemMaster->category->title }}</p>
+                                                        @if ($item->item_variant_id != null)
+                                                            <h6 class="m-b-0">{{ $item->itemVariant->name_varian }}</h6>
+                                                            <p class="m-b-0">{{ $item->itemVariant->sku_varian }} -
+                                                                {{ $item->itemMaster->category->title }}</p>
+                                                        @else
+                                                            <h6 class="m-b-0">{{ $item->itemMaster->nama }}</h6>
+                                                            <p class="m-b-0">{{ $item->itemMaster->category->title }}</p>
+                                                        @endif
                                                     </div>
                                                 </div>
                                             </td>

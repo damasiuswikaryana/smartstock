@@ -19,4 +19,9 @@ class ProjectItems extends Model
     {
         return $this->belongsTo(ItemMaster::class, 'item_master_id', 'id');
     }
+
+    public function itemVariant(): BelongsTo
+    {
+        return $this->belongsTo(ItemVarian::class, 'item_variant_id', 'id');
+    }
 }
