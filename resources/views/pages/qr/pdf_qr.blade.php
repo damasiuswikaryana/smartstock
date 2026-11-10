@@ -201,6 +201,10 @@
                         <td>: {{ $data->qr_no }}</td>
                     </tr>
                     <tr>
+                        <td style="vertical-align:top;"><b>PRF No.</b></td>
+                        <td>: {{ $data->prf_number ? implode(', ', array_filter(array_map('trim', explode(',', $data->prf_number)))) : '-' }}</td>
+                    </tr>
+                    <tr>
                         <td><b>QR Date</b></td>
                         <td>: {{ tanggalIndo($data->qr_date) }}</td>
                     </tr>
