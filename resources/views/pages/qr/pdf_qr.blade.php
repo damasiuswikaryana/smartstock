@@ -382,7 +382,8 @@
                         <b>Processed by Procurement</b>
                         <br><br>
                         <img src="{{ $checked }}" width="43"><br>
-                        <span>Created at <br>{{ tanggalIndoWaktuLidgkap($data->created_at) }}</span>
+                        <span style="font-size:11px;">Created at
+                            <br>{{ tanggalIndoWaktuLidgkap($data->created_at) }}</span>
                         <br><br>
                         {{ '(' . $data->createdBy->firstname . ' ' . $data->createdBy->lastname . ')' }}
                     </div>
