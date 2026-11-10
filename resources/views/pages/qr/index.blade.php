@@ -149,11 +149,14 @@
                                     <label class="col-lg-4 col-form-label">Vendor: <span
                                             class="text-danger">*</span></label>
                                     <div class="col-lg-8">
-                                        <select class="form-control select2" name="vendor_id" required>
+                                        <select class="form-control select2" name="vendor_id" id="vendor-select" required>
                                             @foreach ($vendor as $vd)
                                                 <option value="{{ $vd->id }}">{{ $vd->nama }}</option>
                                             @endforeach
+                                            <option value="other">+ Other (vendor not in list)</option>
                                         </select>
+                                        <input type="text" class="form-control mt-1 d-none" name="vendor_other"
+                                            id="vendor-other" maxlength="100" placeholder="Type new vendor name">
                                     </div>
                                 </div>
                                 <div class="mb-1 row">
@@ -336,6 +339,18 @@
             });
         });
 
+        function toggleVendorOther() {
+            let isOther = $('#vendor-select').val() === 'other';
+            $('#vendor-other').toggleClass('d-none', !isOther).prop('required', isOther);
+            if (isOther) {
+                $('#vendor-other').trigger('focus');
+            } else {
+                $('#vendor-other').val('');
+            }
+        }
+
+        $('#vendor-select').on('change', toggleVendorOther);
+
         $('#form-tambah').on('submit', function(e) {
             let button = $('#btn-submit');
             if (button.prop('disabled')) {
@@ -352,7 +367,13 @@
                 beforeSend: showLoader(),
                 success: function(response) {
                     if (response.success) {
+                        if (response.new_vendor) {
+                            $('#vendor-select option[value="other"]').before(
+                                new Option(response.new_vendor.nama, response.new_vendor.id)
+                            );
+                        }
                         $('#form-tambah')[0].reset();
+                        $('#vendor-select').trigger('change');
                         table.ajax.reload(null, false);
                         hideLoader();
                         $('#exampleModalCenter').modal('hide');

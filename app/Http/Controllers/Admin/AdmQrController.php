@@ -7,6 +7,7 @@ use App\Models\Entitas;
 use App\Models\ItemMaster;
 use App\Models\ItemVarian;
 use App\Models\Vendor;
+use App\Models\Bank;
 use App\Models\Qr;
 use App\Models\QrChild;
 use App\Models\Satuan;
@@ -169,6 +170,21 @@ class AdmQrController extends Controller
         }
         try {
             DB::beginTransaction();
+            $newVendor = null;
+            if ($input['vendor_id'] === 'other') {
+                $vendorName = trim($input['vendor_other'] ?? '');
+                if ($vendorName === '') {
+                    DB::rollback();
+                    return response()->json(['success' => false, 'message' => 'Please type the new vendor name.']);
+                }
+                $existing = Vendor::whereRaw('LOWER(nama) = ?', [mb_strtolower($vendorName)])->first();
+                if ($existing) {
+                    $input['vendor_id'] = $existing->id;
+                } else {
+                    $newVendor = $this->createQuickVendor($vendorName);
+                    $input['vendor_id'] = $newVendor->id;
+                }
+            }
             $qr_master              = Qr::create([
                 'qr_no'             => $input['qr_no'],
                 'prf_number'        => $input['prf_no'],
@@ -215,11 +231,42 @@ class AdmQrController extends Controller
                 '[Quotation Request] - ' . $dataNumber . ' telah diinput. Butuh aksi Anda untuk tambahkan ke Zaheer. Lihat pada dashboard Smartwarehouse.',
                 ['url' => '/qr/' . $idRequestData . '/detail']
             );
-            return response()->json(['success' => true]);
+            return response()->json([
+                'success'    => true,
+                'new_vendor' => $newVendor ? ['id' => $newVendor->id, 'nama' => $newVendor->nama] : null,
+            ]);
         } catch (\Throwable $th) {
             DB::rollback();
             return response()->json(['success' => false, 'message' => "Error: " . $th->getMessage()]);
         }
+    }
+
+    /**
+     * Buat vendor baru dari input "Other" di form QR.
+     * Kolom wajib lainnya diisi default kosong, dapat dilengkapi nanti di menu Vendor.
+     */
+    private function createQuickVendor(string $name): Vendor
+    {
+        $bankId = Bank::min('id');
+        if (!$bankId) {
+            throw new \RuntimeException('No bank data available to create a new vendor.');
+        }
+
+        return Vendor::create([
+            'kode'                => '',
+            'nama'                => $name,
+            'negara'              => '',
+            'pic_name'            => '',
+            'pic_jabatan'         => '',
+            'phone'               => '',
+            'email'               => '',
+            'bank_id'             => $bankId,
+            'bank_account_number' => '',
+            'bank_account_name'   => '',
+            'is_dp'               => 0,
+            'status'              => 'Active',
+            'catatan'             => 'Added from QR form (Other vendor). Please complete vendor details.',
+        ]);
     }
 
     public function detail(int $id)
