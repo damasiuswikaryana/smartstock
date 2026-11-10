@@ -58,6 +58,12 @@
             float: left;
         }
 
+        .col-sm-3,
+        .col-3 {
+            width: 25%;
+            float: left;
+        }
+
         .col-sm-8,
         .col-8 {
             width: 66.6%;
@@ -356,7 +362,7 @@
         <tr>
             <td colspan="6" style="height:180px; padding:15px;">
                 <div class="row">
-                    <div class="col-4 text-center">
+                    <div class="col-3 text-center">
                         <b>Processed by Procurement</b>
                         <br><br>
                         <img src="{{ $checked }}" width="43"><br>
@@ -364,7 +370,7 @@
                         <br><br>
                         {{ '(' . $data->createdBy->firstname . ' ' . $data->createdBy->lastname . ')' }}
                     </div>
-                    <div class="col-4 text-center">
+                    <div class="col-3 text-center">
                         <b>Checked</b>
                         <br><br>
                         @if ($data->checked_date != null)
@@ -380,7 +386,14 @@
                             (_____________________)
                         @endif
                     </div>
-                    <div class="col-4 text-center">
+                    <div class="col-3 text-center">
+                        <b>Recorded</b>
+                        <br><br>
+                        <br><br><br>
+                        <br><br>
+                        (_____________________)
+                    </div>
+                    <div class="col-3 text-center">
                         <b>Director Approval</b>
                         <br><br>
                         @if ($data->director_date != null)
