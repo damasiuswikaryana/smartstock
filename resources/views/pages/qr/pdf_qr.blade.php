@@ -200,10 +200,22 @@
                         <td width="30%"><b>QR No.</b></td>
                         <td>: {{ $data->qr_no }}</td>
                     </tr>
-                    <tr>
-                        <td style="vertical-align:top;"><b>PRF No.</b></td>
-                        <td>: {{ $data->prf_number ? implode(', ', array_filter(array_map('trim', explode(',', $data->prf_number)))) : '-' }}</td>
-                    </tr>
+                    @php
+                        $prfList = $data->prf_number
+                            ? array_values(array_filter(array_map('trim', explode(',', $data->prf_number))))
+                            : ['-'];
+                    @endphp
+                    @foreach ($prfList as $prf)
+                        <tr>
+                            <td>
+                                @if ($loop->first)
+                                    <b>PRF No.</b>
+                                @endif
+                            </td>
+                            <td style="white-space:nowrap;">{!! $loop->first ? ':' : '&nbsp;&nbsp;' !!}
+                                {{ $prf }}{{ $loop->last ? '' : ',' }}</td>
+                        </tr>
+                    @endforeach
                     <tr>
                         <td><b>QR Date</b></td>
                         <td>: {{ tanggalIndo($data->qr_date) }}</td>
