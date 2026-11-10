@@ -208,6 +208,81 @@
                 </div>
             </div>
 
+            <div class="col-12 mt-2">
+                <h5 class="fw-bold mb-3">Additional Cost &amp; Deduction</h5>
+            </div>
+            <div class="col-12 col-lg-6">
+                <div class="mb-1 row">
+                    <label class="col-lg-4 col-form-label">Subtotal Uk. Khusus:</label>
+                    <div class="col-lg-8">
+                        <div class="input-group">
+                            <span class="input-group-text text-success">+ Rp.</span>
+                            <input type="text" inputmode="numeric"
+                                class="form-control number-separator" placeholder="Subtotal ukuran khusus"
+                                name="subtotal_ukuran_khusus" value="{{ pecahTanpaRp($data->subtotal_ukuran_khusus ?? 0) }}">
+                        </div>
+                    </div>
+                </div>
+                <div class="mb-1 row">
+                    <label class="col-lg-4 col-form-label">Biaya Ongkir:</label>
+                    <div class="col-lg-8">
+                        <div class="input-group">
+                            <span class="input-group-text text-success">+ Rp.</span>
+                            <input type="text" inputmode="numeric"
+                                class="form-control number-separator" placeholder="Ongkir" name="ongkir"
+                                value="{{ pecahTanpaRp($data->ongkir ?? 0) }}">
+                        </div>
+                    </div>
+                </div>
+                <div class="mb-1 row">
+                    <label class="col-lg-4 col-form-label">Biaya Layanan:</label>
+                    <div class="col-lg-8">
+                        <div class="input-group">
+                            <span class="input-group-text text-success">+ Rp.</span>
+                            <input type="text" inputmode="numeric"
+                                class="form-control number-separator" placeholder="Biaya layanan"
+                                name="biaya_layanan" value="{{ pecahTanpaRp($data->biaya_layanan ?? 0) }}">
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-12 col-lg-6">
+                <div class="mb-1 row">
+                    <label class="col-lg-4 col-form-label">Voucher Toko:</label>
+                    <div class="col-lg-8">
+                        <div class="input-group">
+                            <span class="input-group-text text-danger">&minus; Rp.</span>
+                            <input type="text" inputmode="numeric"
+                                class="form-control number-separator" placeholder="Diskon voucher toko"
+                                name="disc_voucher_toko" value="{{ pecahTanpaRp($data->disc_voucher_toko ?? 0) }}">
+                        </div>
+                    </div>
+                </div>
+                <div class="mb-1 row">
+                    <label class="col-lg-4 col-form-label">Potongan:</label>
+                    <div class="col-lg-8">
+                        <div class="input-group">
+                            <span class="input-group-text text-danger">&minus; Rp.</span>
+                            <input type="text" inputmode="numeric"
+                                class="form-control number-separator" placeholder="Potongan"
+                                name="potongan" value="{{ pecahTanpaRp($data->potongan ?? 0) }}">
+                        </div>
+                    </div>
+                </div>
+                <div class="mb-1 row">
+                    <label class="col-lg-4 col-form-label">Total Gross:</label>
+                    <div class="col-lg-8">
+                        <div class="input-group">
+                            <span class="input-group-text">Rp.</span>
+                            <input type="text" inputmode="numeric"
+                                class="form-control number-separator"
+                                placeholder="Total gross (info only)" name="total_gross" value="{{ pecahTanpaRp($data->total_gross ?? 0) }}">
+                        </div>
+                        <small class="text-muted">Info only, not included in total calculation.</small>
+                    </div>
+                </div>
+            </div>
+
             <div class="col-12">
                 <p class="mb-0 text-muted"><b>Important</b>: <span class="text-danger">*</span> fields are
                     required.</p>

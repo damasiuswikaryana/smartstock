@@ -312,6 +312,12 @@ class AdmPoController extends Controller
             $data->disc              = $disc_rp;
             $data->disc_perc         = $disc_pr;
             $data->dp                = hapusTitikAngka($input['dp']);
+            $data->subtotal_ukuran_khusus = $this->nominal($input['subtotal_ukuran_khusus'] ?? 0);
+            $data->disc_voucher_toko = $this->nominal($input['disc_voucher_toko'] ?? 0);
+            $data->potongan          = $this->nominal($input['potongan'] ?? 0);
+            $data->ongkir            = $this->nominal($input['ongkir'] ?? 0);
+            $data->biaya_layanan     = $this->nominal($input['biaya_layanan'] ?? 0);
+            $data->total_gross       = $this->nominal($input['total_gross'] ?? 0);
             $data->notes             = $input['notes'];
             $data->director_id       = $director_id;
             $data->save();
