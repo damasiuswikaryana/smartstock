@@ -339,6 +339,8 @@
             });
         });
 
+        let vendorChoices = null;
+
         function toggleVendorOther() {
             let isOther = $('#vendor-select').val() === 'other';
             $('#vendor-other').toggleClass('d-none', !isOther).prop('required', isOther);
@@ -367,13 +369,17 @@
                 beforeSend: showLoader(),
                 success: function(response) {
                     if (response.success) {
-                        if (response.new_vendor) {
-                            $('#vendor-select option[value="other"]').before(
-                                new Option(response.new_vendor.nama, response.new_vendor.id)
-                            );
-                        }
                         $('#form-tambah')[0].reset();
-                        $('#vendor-select').trigger('change');
+                        if (vendorChoices) {
+                            if (response.new_vendor) {
+                                vendorChoices.setChoices([{
+                                    value: String(response.new_vendor.id),
+                                    label: $('<div>').text(response.new_vendor.nama).html()
+                                }], 'value', 'label', false);
+                            }
+                            vendorChoices.setChoiceByValue($('#vendor-select option:first').val());
+                        }
+                        toggleVendorOther();
                         table.ajax.reload(null, false);
                         hideLoader();
                         $('#exampleModalCenter').modal('hide');
@@ -510,7 +516,7 @@
 
         document.addEventListener('DOMContentLoaded', function() {
             $('.select2').each(function() {
-                new Choices(this, {
+                let instance = new Choices(this, {
                     searchEnabled: true,
                     searchPlaceholderValue: 'Search here...',
                     itemSelectText: '',
@@ -518,6 +524,9 @@
                     allowHTML: true,
                     placeholder: true,
                 });
+                if (this.id === 'vendor-select') {
+                    vendorChoices = instance;
+                }
             });
 
             var text_Unique_Val = new Choices('#choices-text-unique-values', {

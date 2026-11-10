@@ -12,25 +12,12 @@ class PoDownloladService
     public function getData(int $id)
     {
         $data           = Po::with('child')->where('id', $id)->first();
-        $subtotal       = $data->child->sum(function ($child) {
-            return $child->unit_price * $child->qty;
-        });
-        $tax            = $data->tax;
-        $tax_amount     = $tax / 100 * $subtotal;
-        $total_after_tax = $subtotal + $tax_amount;
-        $disc           = $data->disc;
-        $total_after_disc = $total_after_tax - $disc;
-        $dp             = $data->dp;
-        $total_after_dp = $total_after_disc + $dp;
+        $totals         = $data->calculateTotals();
         $logo           = $data->entitas->entitas_logo;
 
         return [
             'po'                => $data,
-            'subtotal'          => $subtotal,
-            'tax_amount'        => $tax_amount,
-            'total_after_tax'   => $total_after_tax,
-            'total_after_disc'  => $total_after_disc,
-            'total_after_dp'    => $total_after_dp,
+            'totals'            => $totals,
             'logo'              => $logo,
             'generated_at'      => now(),
         ];
@@ -63,11 +50,7 @@ class PoDownloladService
             ->setPaper('a4', 'portrait')
             ->loadView('pages.po.pdf_po', [
                 'data'              => $data['po'],
-                'subtotal'          => $data['subtotal'],
-                'tax_amount'        => $data['tax_amount'],
-                'total_after_tax'   => $data['total_after_tax'],
-                'total_after_disc'  => $data['total_after_disc'],
-                'total_after_dp'    => $data['total_after_dp'],
+                'totals'            => $data['totals'],
                 'logo'              => $base64,
                 'checked'           => $base64Checked,
                 'icon'              => $base64Icon,

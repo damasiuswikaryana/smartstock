@@ -308,57 +308,52 @@
             </tr>
         @endfor
         {{-- baris kosong --}}
-        <tr>
-            <td colspan="4" rowspan="5" style="padding:0px 10px; vertical-align:top;">
-                <b>Term & Condition</b>
-                <br>
-                <table class="table no-border">
-                    <tr>
-                        <td width="2%">-</td>
-                        <td>Seluruh proses pengiriman barang harus disertai dengan
-                            faktur, nota, kwitansi dan GRN.</td>
-                    </tr>
-                    <tr>
-                        <td width="2%">-</td>
-                        <td>Proses pelunasan dilakukan selambat-lambatnya
-                            (....) hari sejak barang diterima.</td>
-                    </tr>
-                </table>
-            </td>
-            <td><b>Sub Total</b></td>
-            <td class="text-sm-end d-flex">
-                <span class="float-left">Rp.</span>
-                <span class="float-right">{{ pecahTanpaRp($subtotal) }}</span>
-            </td>
-        </tr>
-        <tr>
-            <td><b>Tax {{ $data->tax }}%</b></td>
-            <td class="text-sm-end">
-                <span class="float-left">Rp.</span>
-                <span class="float-right">{{ pecahTanpaRp($tax_amount) }}</span>
-            </td>
-        </tr>
-        <tr>
-            <td><b>Discount</b></td>
-            <td class="text-sm-end">
-                <span class="float-left">Rp.</span>
-                <span class="float-right">{{ pecahTanpaRp($data->disc) }}</span>
-            </td>
-        </tr>
-        <tr>
-            <td><b>DP</b></td>
-            <td class="text-sm-end">
-                <span class="float-left">Rp.</span>
-                <span class="float-right">{{ pecahTanpaRp($data->dp) }}</span>
-            </td>
-        </tr>
-        <tr>
-            <td><b>Total</b></td>
-            <td class="text-sm-end fw-bold">
-                <span class="float-left">Rp.</span>
-                <span class="float-right">{{ pecahTanpaRp($total_after_dp) }}</span>
-            </td>
-        </tr>
+        @php
+            // [label, nilai, bold, selalu tampil]
+            $summaryRows = [
+                [$totals['ukuran_khusus'] > 0 ? 'Sub Total (incl. Custom Size)' : 'Sub Total', $totals['subtotal'], false, true],
+                ['Discount', $totals['disc_amount'], false, false],
+                ['Voucher Toko', $totals['voucher_toko'], false, false],
+                ['Potongan', $totals['potongan'], false, false],
+                ['PPH ' . $data->tax . '%', $totals['tax_amount'], false, false],
+                ['PPN ' . $data->ppn . '%', $totals['ppn_amount'], false, false],
+                ['Biaya Ongkir', $totals['ongkir'], false, false],
+                ['Biaya Layanan', $totals['biaya_layanan'], false, false],
+                ['DP', (float) $data->dp, false, false],
+                ['Total', $totals['total_after_dp'], true, true],
+                ['Total Gross', (float) $data->total_gross, false, false],
+            ];
+            $summaryRows = array_values(array_filter($summaryRows, fn($r) => $r[3] || round($r[1], 2) != 0));
+        @endphp
+        @foreach ($summaryRows as $i => $row)
+            <tr>
+                @if ($i == 0)
+                    <td colspan="4" rowspan="{{ count($summaryRows) }}"
+                        style="padding:0px 10px; vertical-align:top;">
+                        <b>Term & Condition</b>
+                        <br>
+                        <table class="table no-border">
+                            <tr>
+                                <td width="2%">-</td>
+                                <td>Seluruh proses pengiriman barang harus disertai dengan
+                                    faktur, nota, kwitansi dan GRN.</td>
+                            </tr>
+                            <tr>
+                                <td width="2%">-</td>
+                                <td>Proses pelunasan dilakukan selambat-lambatnya
+                                    (....)
+                                    hari sejak barang diterima.</td>
+                            </tr>
+                        </table>
+                    </td>
+                @endif
+                <td><b>{{ $row[0] }}</b></td>
+                <td class="text-sm-end {{ $row[2] ? 'fw-bold' : '' }}">
+                    <span class="float-left">Rp.</span>
+                    <span class="float-right">{{ pecahTanpaRp($row[1]) }}</span>
+                </td>
+            </tr>
+        @endforeach
         <tr>
             <td colspan="6" style="height:180px; padding:15px;">
                 <div class="row">

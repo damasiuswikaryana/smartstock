@@ -24,6 +24,15 @@ use App\Services\PoDownloladService;
 
 class AdmPoController extends Controller
 {
+    /**
+     * Ubah input nominal berformat ribuan (1.250.000) menjadi angka.
+     */
+    private function nominal($value): float
+    {
+        $value = hapusTitikAngka((string) $value);
+        return (float) str_replace(',', '.', $value);
+    }
+
     public function index(Request $request)
     {
         $tahun      = date("Y");
@@ -189,6 +198,12 @@ class AdmPoController extends Controller
                 'disc'              => $disc_rp,
                 'disc_perc'         => $disc_pr,
                 'dp'                => hapusTitikAngka($input['dp']),
+                'subtotal_ukuran_khusus' => $this->nominal($input['subtotal_ukuran_khusus'] ?? 0),
+                'disc_voucher_toko' => $this->nominal($input['disc_voucher_toko'] ?? 0),
+                'potongan'          => $this->nominal($input['potongan'] ?? 0),
+                'ongkir'            => $this->nominal($input['ongkir'] ?? 0),
+                'biaya_layanan'     => $this->nominal($input['biaya_layanan'] ?? 0),
+                'total_gross'       => $this->nominal($input['total_gross'] ?? 0),
                 'created_by'        => Auth::user()->id,
                 'adminInput_by'     => $keuanganAdmin->id,
                 'adminInput_date'   => NULL,
@@ -234,41 +249,10 @@ class AdmPoController extends Controller
 
     public function detail(int $id)
     {
-        $data           = Po::with('child')->where('id', $id)->first();
-        $dataPPh        = Po::with([
-            'child' => function ($query) {
-                $query->where('pph', 1);
-            }
-        ])->where('id', $id)->first();
+        $data   = Po::with('child')->where('id', $id)->first();
+        $totals = $data->calculateTotals();
 
-        $subtotal       = $data->child->sum(function ($child) {
-            return $child->unit_price * $child->qty;
-        });
-
-        $subtotalPPH    = $dataPPh->child->sum(function ($child) {
-            return $child->unit_price * $child->qty;
-        });
-
-        $disc           = $data->disc;
-        if ($disc != NULL) {
-            $disc_perc          = $subtotal > 0 ? ($disc / $subtotal) * 100 : 0;
-            $disc_amount        = $disc;
-        } else {
-            $disc_perc          = $data->disc_perc;
-            $disc_amount        = $disc_perc / 100 * $subtotal;
-        }
-        $total_after_disc   = $subtotal - $disc_amount;
-
-        $tax            = $data->tax;
-        $tax_amount     = $tax / 100 * $subtotalPPH;
-        $ppn            = $data->ppn;
-        $ppn_amount     = $ppn / 100 * $total_after_disc;
-        $total_after_tax = $total_after_disc + $tax_amount + $ppn_amount;
-
-        $dp                 = $data->dp;
-        $total_after_dp     = $total_after_tax - $dp;
-
-        return view('pages.po.detail', compact('data', 'subtotal', 'tax_amount', 'ppn_amount', 'total_after_tax', 'disc_perc', 'disc_amount', 'total_after_disc', 'total_after_dp'));
+        return view('pages.po.detail', array_merge(['data' => $data], $totals));
     }
 
     public function modalDetail(int $id)

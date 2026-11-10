@@ -221,6 +221,22 @@
                             <ol class="list-group mt-3">
                                 <li class="list-group-item d-flex justify-content-between align-items-start py-2">
                                     <div class="ms-0 me-auto col-6">
+                                        Subtotal Items
+                                    </div>
+                                    <div class="ms-0 me-auto col-6 text-end">
+                                        {{ rupiah($subtotal_items) }}
+                                    </div>
+                                </li>
+                                <li class="list-group-item d-flex justify-content-between align-items-start py-2">
+                                    <div class="ms-0 me-auto col-6">
+                                        Subtotal Ukuran Khusus
+                                    </div>
+                                    <div class="ms-0 me-auto col-6 text-end">
+                                        {!! '+ ' . rupiah($ukuran_khusus) !!}
+                                    </div>
+                                </li>
+                                <li class="list-group-item d-flex justify-content-between align-items-start py-2">
+                                    <div class="ms-0 me-auto col-6">
                                         Subtotal
                                     </div>
                                     <div class="ms-0 me-auto col-6 text-end">
@@ -234,6 +250,22 @@
                                     <div class="ms-0 me-auto col-6 text-end text-green">
                                         {{ $data->disc_perc != null ? $data->disc_perc . '%' : '' }}
                                         {!! ' &nbsp; - ' . rupiah($disc_amount) !!}
+                                    </div>
+                                </li>
+                                <li class="list-group-item d-flex justify-content-between align-items-start py-2">
+                                    <div class="ms-0 me-auto col-6">
+                                        Voucher Toko
+                                    </div>
+                                    <div class="ms-0 me-auto col-6 text-end text-green">
+                                        {!! '- ' . rupiah($voucher_toko) !!}
+                                    </div>
+                                </li>
+                                <li class="list-group-item d-flex justify-content-between align-items-start py-2">
+                                    <div class="ms-0 me-auto col-6">
+                                        Potongan
+                                    </div>
+                                    <div class="ms-0 me-auto col-6 text-end text-green">
+                                        {!! '- ' . rupiah($potongan) !!}
                                     </div>
                                 </li>
                                 <li class="list-group-item d-flex justify-content-between align-items-start py-2">
@@ -270,6 +302,30 @@
                                 </li>
                                 <li class="list-group-item d-flex justify-content-between align-items-start py-2">
                                     <div class="ms-0 me-auto col-6">
+                                        Biaya Ongkir
+                                    </div>
+                                    <div class="ms-0 me-auto col-6 text-end">
+                                        {!! '+ ' . rupiah($ongkir) !!}
+                                    </div>
+                                </li>
+                                <li class="list-group-item d-flex justify-content-between align-items-start py-2">
+                                    <div class="ms-0 me-auto col-6">
+                                        Biaya Layanan
+                                    </div>
+                                    <div class="ms-0 me-auto col-6 text-end">
+                                        {!! '+ ' . rupiah($biaya_layanan) !!}
+                                    </div>
+                                </li>
+                                <li class="list-group-item d-flex justify-content-between align-items-start py-2">
+                                    <div class="ms-0 me-auto col-6">
+                                        <i class="me-2 ph-duotone ph-arrow-right"></i> Grand Total
+                                    </div>
+                                    <div class="ms-0 me-auto col-6 text-end text-danger">
+                                        {{ rupiah($grand_total) }}
+                                    </div>
+                                </li>
+                                <li class="list-group-item d-flex justify-content-between align-items-start py-2">
+                                    <div class="ms-0 me-auto col-6">
                                         Down Payment
                                     </div>
                                     <div class="ms-0 me-auto col-6 text-end">
@@ -282,6 +338,14 @@
                                     </div>
                                     <div class="ms-0 me-auto fw-bold col-6 text-end fs-4">
                                         {{ rupiah($total_after_dp) }}
+                                    </div>
+                                </li>
+                                <li class="list-group-item d-flex justify-content-between align-items-start py-2">
+                                    <div class="ms-0 me-auto col-6">
+                                        Total Gross <small class="text-muted">(info)</small>
+                                    </div>
+                                    <div class="ms-0 me-auto col-6 text-end">
+                                        {{ rupiah($data->total_gross) }}
                                     </div>
                                 </li>
                             </ol>

@@ -48,4 +48,59 @@ class Po extends Model
     {
         return $this->belongsTo(User::class, 'director_id', 'id');
     }
+
+    /**
+     * Hitung seluruh komponen total PO.
+     * Penambah  : subtotal_ukuran_khusus (ke subtotal), PPH, PPN, ongkir, biaya_layanan
+     * Pengurang : disc / disc_perc, disc_voucher_toko, potongan, dp
+     * total_gross diinput manual oleh user dan tidak ikut dihitung.
+     */
+    public function calculateTotals(): array
+    {
+        $children = $this->child;
+
+        $subtotal_items = $children->sum(fn($c) => $c->unit_price * $c->qty);
+        $subtotal_pph   = $children->where('pph', 1)->sum(fn($c) => $c->unit_price * $c->qty);
+        $ukuran_khusus  = (float) $this->subtotal_ukuran_khusus;
+        $subtotal       = $subtotal_items + $ukuran_khusus;
+
+        if ($this->disc != NULL) {
+            $disc_amount = (float) $this->disc;
+            $disc_perc   = $subtotal > 0 ? ($disc_amount / $subtotal) * 100 : 0;
+        } else {
+            $disc_perc   = (float) $this->disc_perc;
+            $disc_amount = $disc_perc / 100 * $subtotal;
+        }
+        $voucher_toko     = (float) $this->disc_voucher_toko;
+        $potongan         = (float) $this->potongan;
+        $total_after_disc = $subtotal - $disc_amount - $voucher_toko - $potongan;
+
+        $tax_amount      = (float) $this->tax / 100 * $subtotal_pph;
+        $ppn_amount      = (float) $this->ppn / 100 * $total_after_disc;
+        $total_after_tax = $total_after_disc + $tax_amount + $ppn_amount;
+
+        $ongkir        = (float) $this->ongkir;
+        $biaya_layanan = (float) $this->biaya_layanan;
+        $grand_total   = $total_after_tax + $ongkir + $biaya_layanan;
+
+        $total_after_dp = $grand_total - (float) $this->dp;
+
+        return compact(
+            'subtotal_items',
+            'ukuran_khusus',
+            'subtotal',
+            'disc_perc',
+            'disc_amount',
+            'voucher_toko',
+            'potongan',
+            'total_after_disc',
+            'tax_amount',
+            'ppn_amount',
+            'total_after_tax',
+            'ongkir',
+            'biaya_layanan',
+            'grand_total',
+            'total_after_dp'
+        );
+    }
 }
