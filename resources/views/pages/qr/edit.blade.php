@@ -70,7 +70,7 @@
                 <h4 class="fw-bold mb-3">Items</h4>
                 <div id="produk-container-edit">
                     @foreach ($itemMasters as $itemMaster)
-                        <div class="row p-0 mx-0 mb-2 produk-item">
+                        <div class="row p-0 mx-0 mb-2 produk-item-edit" data-item-master="{{ $itemMaster->id }}">
                             <div class="col-11 col-lg-11 ps-0">
                                 <input type="text" class="form-control" value="{{ $itemMaster->nama }}" disabled>
                                 <div class="variant-container mt-2">
@@ -116,7 +116,7 @@
                                 </div>
                             </div>
                             <div class="col-1 col-lg-1 mx-0 pe-0">
-                                <button type="button" class="btn btn-rounded btn-light-danger btn-delete-produk"
+                                <button type="button" class="btn btn-rounded btn-light-danger btn-delete-produk-edit"
                                     style="font-size:20px;">
                                     <i class="ti ti-trash"></i>
                                 </button>
@@ -124,13 +124,13 @@
                         </div>
                     @endforeach
                 </div>
-                {{-- <div class="row mb-0 p-2">
+                <div class="row mb-0 p-2">
                     <a href="#" id="btn-add-product-edit"
                         class="btn btn-light-primary w-100 d-flex justify-content-center align-items-center">
                         <i class="fa fa-plus-circle me-2"></i>
                         <span>Add Item</span>
                     </a>
-                </div> --}}
+                </div>
             </div>
 
             <div class="col-12 col-lg-12">
@@ -200,26 +200,32 @@
         });
     });
 
-    $(document).on('click', '.btn-delete-produk', function() {
-        $(this).closest('.produk-item').remove();
+    // handler di-namespace & di-off dulu agar tidak dobel setiap modal edit dibuka
+    $(document).off('click.qrEdit').on('click.qrEdit', '.btn-delete-produk-edit', function() {
+        $(this).closest('.produk-item-edit').remove();
     });
 
     var itemMasterIndexEdit = 0;
     $('#btn-add-product-edit').on('click', function(e) {
         e.preventDefault();
+        let idx = itemMasterIndexEdit++;
         let html = `
-                <div class="row p-0 mx-0 mb-2 produk-item">
+                <div class="row p-0 mx-0 mb-2 produk-item-edit" data-item-master="">
                     <div class="col-11 col-lg-11 ps-0">
-                        <select data-index="${itemMasterIndexEdit}" class="form-control item-master" name="item[${itemMasterIndexEdit}][id_item]" required>
+                        <select data-index="${idx}" class="form-control item-master-edit" id="item-master-edit-${idx}">
                             <option value="" selected disabled>Select Item</option>
-                            @foreach ($items as $item)
-                                <option value="{{ $item->id }}">{{ $item->nama }}</option>
+                            @foreach ($categories as $category)
+                                <optgroup label="{{ $category->title }}">
+                                    @foreach ($category->items as $item)
+                                        <option value="{{ $item->id }}">{{ $item->nama }}</option>
+                                    @endforeach
+                                </optgroup>
                             @endforeach
                         </select>
-                        <div class="variant-container mt-2" id="variant-container-edit-${itemMasterIndexEdit}"></div>
+                        <div class="variant-container mt-2" id="variant-container-edit-${idx}"></div>
                     </div>
                     <div class="col-1 col-lg-1 mx-0 pe-0">
-                        <button id="btn-delete-${itemMasterIndexEdit}" type="button" class="btn btn-rounded btn-light-danger btn-delete-produk" style="font-size:20px;">
+                        <button type="button" class="btn btn-rounded btn-light-danger btn-delete-produk-edit" style="font-size:20px;">
                             <i class="ti ti-trash"></i>
                         </button>
                     </div>
@@ -227,25 +233,34 @@
                 `;
 
         $('#produk-container-edit').append(html);
-        itemMasterIndexEdit++;
+        initItemMasterChoices(document.getElementById(`item-master-edit-${idx}`));
     });
 
-    $(document).on('change', '.item-master', function() {
+    $(document).off('change.qrEdit').on('change.qrEdit', '.item-master-edit', function() {
         let itemEditId = $(this).val();
         let indexEdit = $(this).data('index');
+        let row = $(this).closest('.produk-item-edit');
+
+        // cegah item yang sama dipilih dua kali (variant akan saling menimpa)
+        let duplicate = $('#produk-container-edit .produk-item-edit').not(row).filter(function() {
+            return String($(this).data('item-master')) === String(itemEditId);
+        }).length > 0;
+        if (duplicate) {
+            showToastError('Item ini sudah ada di daftar. Silakan ubah qty pada item yang sudah ada.');
+            row.remove();
+            return;
+        }
+        row.data('item-master', itemEditId);
+
         $.ajax({
             url: "{{ route('getVariants', ':id') }}".replace(':id', itemEditId),
             type: "GET",
             success: function(res) {
                 let htmlEdit = '';
                 $.each(res.variants, function(i, variant) {
-                    let satuanOptions = '<option value="">Pilih satuan</option>';
-
+                    let satuanOptions = '';
                     $.each(res.satuans, function(j, satuan) {
-                        satuanOptions += `
-                            <option value="${satuan.id}">
-                                ${satuan.satuan}
-                            </option>`;
+                        satuanOptions += `<option value="${satuan.id}">${satuan.satuan}</option>`;
                     });
 
                     htmlEdit += `
@@ -253,22 +268,20 @@
                         <div class="col-1 text-center">
                             <i class="fs-3 ph-duotone ph-arrow-elbow-down-right"></i>
                         </div>
-                        <div class="col-12 col-lg-5">
+                        <div class="col-12 col-lg-4">
                             <input type="text" class="form-control" value="${variant.name_varian}" disabled>
                         </div>
                         <div class="col-4 col-lg-2">
-                            <input type="text" class="form-control" value="${variant.sku_varian}" disabled>
-                        </div>
-                        <div class="col-4 col-lg-2">
-                            <select class="form-select"
-                                name="item[${indexEdit}][variants][${variant.id}][satuan]">
+                            <select class="form-select" name="items[${variant.id}][satuan]">
                                 ${satuanOptions}
                             </select>
                         </div>
                         <div class="col-4 col-lg-2">
-                            <input type="number" min="0" class="form-control" name="item[${indexEdit}][variants][${variant.id}][qty]" placeholder="Qty">
-                            <input type="hidden" name="item[${indexEdit}][variants][${variant.id}][id_variant]" value="${variant.id}">
-                            <input type="hidden" name="item[${indexEdit}][variants][${variant.id}][nilai_variant]" value="${variant.nilai}">
+                            <input type="text" class="form-control number-separator" name="items[${variant.id}][nilai_variant]" value="${formatRupiah(variant.nilai)}" placeholder="Harga item">
+                        </div>
+                        <div class="col-4 col-lg-1">
+                            <input type="hidden" name="items[${variant.id}][item_varian_id]" value="${variant.id}">
+                            <input type="number" min="0" class="form-control" name="items[${variant.id}][qty]" placeholder="Qty" value="0">
                         </div>
                     </div>`;
                 });

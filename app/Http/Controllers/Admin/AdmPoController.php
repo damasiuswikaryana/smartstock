@@ -278,7 +278,9 @@ class AdmPoController extends Controller
         $itemMasters        = ItemMaster::with('varian')->whereIn('id', $itemMasterIds)->get();
         $qtyData            = $data->child->keyBy('item_varian_id');
 
-        return view('pages.po.edit', compact('data', 'vendor', 'entitas', 'items', 'itemMasters', 'qtyData', 'satuan'));
+        $categories         = Category::with('items')->get();
+
+        return view('pages.po.edit', compact('data', 'vendor', 'entitas', 'items', 'itemMasters', 'qtyData', 'satuan', 'categories'));
     }
 
     public function update(Request $request, int $id)
@@ -321,10 +323,11 @@ class AdmPoController extends Controller
             $data->notes             = $input['notes'];
             $data->director_id       = $director_id;
             $data->save();
-            DB::commit();
 
-            foreach ($request->items as $item) {
-                if ($item['qty'] > 0) {
+            // simpan item: yang qty > 0 disimpan/diupdate, sisanya (termasuk yang dihapus dari form) dihapus
+            $keptVariants = [];
+            foreach ($request->input('items', []) as $item) {
+                if (!empty($item['qty']) && $item['qty'] > 0) {
                     PoChild::updateOrCreate(
                         [
                             'po_id'             => $id,
@@ -334,14 +337,20 @@ class AdmPoController extends Controller
                             'qty'               => $item['qty'],
                             'satuan_id'         => $item['satuan'],
                             'unit_price'        => hapusTitikAngka($item['nilai_variant']),
-                            'pph'               => $item['pph_variant']
+                            'pph'               => $item['pph_variant'] ?? 0,
                         ]
                     );
-                } else {
-                    PoChild::where('po_id', $id)
-                        ->where('item_varian_id', $item['item_varian_id'])->delete();
+                    $keptVariants[] = $item['item_varian_id'];
                 }
             }
+
+            if (empty($keptVariants)) {
+                DB::rollback();
+                return response()->json(['success' => false, 'message' => 'Minimal 1 item dengan qty lebih dari 0.']);
+            }
+
+            PoChild::where('po_id', $id)->whereNotIn('item_varian_id', $keptVariants)->delete();
+            DB::commit();
             return response()->json(['success' => true]);
         } catch (\Throwable $th) {
             DB::rollback();
