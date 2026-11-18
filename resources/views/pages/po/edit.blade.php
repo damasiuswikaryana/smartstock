@@ -102,9 +102,9 @@
                                                 </select>
                                             </div>
                                             <div class="col-4 col-lg-2">
-                                                <input type="text" class="form-control number-separator"
+                                                <input type="text" inputmode="decimal" class="form-control number-separator"
                                                     name="items[{{ $variant->id }}][nilai_variant]"
-                                                    value="{{ pecahTanpaRp($nilai) }}">
+                                                    value="{{ pecahDesimal($nilai) }}">
                                             </div>
                                             <div class="col-4 col-lg-1">
                                                 <input type="hidden" name="items[{{ $variant->id }}][item_varian_id]"
@@ -188,9 +188,9 @@
                                 </select>
                             </div>
                             <div class="col-lg-9 ps-1">
-                                <input type="number" class="form-control number-separator"
+                                <input type="text" inputmode="decimal" class="form-control number-separator"
                                     placeholder="Discount value" name="disc"
-                                    value="{{ pecahTanpaRp($data->disc) }}" required>
+                                    value="{{ pecahDesimal($data->disc ?? $data->disc_perc ?? 0) }}" required>
                             </div>
                         </div>
                     </div>
@@ -200,9 +200,9 @@
                     <div class="col-lg-8">
                         <div class="input-group">
                             <span class="input-group-text">Rp.</span>
-                            <input type="number" class="form-control number-separator"
+                            <input type="text" inputmode="decimal" class="form-control number-separator"
                                 placeholder="Down payment in rupiah" name="dp"
-                                value="{{ pecahTanpaRp($data->dp) }}" required>
+                                value="{{ pecahDesimal($data->dp ?? 0) }}" required>
                         </div>
                     </div>
                 </div>
@@ -217,9 +217,9 @@
                     <div class="col-lg-8">
                         <div class="input-group">
                             <span class="input-group-text text-success">+ Rp.</span>
-                            <input type="text" inputmode="numeric"
+                            <input type="text" inputmode="decimal"
                                 class="form-control number-separator" placeholder="Subtotal ukuran khusus"
-                                name="subtotal_ukuran_khusus" value="{{ pecahTanpaRp($data->subtotal_ukuran_khusus ?? 0) }}">
+                                name="subtotal_ukuran_khusus" value="{{ pecahDesimal($data->subtotal_ukuran_khusus ?? 0) }}">
                         </div>
                     </div>
                 </div>
@@ -228,9 +228,9 @@
                     <div class="col-lg-8">
                         <div class="input-group">
                             <span class="input-group-text text-success">+ Rp.</span>
-                            <input type="text" inputmode="numeric"
+                            <input type="text" inputmode="decimal"
                                 class="form-control number-separator" placeholder="Ongkir" name="ongkir"
-                                value="{{ pecahTanpaRp($data->ongkir ?? 0) }}">
+                                value="{{ pecahDesimal($data->ongkir ?? 0) }}">
                         </div>
                     </div>
                 </div>
@@ -239,9 +239,9 @@
                     <div class="col-lg-8">
                         <div class="input-group">
                             <span class="input-group-text text-success">+ Rp.</span>
-                            <input type="text" inputmode="numeric"
+                            <input type="text" inputmode="decimal"
                                 class="form-control number-separator" placeholder="Biaya layanan"
-                                name="biaya_layanan" value="{{ pecahTanpaRp($data->biaya_layanan ?? 0) }}">
+                                name="biaya_layanan" value="{{ pecahDesimal($data->biaya_layanan ?? 0) }}">
                         </div>
                     </div>
                 </div>
@@ -252,9 +252,9 @@
                     <div class="col-lg-8">
                         <div class="input-group">
                             <span class="input-group-text text-danger">&minus; Rp.</span>
-                            <input type="text" inputmode="numeric"
+                            <input type="text" inputmode="decimal"
                                 class="form-control number-separator" placeholder="Diskon voucher toko"
-                                name="disc_voucher_toko" value="{{ pecahTanpaRp($data->disc_voucher_toko ?? 0) }}">
+                                name="disc_voucher_toko" value="{{ pecahDesimal($data->disc_voucher_toko ?? 0) }}">
                         </div>
                     </div>
                 </div>
@@ -263,9 +263,9 @@
                     <div class="col-lg-8">
                         <div class="input-group">
                             <span class="input-group-text text-danger">&minus; Rp.</span>
-                            <input type="text" inputmode="numeric"
+                            <input type="text" inputmode="decimal"
                                 class="form-control number-separator" placeholder="Potongan"
-                                name="potongan" value="{{ pecahTanpaRp($data->potongan ?? 0) }}">
+                                name="potongan" value="{{ pecahDesimal($data->potongan ?? 0) }}">
                         </div>
                     </div>
                 </div>
@@ -274,9 +274,9 @@
                     <div class="col-lg-8">
                         <div class="input-group">
                             <span class="input-group-text">Rp.</span>
-                            <input type="text" inputmode="numeric"
+                            <input type="text" inputmode="decimal"
                                 class="form-control number-separator"
-                                placeholder="Total gross (info only)" name="total_gross" value="{{ pecahTanpaRp($data->total_gross ?? 0) }}">
+                                placeholder="Total gross (info only)" name="total_gross" value="{{ pecahDesimal($data->total_gross ?? 0) }}">
                         </div>
                         <small class="text-muted">Info only, not included in total calculation.</small>
                     </div>
@@ -405,7 +405,7 @@
                             </select>
                         </div>
                         <div class="col-4 col-lg-2">
-                            <input type="text" class="form-control number-separator" name="items[${variant.id}][nilai_variant]" value="${formatRupiah(variant.nilai)}" placeholder="Harga item">
+                            <input type="text" inputmode="decimal" class="form-control number-separator" name="items[${variant.id}][nilai_variant]" value="${formatRupiah(variant.nilai)}" placeholder="Harga item">
                         </div>
                         <div class="col-4 col-lg-1">
                             <input type="hidden" name="items[${variant.id}][item_varian_id]" value="${variant.id}">

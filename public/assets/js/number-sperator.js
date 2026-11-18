@@ -11,7 +11,7 @@ $(document).ready(function () {
          rupiah += separator + ribuan.join(".");
       }
 
-      rupiah = split[1] != undefined ? rupiah + "," + split[1] : rupiah;
+      rupiah = split[1] != undefined ? rupiah + "," + split[1].substr(0, 2) : rupiah;
       return rupiah;
    }
 

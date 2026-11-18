@@ -223,7 +223,9 @@
     <script src="{{ asset('assets/js/plugins/choices.min.js') }}"></script>
     <script type="text/javascript">
         function formatRupiah(angka) {
-            return Number(angka || 0).toLocaleString('id-ID');
+            return Number(angka || 0).toLocaleString('id-ID', {
+                maximumFractionDigits: 2
+            });
         }
 
         function initItemMasterChoices(element) {
@@ -501,7 +503,7 @@
                             </select>
                         </div>
                         <div class="col-4 col-lg-2">
-                            <input type="text" class="form-control number-separator" name="item[${index}][variants][${variant.id}][nilai_variant]" value="${formatRupiah(variant.nilai)}">
+                            <input type="text" inputmode="decimal" class="form-control number-separator" name="item[${index}][variants][${variant.id}][nilai_variant]" value="${formatRupiah(variant.nilai)}">
                         </div>
                         <div class="col-4 col-lg-1">
                             <input type="number" min="0" class="form-control" name="item[${index}][variants][${variant.id}][qty]" placeholder="Qty" value="0">

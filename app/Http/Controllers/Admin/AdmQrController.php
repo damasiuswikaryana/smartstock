@@ -216,7 +216,7 @@ class AdmQrController extends Controller
                             'item_varian_id'    => $variant['id_variant'],
                             'qty'               => $variant['qty'],
                             'satuan_id'         => $variant['satuan'],
-                            'unit_price'        => hapusTitikAngka($variant['nilai_variant']),
+                            'unit_price'        => angkaDesimal($variant['nilai_variant']),
                         ]);
                     }
                 }
@@ -341,7 +341,7 @@ class AdmQrController extends Controller
                         [
                             'qty'               => $item['qty'],
                             'satuan_id'         => $item['satuan'],
-                            'unit_price'        => hapusTitikAngka($item['nilai_variant']),
+                            'unit_price'        => angkaDesimal($item['nilai_variant']),
                         ]
                     );
                     $keptVariants[] = $item['item_varian_id'];

@@ -29,8 +29,7 @@ class AdmPoController extends Controller
      */
     private function nominal($value): float
     {
-        $value = hapusTitikAngka((string) $value);
-        return (float) str_replace(',', '.', $value);
+        return angkaDesimal($value);
     }
 
     public function index(Request $request)
@@ -177,11 +176,11 @@ class AdmPoController extends Controller
             $director_id    = NULL;
         }
         if ($input['disc_tipe'] == 'rupiah') {
-            $disc_rp    = hapusTitikAngka($input['disc']);
+            $disc_rp    = angkaDesimal($input['disc']);
             $disc_pr    = NULL;
         } else {
             $disc_rp    = NULL;
-            $disc_pr    = hapusTitikAngka($input['disc']);
+            $disc_pr    = angkaDesimal($input['disc']);
         }
 
         try {
@@ -197,7 +196,7 @@ class AdmPoController extends Controller
                 'ppn'               => $input['ppn'],
                 'disc'              => $disc_rp,
                 'disc_perc'         => $disc_pr,
-                'dp'                => hapusTitikAngka($input['dp']),
+                'dp'                => angkaDesimal($input['dp']),
                 'subtotal_ukuran_khusus' => $this->nominal($input['subtotal_ukuran_khusus'] ?? 0),
                 'disc_voucher_toko' => $this->nominal($input['disc_voucher_toko'] ?? 0),
                 'potongan'          => $this->nominal($input['potongan'] ?? 0),
@@ -223,7 +222,7 @@ class AdmPoController extends Controller
                             'item_varian_id'    => $variant['id_variant'],
                             'qty'               => $variant['qty'],
                             'satuan_id'         => $variant['satuan'],
-                            'unit_price'        => hapusTitikAngka($variant['nilai_variant']),
+                            'unit_price'        => angkaDesimal($variant['nilai_variant']),
                             'pph'               => $variant['pph_variant'],
                         ]);
                     }
@@ -295,11 +294,11 @@ class AdmPoController extends Controller
             $director_id    = NULL;
         }
         if ($input['disc_tipe'] == 'rupiah') {
-            $disc_rp    = hapusTitikAngka($input['disc']);
+            $disc_rp    = angkaDesimal($input['disc']);
             $disc_pr    = NULL;
         } else {
             $disc_rp    = NULL;
-            $disc_pr    = hapusTitikAngka($input['disc']);
+            $disc_pr    = angkaDesimal($input['disc']);
         }
 
         try {
@@ -313,7 +312,7 @@ class AdmPoController extends Controller
             $data->ppn               = $input['ppn'];
             $data->disc              = $disc_rp;
             $data->disc_perc         = $disc_pr;
-            $data->dp                = hapusTitikAngka($input['dp']);
+            $data->dp                = angkaDesimal($input['dp']);
             $data->subtotal_ukuran_khusus = $this->nominal($input['subtotal_ukuran_khusus'] ?? 0);
             $data->disc_voucher_toko = $this->nominal($input['disc_voucher_toko'] ?? 0);
             $data->potongan          = $this->nominal($input['potongan'] ?? 0);
@@ -336,7 +335,7 @@ class AdmPoController extends Controller
                         [
                             'qty'               => $item['qty'],
                             'satuan_id'         => $item['satuan'],
-                            'unit_price'        => hapusTitikAngka($item['nilai_variant']),
+                            'unit_price'        => angkaDesimal($item['nilai_variant']),
                             'pph'               => $item['pph_variant'] ?? 0,
                         ]
                     );

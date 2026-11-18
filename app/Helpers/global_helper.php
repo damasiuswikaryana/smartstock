@@ -57,6 +57,31 @@ function pecah2Desimal($nilai, $pecahan = 2)
     return number_format($nilai, $pecahan, ',', '.');
 }
 
+/**
+ * Ubah input nominal format Indonesia ("20.000,55") menjadi angka (20000.55).
+ */
+function angkaDesimal($nilai)
+{
+    $nilai = str_replace('.', '', (string) $nilai);
+    $nilai = str_replace(',', '.', $nilai);
+    return is_numeric($nilai) ? (float) $nilai : 0;
+}
+
+/**
+ * Format angka Indonesia; 2 desimal hanya jika ada pecahan (20.000 / 20.000,55).
+ */
+function pecahDesimal($nilai)
+{
+    $nilai = round((float) $nilai, 2);
+    $desimal = floor($nilai) == $nilai ? 0 : 2;
+    return number_format($nilai, $desimal, ',', '.');
+}
+
+function rupiahDesimal($nilai)
+{
+    return "Rp. " . pecahDesimal($nilai);
+}
+
 function ubahAngka($str)
 {
     $a = (int) $str;

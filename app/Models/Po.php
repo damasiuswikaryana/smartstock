@@ -51,8 +51,8 @@ class Po extends Model
 
     /**
      * Hitung seluruh komponen total PO.
-     * Penambah  : subtotal_ukuran_khusus (ke subtotal), PPH, PPN, ongkir, biaya_layanan
-     * Pengurang : disc / disc_perc, disc_voucher_toko, potongan, dp
+     * Penambah  : subtotal_ukuran_khusus (ke subtotal), PPN, ongkir, biaya_layanan
+     * Pengurang : disc / disc_perc, disc_voucher_toko, potongan, PPH, dp
      * total_gross diinput manual oleh user dan tidak ikut dihitung.
      */
     public function calculateTotals(): array
@@ -77,7 +77,8 @@ class Po extends Model
 
         $tax_amount      = (float) $this->tax / 100 * $subtotal_pph;
         $ppn_amount      = (float) $this->ppn / 100 * $total_after_disc;
-        $total_after_tax = $total_after_disc + $tax_amount + $ppn_amount;
+        // PPH (dipotong) mengurangi, PPN menambah
+        $total_after_tax = $total_after_disc - $tax_amount + $ppn_amount;
 
         $ongkir        = (float) $this->ongkir;
         $biaya_layanan = (float) $this->biaya_layanan;

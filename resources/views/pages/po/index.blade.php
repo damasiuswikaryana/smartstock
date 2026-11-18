@@ -226,7 +226,7 @@
                                                 </select>
                                             </div>
                                             <div class="col-lg-9 ps-1">
-                                                <input type="number" class="form-control number-separator"
+                                                <input type="text" inputmode="decimal" class="form-control number-separator"
                                                     placeholder="Discount value" name="disc" value="0" required>
                                             </div>
                                         </div>
@@ -238,7 +238,7 @@
                                     <div class="col-lg-8">
                                         <div class="input-group">
                                             <span class="input-group-text">Rp.</span>
-                                            <input type="number" class="form-control number-separator"
+                                            <input type="text" inputmode="decimal" class="form-control number-separator"
                                                 placeholder="Down payment in rupiah" name="dp" value="0"
                                                 required>
                                         </div>
@@ -256,7 +256,7 @@
                                     <div class="col-lg-8">
                                         <div class="input-group">
                                             <span class="input-group-text text-success">+ Rp.</span>
-                                            <input type="text" inputmode="numeric"
+                                            <input type="text" inputmode="decimal"
                                                 class="form-control number-separator" placeholder="Subtotal ukuran khusus"
                                                 name="subtotal_ukuran_khusus" value="0">
                                         </div>
@@ -267,7 +267,7 @@
                                     <div class="col-lg-8">
                                         <div class="input-group">
                                             <span class="input-group-text text-success">+ Rp.</span>
-                                            <input type="text" inputmode="numeric"
+                                            <input type="text" inputmode="decimal"
                                                 class="form-control number-separator" placeholder="Ongkir" name="ongkir"
                                                 value="0">
                                         </div>
@@ -278,7 +278,7 @@
                                     <div class="col-lg-8">
                                         <div class="input-group">
                                             <span class="input-group-text text-success">+ Rp.</span>
-                                            <input type="text" inputmode="numeric"
+                                            <input type="text" inputmode="decimal"
                                                 class="form-control number-separator" placeholder="Biaya layanan"
                                                 name="biaya_layanan" value="0">
                                         </div>
@@ -291,7 +291,7 @@
                                     <div class="col-lg-8">
                                         <div class="input-group">
                                             <span class="input-group-text text-danger">&minus; Rp.</span>
-                                            <input type="text" inputmode="numeric"
+                                            <input type="text" inputmode="decimal"
                                                 class="form-control number-separator" placeholder="Diskon voucher toko"
                                                 name="disc_voucher_toko" value="0">
                                         </div>
@@ -302,7 +302,7 @@
                                     <div class="col-lg-8">
                                         <div class="input-group">
                                             <span class="input-group-text text-danger">&minus; Rp.</span>
-                                            <input type="text" inputmode="numeric"
+                                            <input type="text" inputmode="decimal"
                                                 class="form-control number-separator" placeholder="Potongan"
                                                 name="potongan" value="0">
                                         </div>
@@ -313,7 +313,7 @@
                                     <div class="col-lg-8">
                                         <div class="input-group">
                                             <span class="input-group-text">Rp.</span>
-                                            <input type="text" inputmode="numeric"
+                                            <input type="text" inputmode="decimal"
                                                 class="form-control number-separator"
                                                 placeholder="Total gross (info only)" name="total_gross" value="0">
                                         </div>
@@ -351,7 +351,9 @@
     <script src="{{ asset('assets/js/plugins/choices.min.js') }}"></script>
     <script type="text/javascript">
         function formatRupiah(angka) {
-            return Number(angka || 0).toLocaleString('id-ID');
+            return Number(angka || 0).toLocaleString('id-ID', {
+                maximumFractionDigits: 2
+            });
         }
 
         function initItemMasterChoices(element) {
@@ -611,7 +613,7 @@
                             </select>
                         </div>
                         <div class="col-4 col-lg-2">
-                            <input type="text" name="item[${index}][variants][${variant.id}][nilai_variant]" class="form-control number-separator" value="${formatRupiah(variant.nilai)}" placeholder="Harga item" />
+                            <input type="text" inputmode="decimal" name="item[${index}][variants][${variant.id}][nilai_variant]" class="form-control number-separator" value="${formatRupiah(variant.nilai)}" placeholder="Harga item" />
                         </div>
                         <div class="col-4 col-lg-1">
                             <input type="number" min="0" class="form-control" name="item[${index}][variants][${variant.id}][qty]" placeholder="Qty" value="0">

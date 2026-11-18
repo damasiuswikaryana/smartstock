@@ -99,9 +99,9 @@
                                                 </select>
                                             </div>
                                             <div class="col-4 col-lg-2">
-                                                <input type="text" class="form-control number-separator"
+                                                <input type="text" inputmode="decimal" class="form-control number-separator"
                                                     name="items[{{ $variant->id }}][nilai_variant]"
-                                                    value="{{ pecahTanpaRp($nilai) }}">
+                                                    value="{{ pecahDesimal($nilai) }}">
                                             </div>
                                             <div class="col-4 col-lg-1">
                                                 <input type="hidden" name="items[{{ $variant->id }}][item_varian_id]"
@@ -277,7 +277,7 @@
                             </select>
                         </div>
                         <div class="col-4 col-lg-2">
-                            <input type="text" class="form-control number-separator" name="items[${variant.id}][nilai_variant]" value="${formatRupiah(variant.nilai)}" placeholder="Harga item">
+                            <input type="text" inputmode="decimal" class="form-control number-separator" name="items[${variant.id}][nilai_variant]" value="${formatRupiah(variant.nilai)}" placeholder="Harga item">
                         </div>
                         <div class="col-4 col-lg-1">
                             <input type="hidden" name="items[${variant.id}][item_varian_id]" value="${variant.id}">

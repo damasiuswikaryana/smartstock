@@ -285,12 +285,12 @@
                 </td>
                 <td class="text-sm-end">
                     <span class="float-left">Rp.</span>
-                    <span class="float-right">{{ pecahTanpaRp($item->unit_price) }}</span>
+                    <span class="float-right">{{ pecahDesimal($item->unit_price) }}</span>
                     <div class="clear-both"></div>
                 </td>
                 <td class="text-sm-end">
                     <span class="float-left">Rp.</span>
-                    <span class="float-right">{{ pecahTanpaRp($amount) }}</span>
+                    <span class="float-right">{{ pecahDesimal($amount) }}</span>
                     <div class="clear-both"></div>
                 </td>
             </tr>
@@ -350,7 +350,7 @@
                 <td><b>{{ $row[0] }}</b></td>
                 <td class="text-sm-end {{ $row[2] ? 'fw-bold' : '' }}">
                     <span class="float-left">Rp.</span>
-                    <span class="float-right">{{ pecahTanpaRp($row[1]) }}</span>
+                    <span class="float-right">{{ pecahDesimal($row[1]) }}</span>
                 </td>
             </tr>
         @endforeach

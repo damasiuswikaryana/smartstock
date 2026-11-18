@@ -202,13 +202,13 @@
                                         <div class="ms-2 me-auto">
                                             <div class="fw-bold">{{ $child->varian->name_varian }}</div>
                                             SKU: {{ $child->varian->sku_varian }}<br>
-                                            {{ rupiah($child->unit_price) }}
+                                            {{ rupiahDesimal($child->unit_price) }}
                                         </div>
                                         <div>
                                             <span class="f-14 badge bg-primary rounded-pill me-2">x
                                                 {{ $child->qty }}</span>
                                             <span class="f-14 badge bg-light-secondary rounded-pill">
-                                                {{ rupiah($child->unit_price * $child->qty) }}</span>
+                                                {{ rupiahDesimal($child->unit_price * $child->qty) }}</span>
                                         </div>
                                     </li>
                                 @endforeach
@@ -220,7 +220,7 @@
                                         Subtotal
                                     </div>
                                     <div class="ms-0 me-auto col-6 text-end">
-                                        {{ rupiah($subtotal) }}
+                                        {{ rupiahDesimal($subtotal) }}
                                     </div>
                                 </li>
                             </ol>

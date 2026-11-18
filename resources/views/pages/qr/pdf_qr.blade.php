@@ -301,12 +301,12 @@
                 </td>
                 <td class="text-sm-end">
                     <span class="float-left">Rp.</span>
-                    <span class="float-right">{{ pecahTanpaRp($item->unit_price) }}</span>
+                    <span class="float-right">{{ pecahDesimal($item->unit_price) }}</span>
                     <div class="clear-both"></div>
                 </td>
                 <td class="text-sm-end">
                     <span class="float-left">Rp.</span>
-                    <span class="float-right">{{ pecahTanpaRp($amount) }}</span>
+                    <span class="float-right">{{ pecahDesimal($amount) }}</span>
                     <div class="clear-both"></div>
                 </td>
             </tr>
@@ -344,35 +344,35 @@
             <td><b>Sub Total</b></td>
             <td class="text-sm-end d-flex">
                 <span class="float-left">Rp.</span>
-                <span class="float-right">{{ pecahTanpaRp($subtotal) }}</span>
+                <span class="float-right">{{ pecahDesimal($subtotal) }}</span>
             </td>
         </tr>
         <tr>
             <td><b>Tax {{ $data->tax }}%</b></td>
             <td class="text-sm-end">
                 <span class="float-left">Rp.</span>
-                <span class="float-right">{{ pecahTanpaRp($tax_amount) }}</span>
+                <span class="float-right">{{ pecahDesimal($tax_amount) }}</span>
             </td>
         </tr>
         <tr>
             <td><b>Discount</b></td>
             <td class="text-sm-end">
                 <span class="float-left">Rp.</span>
-                <span class="float-right">{{ pecahTanpaRp($data->disc) }}</span>
+                <span class="float-right">{{ pecahDesimal($data->disc) }}</span>
             </td>
         </tr>
         <tr>
             <td><b>DP</b></td>
             <td class="text-sm-end">
                 <span class="float-left">Rp.</span>
-                <span class="float-right">{{ pecahTanpaRp($data->dp) }}</span>
+                <span class="float-right">{{ pecahDesimal($data->dp) }}</span>
             </td>
         </tr>
         <tr>
             <td><b>Total</b></td>
             <td class="text-sm-end fw-bold">
                 <span class="float-left">Rp.</span>
-                <span class="float-right">{{ pecahTanpaRp($total_after_dp) }}</span>
+                <span class="float-right">{{ pecahDesimal($total_after_dp) }}</span>
             </td>
         </tr>
         <tr>
