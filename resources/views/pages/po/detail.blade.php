@@ -73,6 +73,18 @@
                                 </li>
                                 <li class="list-group-item d-flex justify-content-between align-items-start">
                                     <div class="ms-0 me-auto col-6">
+                                        QR Number
+                                    </div>
+                                    <div class="ms-0 me-auto fw-bold col-6">
+                                        @if ($data->qr)
+                                            <a href="{{ route('qr.detail', $data->qr->id) }}">{{ $data->qr->qr_no }}</a>
+                                        @else
+                                            -
+                                        @endif
+                                    </div>
+                                </li>
+                                <li class="list-group-item d-flex justify-content-between align-items-start">
+                                    <div class="ms-0 me-auto col-6">
                                         Date
                                     </div>
                                     <div class="ms-0 me-auto fw-bold col-6">

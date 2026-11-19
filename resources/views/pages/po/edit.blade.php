@@ -22,6 +22,18 @@
                             name="prf_no" value="{{ $data->prf_number }}" placeholder="Input PRF Number" required />
                     </div>
                 </div>
+                <div class="mb-2 row">
+                    <label class="col-lg-2 col-form-label mb-0">QR Number:</label>
+                    <div class="col-lg-10">
+                        <select class="form-control select2" name="qr_id">
+                            <option value="">- Without QR -</option>
+                            @foreach ($qrs as $qr)
+                                <option @if ($data->qr_id == $qr->id) selected @endif value="{{ $qr->id }}">
+                                    {{ $qr->qr_no }} ({{ tglIndo4($qr->qr_date) }})</option>
+                            @endforeach
+                        </select>
+                    </div>
+                </div>
             </div>
 
             <div class="col-12 col-lg-6">

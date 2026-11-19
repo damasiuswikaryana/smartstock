@@ -24,6 +24,12 @@ class Po extends Model
         return $this->belongsTo(Entitas::class, 'entitas_id', 'id');
     }
 
+    public function qr(): BelongsTo
+    {
+        // withTrashed agar nomor QR tetap tampil walau QR-nya sudah dihapus (soft delete)
+        return $this->belongsTo(Qr::class, 'qr_id', 'id')->withTrashed();
+    }
+
     public function vendor(): BelongsTo
     {
         return $this->belongsTo(Vendor::class, 'vendor_id', 'id');

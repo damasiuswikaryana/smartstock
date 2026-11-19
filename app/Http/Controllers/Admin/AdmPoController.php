@@ -9,6 +9,7 @@ use App\Models\ItemVarian;
 use App\Models\Vendor;
 use App\Models\Po;
 use App\Models\PoChild;
+use App\Models\Qr;
 use App\Models\Satuan;
 use App\Models\User;
 use App\Models\Category;
@@ -32,6 +33,28 @@ class AdmPoController extends Controller
         return angkaDesimal($value);
     }
 
+    /**
+     * Daftar QR untuk pilihan QR Number pada form add/edit PO.
+     */
+    private function qrOptions()
+    {
+        return Qr::select('id', 'qr_no', 'qr_date')->orderByDesc('qr_date')->orderByDesc('id')->get();
+    }
+
+    /**
+     * Ambil qr_id dari input; kosong berarti PO tidak merujuk ke QR.
+     */
+    private function qrId(array $input): ?int
+    {
+        if (empty($input['qr_id'])) {
+            return null;
+        }
+        if (!Qr::where('id', $input['qr_id'])->exists()) {
+            throw new \InvalidArgumentException('QR Number tidak ditemukan.');
+        }
+        return (int) $input['qr_id'];
+    }
+
     public function index(Request $request)
     {
         $tahun      = date("Y");
@@ -42,7 +65,8 @@ class AdmPoController extends Controller
         $lokasi     = Auth::user()->loc_id;
         $categories = Category::all();
         $user       = User::where('id', Auth::user()->id)->first();
-        $data       = Po::with('child');
+        $data       = Po::with('child', 'qr');
+        $qrs        = $this->qrOptions();
 
         if ($request->ajax()) {
             // filter werehouse
@@ -127,6 +151,9 @@ class AdmPoController extends Controller
                 ->addColumn('po_number', function ($row) {
                     return '<code>' . $row->po_no . '</code>';
                 })
+                ->addColumn('qr_number', function ($row) {
+                    return $row->qr ? '<code>' . e($row->qr->qr_no) . '</code>' : '-';
+                })
                 ->addColumn('po_date', function ($row) {
                     return tglIndo4($row->po_date);
                 })
@@ -158,10 +185,10 @@ class AdmPoController extends Controller
                         return '<span class="badge bg-light-success text-green f-14">Approval</span>';
                     }
                 })
-                ->rawColumns(['action', 'updated_at', 'po_number', 'po_date', 'po_dp', 'entitas', 'vendor', 'items', 'po_status'])
+                ->rawColumns(['action', 'updated_at', 'po_number', 'qr_number', 'po_date', 'po_dp', 'entitas', 'vendor', 'items', 'po_status'])
                 ->make(true);
         }
-        return view('pages.po.index', compact('vendor', 'items', 'entitas', 'categories'));
+        return view('pages.po.index', compact('vendor', 'items', 'entitas', 'categories', 'qrs'));
     }
 
     public function store(Request $request, FirebaseNotificationService $firebase)
@@ -188,6 +215,7 @@ class AdmPoController extends Controller
             $po_master              = Po::create([
                 'po_no'             => $input['po_no'],
                 'prf_number'        => $input['prf_no'],
+                'qr_id'             => $this->qrId($input),
                 'po_date'           => $input['po_date'],
                 'po_status'         => "Pending",
                 'entitas_id'        => $input['entitas_id'],
@@ -278,8 +306,9 @@ class AdmPoController extends Controller
         $qtyData            = $data->child->keyBy('item_varian_id');
 
         $categories         = Category::with('items')->get();
+        $qrs                = $this->qrOptions();
 
-        return view('pages.po.edit', compact('data', 'vendor', 'entitas', 'items', 'itemMasters', 'qtyData', 'satuan', 'categories'));
+        return view('pages.po.edit', compact('data', 'vendor', 'entitas', 'items', 'itemMasters', 'qtyData', 'satuan', 'categories', 'qrs'));
     }
 
     public function update(Request $request, int $id)
@@ -305,6 +334,7 @@ class AdmPoController extends Controller
             DB::beginTransaction();
             $data->po_no             = $input['po_no'];
             $data->prf_number        = $input['prf_no'];
+            $data->qr_id             = $this->qrId($input);
             $data->po_date           = $input['po_date'];
             $data->entitas_id        = $input['entitas_id'];
             $data->vendor_id         = $input['vendor_id'];

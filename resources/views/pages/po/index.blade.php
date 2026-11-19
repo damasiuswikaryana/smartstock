@@ -84,7 +84,7 @@
     </div>
 
     @php
-        $thead = ['PO Number', 'Date', 'Entity', 'Vendor', 'Items', 'Status', 'DP', 'Options'];
+        $thead = ['PO Number', 'QR Number', 'Date', 'Entity', 'Vendor', 'Items', 'Status', 'DP', 'Options'];
     @endphp
     <x-datatable :thead=$thead :filter="null">
     </x-datatable>
@@ -120,6 +120,18 @@
                                         <input class="form-control custom class" id="choices-text-unique-values"
                                             type="text" name="prf_no" value="" placeholder="Input PRF Number"
                                             required />
+                                    </div>
+                                </div>
+                                <div class="mb-2 row">
+                                    <label class="col-lg-2 col-form-label mb-0">QR Number:</label>
+                                    <div class="col-lg-10">
+                                        <select class="form-control select2" name="qr_id">
+                                            <option value="">- Without QR -</option>
+                                            @foreach ($qrs as $qr)
+                                                <option value="{{ $qr->id }}">{{ $qr->qr_no }}
+                                                    ({{ tglIndo4($qr->qr_date) }})</option>
+                                            @endforeach
+                                        </select>
                                     </div>
                                 </div>
                             </div>
@@ -399,6 +411,11 @@
             columns: [{
                     data: 'po_number',
                     name: 'po_number',
+                    class: 'py-lg-1 py-sm-2',
+                },
+                {
+                    data: 'qr_number',
+                    name: 'qr_number',
                     class: 'py-lg-1 py-sm-2',
                 },
                 {
