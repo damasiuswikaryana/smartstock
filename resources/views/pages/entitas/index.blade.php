@@ -26,7 +26,7 @@
     </div>
 
     @php
-        $thead = ['No', 'Entity', 'Address', 'Options'];
+        $thead = ['No', 'Entity', 'Address', 'Last Updated', 'Options'];
     @endphp
     <x-datatable :thead=$thead :filter="null">
     </x-datatable>
@@ -55,6 +55,36 @@
                             <div class="col-lg-8">
                                 <input type="text" class="form-control" placeholder="Entity Address" name="alamat"
                                     required />
+                            </div>
+                        </div>
+                        <div class="mb-3 row">
+                            <label class="col-lg-4 col-form-label">Company Name: <span class="text-danger">*</span></label>
+                            <div class="col-lg-8">
+                                <input type="text" class="form-control" placeholder="Company Name" name="company"
+                                    required />
+                            </div>
+                        </div>
+                        <div class="mb-3 row">
+                            <label class="col-lg-4 col-form-label">Email: </label>
+                            <div class="col-lg-8">
+                                <input type="email" class="form-control" placeholder="Entity Email" name="email" />
+                            </div>
+                        </div>
+                        <div class="mb-3 row">
+                            <label class="col-lg-4 col-form-label">Phone: </label>
+                            <div class="col-lg-8">
+                                <input type="text" class="form-control" placeholder="Entity Phone" name="phone" />
+                            </div>
+                        </div>
+                        <div class="mb-3 row">
+                            <label class="col-lg-4 col-form-label">Director: <span class="text-danger">*</span></label>
+                            <div class="col-lg-8">
+                                <select class="form-control" name="director" required>
+                                    <option value="" disabled selected>-- Select User --</option>
+                                    @foreach ($directors as $dir)
+                                        <option value="{{ $dir->id }}">{{ $dir->firstname . ' ' . $dir->lastname }}</option>
+                                    @endforeach
+                                </select>
                             </div>
                         </div>
                         <div class="mb-0">

@@ -130,8 +130,7 @@
         document.querySelector(elForUploadedFiles).appendChild(li);
     };
 
-    const entitasId = {{ $data->id }};
-    const uploadUrl = `/entitas/${entitasId}/upload-logo`;
+    const uploadUrl = "{{ route('entitas.storeLogo', $data->id) }}";
 
     import {
         Uppy,

@@ -38,20 +38,46 @@ class AdmEntitasController extends Controller
         return view('pages.entitas.index', compact('directors'));
     }
 
+    private function validateInput(Request $request): array
+    {
+        return $request->validate([
+            'name'     => 'required|string|max:255',
+            'alamat'   => 'required|string',
+            'company'  => 'required|string|max:255',
+            'email'    => 'nullable|email|max:255',
+            'phone'    => 'nullable|string|max:50',
+            'director' => 'required|exists:users,id',
+        ], [], [
+            'name'     => 'Entity Name',
+            'alamat'   => 'Address',
+            'company'  => 'Company Name',
+            'director' => 'Director',
+        ]);
+    }
+
+    private function mapInput(array $input): array
+    {
+        return [
+            'entitas_name'    => $input['name'],
+            'entitas_alamat'  => $input['alamat'],
+            'entitas_company' => $input['company'],
+            'entitas_email'   => $input['email'] ?? null,
+            'entitas_phone'   => $input['phone'] ?? null,
+            'director_id'     => $input['director'],
+        ];
+    }
+
     public function store(Request $request)
     {
-        // dd($request->all());
-        $input = $request->all();
+        try {
+            $input = $this->validateInput($request);
+        } catch (\Illuminate\Validation\ValidationException $e) {
+            return response()->json(['success' => false, 'message' => implode(' ', $e->validator->errors()->all())]);
+        }
+
         try {
             DB::beginTransaction();
-            Entitas::create([
-                'entitas_name'     => $input['name'],
-                'entitas_alamat'   => $input['alamat'],
-                'entitas_company'  => $input['company'],
-                'entitas_email'    => $input['email'],
-                'entitas_phone'    => $input['phone'],
-                'director_id'      => $input['director']
-            ]);
+            Entitas::create($this->mapInput($input));
             DB::commit();
             return response()->json(['success' => true]);
         } catch (\Throwable $th) {
@@ -62,7 +88,7 @@ class AdmEntitasController extends Controller
 
     public function edit(int $id)
     {
-        $data       = Entitas::where('id', $id)->first();
+        $data       = Entitas::findOrFail($id);
         $directors  = User::role('director')->get();
 
         try {
@@ -74,17 +100,20 @@ class AdmEntitasController extends Controller
 
     public function update(Request $request, int $id)
     {
-        $data   = Entitas::where('id', $id)->first();
-        $input  = $request->all();
+        $data = Entitas::find($id);
+        if (!$data) {
+            return response()->json(['success' => false, 'message' => 'Data not found']);
+        }
+
+        try {
+            $input = $this->validateInput($request);
+        } catch (\Illuminate\Validation\ValidationException $e) {
+            return response()->json(['success' => false, 'message' => implode(' ', $e->validator->errors()->all())]);
+        }
+
         try {
             DB::beginTransaction();
-            $data->entitas_name       = $input['name'];
-            $data->entitas_alamat     = $input['alamat'];
-            $data->entitas_company    = $input['company'];
-            $data->entitas_email      = $input['email'];
-            $data->entitas_phone      = $input['phone'];
-            $data->director_id        = $input['director'];
-            $data->save();
+            $data->update($this->mapInput($input));
             DB::commit();
             return response()->json(['success' => true]);
         } catch (\Throwable $th) {
