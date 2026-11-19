@@ -41,11 +41,11 @@ class AdmEntitasController extends Controller
     private function validateInput(Request $request): array
     {
         return $request->validate([
-            'name'     => 'required|string|max:255',
+            'name'     => 'required|string|max:100',
             'alamat'   => 'required|string',
-            'company'  => 'required|string|max:255',
-            'email'    => 'nullable|email|max:255',
-            'phone'    => 'nullable|string|max:50',
+            'company'  => 'required|string|max:100',
+            'email'    => 'nullable|email|max:100',
+            'phone'    => 'nullable|string|max:20',
             'director' => 'required|exists:users,id',
         ], [], [
             'name'     => 'Entity Name',
@@ -77,7 +77,8 @@ class AdmEntitasController extends Controller
 
         try {
             DB::beginTransaction();
-            Entitas::create($this->mapInput($input));
+            // entitas_global NOT NULL tanpa default; entitas baru bukan entitas global
+            Entitas::create($this->mapInput($input) + ['entitas_global' => 0]);
             DB::commit();
             return response()->json(['success' => true]);
         } catch (\Throwable $th) {
