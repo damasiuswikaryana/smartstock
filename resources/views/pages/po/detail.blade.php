@@ -215,7 +215,7 @@
                                         <div class="ms-2 me-auto">
                                             <div class="fw-bold">{{ $child->varian->name_varian }}</div>
                                             SKU: {{ $child->varian->sku_varian }}<br>
-                                            {{ rupiahDesimal($child->unit_price) }}
+                                            {{ rupiahNominal($child->unit_price, $pakai_desimal) }}
                                             @if ($child->pph)
                                                 <span class="badge bg-secondary rounded-pill">PPH</span>
                                             @endif
@@ -224,7 +224,7 @@
                                             <span class="f-14 badge bg-primary rounded-pill me-2">x
                                                 {{ $child->qty }}</span>
                                             <span class="f-14 badge bg-light-secondary rounded-pill">
-                                                {{ rupiahDesimal($child->unit_price * $child->qty) }}</span>
+                                                {{ rupiahNominal($child->unit_price * $child->qty, $pakai_desimal) }}</span>
                                         </div>
                                     </li>
                                 @endforeach
@@ -236,7 +236,7 @@
                                         Subtotal Items
                                     </div>
                                     <div class="ms-0 me-auto col-6 text-end">
-                                        {{ rupiahDesimal($subtotal_items) }}
+                                        {{ rupiahNominal($subtotal_items, $pakai_desimal) }}
                                     </div>
                                 </li>
                                 <li class="list-group-item d-flex justify-content-between align-items-start py-2">
@@ -244,7 +244,7 @@
                                         Subtotal Ukuran Khusus
                                     </div>
                                     <div class="ms-0 me-auto col-6 text-end">
-                                        {!! '+ ' . rupiahDesimal($ukuran_khusus) !!}
+                                        {!! '+ ' . rupiahNominal($ukuran_khusus, $pakai_desimal) !!}
                                     </div>
                                 </li>
                                 <li class="list-group-item d-flex justify-content-between align-items-start py-2">
@@ -252,7 +252,7 @@
                                         Subtotal
                                     </div>
                                     <div class="ms-0 me-auto col-6 text-end">
-                                        {{ rupiahDesimal($subtotal) }}
+                                        {{ rupiahNominal($subtotal, $pakai_desimal) }}
                                     </div>
                                 </li>
                                 <li class="list-group-item d-flex justify-content-between align-items-start py-2">
@@ -261,7 +261,7 @@
                                     </div>
                                     <div class="ms-0 me-auto col-6 text-end text-green">
                                         {{ $data->disc_perc != null ? $data->disc_perc . '%' : '' }}
-                                        {!! ' &nbsp; - ' . rupiahDesimal($disc_amount) !!}
+                                        {!! ' &nbsp; - ' . rupiahNominal($disc_amount, $pakai_desimal) !!}
                                     </div>
                                 </li>
                                 <li class="list-group-item d-flex justify-content-between align-items-start py-2">
@@ -269,7 +269,7 @@
                                         Voucher Toko
                                     </div>
                                     <div class="ms-0 me-auto col-6 text-end text-green">
-                                        {!! '- ' . rupiahDesimal($voucher_toko) !!}
+                                        {!! '- ' . rupiahNominal($voucher_toko, $pakai_desimal) !!}
                                     </div>
                                 </li>
                                 <li class="list-group-item d-flex justify-content-between align-items-start py-2">
@@ -277,7 +277,7 @@
                                         Potongan
                                     </div>
                                     <div class="ms-0 me-auto col-6 text-end text-green">
-                                        {!! '- ' . rupiahDesimal($potongan) !!}
+                                        {!! '- ' . rupiahNominal($potongan, $pakai_desimal) !!}
                                     </div>
                                 </li>
                                 <li class="list-group-item d-flex justify-content-between align-items-start py-2">
@@ -285,7 +285,7 @@
                                         <i class="me-2 ph-duotone ph-arrow-right"></i> Total After Discount
                                     </div>
                                     <div class="ms-0 me-auto col-6 text-end text-green">
-                                        {{ rupiahDesimal($total_after_disc) }}
+                                        {{ rupiahNominal($total_after_disc, $pakai_desimal) }}
                                     </div>
                                 </li>
                                 <li class="list-group-item d-flex justify-content-between align-items-start py-2">
@@ -293,7 +293,7 @@
                                         PPH
                                     </div>
                                     <div class="ms-0 me-auto col-6 text-end text-green">
-                                        {!! $data->tax . '%' . ' &nbsp; - ' . rupiahDesimal($tax_amount) !!}
+                                        {!! $data->tax . '%' . ' &nbsp; - ' . rupiahNominal($tax_amount, $pakai_desimal) !!}
                                     </div>
                                 </li>
                                 <li class="list-group-item d-flex justify-content-between align-items-start py-2">
@@ -301,7 +301,7 @@
                                         PPN
                                     </div>
                                     <div class="ms-0 me-auto col-6 text-end">
-                                        {!! $data->ppn . '%' . ' &nbsp; + ' . rupiahDesimal($ppn_amount) !!}
+                                        {!! $data->ppn . '%' . ' &nbsp; + ' . rupiahNominal($ppn_amount, $pakai_desimal) !!}
                                     </div>
                                 </li>
                                 <li class="list-group-item d-flex justify-content-between align-items-start py-2">
@@ -309,7 +309,7 @@
                                         <i class="me-2 ph-duotone ph-arrow-right"></i> Total After Tax
                                     </div>
                                     <div class="ms-0 me-auto col-6 text-end text-danger">
-                                        {{ rupiahDesimal($total_after_tax) }}
+                                        {{ rupiahNominal($total_after_tax, $pakai_desimal) }}
                                     </div>
                                 </li>
                                 <li class="list-group-item d-flex justify-content-between align-items-start py-2">
@@ -317,7 +317,7 @@
                                         Biaya Ongkir
                                     </div>
                                     <div class="ms-0 me-auto col-6 text-end">
-                                        {!! '+ ' . rupiahDesimal($ongkir) !!}
+                                        {!! '+ ' . rupiahNominal($ongkir, $pakai_desimal) !!}
                                     </div>
                                 </li>
                                 <li class="list-group-item d-flex justify-content-between align-items-start py-2">
@@ -325,7 +325,7 @@
                                         Biaya Layanan
                                     </div>
                                     <div class="ms-0 me-auto col-6 text-end">
-                                        {!! '+ ' . rupiahDesimal($biaya_layanan) !!}
+                                        {!! '+ ' . rupiahNominal($biaya_layanan, $pakai_desimal) !!}
                                     </div>
                                 </li>
                                 <li class="list-group-item d-flex justify-content-between align-items-start py-2">
@@ -333,7 +333,7 @@
                                         <i class="me-2 ph-duotone ph-arrow-right"></i> Grand Total
                                     </div>
                                     <div class="ms-0 me-auto col-6 text-end text-danger">
-                                        {{ rupiahDesimal($grand_total) }}
+                                        {{ rupiahNominal($grand_total, $pakai_desimal) }}
                                     </div>
                                 </li>
                                 <li class="list-group-item d-flex justify-content-between align-items-start py-2">
@@ -341,7 +341,7 @@
                                         Down Payment
                                     </div>
                                     <div class="ms-0 me-auto col-6 text-end">
-                                        {{ rupiahDesimal($data->dp) }}
+                                        {{ rupiahNominal($data->dp, $pakai_desimal) }}
                                     </div>
                                 </li>
                                 <li class="list-group-item d-flex justify-content-between align-items-start py-2">
@@ -349,7 +349,7 @@
                                         Total
                                     </div>
                                     <div class="ms-0 me-auto fw-bold col-6 text-end fs-4">
-                                        {{ rupiahDesimal($total_after_dp) }}
+                                        {{ rupiahNominal($total_after_dp, $pakai_desimal) }}
                                     </div>
                                 </li>
                                 <li class="list-group-item d-flex justify-content-between align-items-start py-2">
@@ -357,7 +357,7 @@
                                         Total Gross <small class="text-muted">(info)</small>
                                     </div>
                                     <div class="ms-0 me-auto col-6 text-end">
-                                        {{ rupiahDesimal($data->total_gross) }}
+                                        {{ rupiahNominal($data->total_gross, $pakai_desimal) }}
                                     </div>
                                 </li>
                             </ol>

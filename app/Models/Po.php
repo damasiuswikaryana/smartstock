@@ -65,6 +65,10 @@ class Po extends Model
     {
         $children = $this->child;
 
+        // jika tidak ada harga item yang berkoma, seluruh nominal ditampilkan tanpa koma
+        // dan hasil akhir (grand total & total) dibulatkan ke atas
+        $pakai_desimal = $children->contains(fn($c) => round((float) $c->unit_price, 2) != floor((float) $c->unit_price));
+
         $subtotal_items = $children->sum(fn($c) => $c->unit_price * $c->qty);
         $subtotal_pph   = $children->where('pph', 1)->sum(fn($c) => $c->unit_price * $c->qty);
         $ukuran_khusus  = (float) $this->subtotal_ukuran_khusus;
@@ -92,6 +96,12 @@ class Po extends Model
 
         $total_after_dp = $grand_total - (float) $this->dp;
 
+        if (!$pakai_desimal) {
+            // round(.., 2) dulu agar sisa floating point (mis. 4101516.0000001) tidak ikut dibulatkan ke atas
+            $grand_total    = ceil(round($grand_total, 2));
+            $total_after_dp = ceil(round($total_after_dp, 2));
+        }
+
         return compact(
             'subtotal_items',
             'ukuran_khusus',
@@ -107,7 +117,8 @@ class Po extends Model
             'ongkir',
             'biaya_layanan',
             'grand_total',
-            'total_after_dp'
+            'total_after_dp',
+            'pakai_desimal'
         );
     }
 }

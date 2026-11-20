@@ -82,6 +82,23 @@ function rupiahDesimal($nilai)
     return "Rp. " . pecahDesimal($nilai);
 }
 
+/**
+ * Format nominal: pakai koma (seperti pecahDesimal) jika $desimal true,
+ * jika false dibulatkan dan ditampilkan tanpa koma (20.000,55 -> 20.001).
+ */
+function formatNominal($nilai, bool $desimal = true)
+{
+    if ($desimal) {
+        return pecahDesimal($nilai);
+    }
+    return number_format(round((float) $nilai), 0, ',', '.');
+}
+
+function rupiahNominal($nilai, bool $desimal = true)
+{
+    return "Rp. " . formatNominal($nilai, $desimal);
+}
+
 function ubahAngka($str)
 {
     $a = (int) $str;
