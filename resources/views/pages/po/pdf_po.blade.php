@@ -185,7 +185,11 @@
             <td colspan="3" style="padding:10px;">
                 <div class="row">
                     <div class="col-4" style="">
-                        <img src="{{ $logo }}" width="130">
+                        @if ($logo)
+                            <img src="{{ $logo }}" width="130">
+                        @else
+                            <b>{{ $data->entitas->entitas_company ?? $data->entitas->entitas_name }}</b>
+                        @endif
                     </div>
                     <div class="col-8" style="">
                         <h2 class="text-center" style="margin:5px 0px 0px 0px; padding:0px;">

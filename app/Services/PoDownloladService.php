@@ -26,22 +26,11 @@ class PoDownloladService
     public function generatePdf(int $id)
     {
         $data   = $this->getData($id);
-        //-----
-        $logo   = $data['logo'];
-        $path   = storage_path('app/public/entitas/' . $logo);
-        $type   = pathinfo($path, PATHINFO_EXTENSION);
-        $data64 = file_get_contents($path);
-        $base64 = 'data:image/' . $type . ';base64,' . base64_encode($data64);
-        //-----
-        $pathChecked   = storage_path('app/public/entitas/checked.jpg');
-        $typeChecked   = pathinfo($pathChecked, PATHINFO_EXTENSION);
-        $data64Checked = file_get_contents($pathChecked);
-        $base64Checked = 'data:image/' . $typeChecked . ';base64,' . base64_encode($data64Checked);
-        //-----
-        $pathIcon   = public_path('assets/images/icons/icon-96x96.jpg');
-        $typeIcon   = pathinfo($pathIcon, PATHINFO_EXTENSION);
-        $data64Icon = file_get_contents($pathIcon);
-        $base64Icon = 'data:image/' . $typeIcon . ';base64,' . base64_encode($data64Icon);
+
+        // logo entitas boleh kosong (belum diupload); jangan sampai download PO jadi error
+        $logo          = $data['logo'] ? $this->imageBase64(storage_path('app/public/entitas/' . $data['logo'])) : null;
+        $base64Checked = $this->imageBase64(storage_path('app/public/entitas/checked.jpg'));
+        $base64Icon    = $this->imageBase64(public_path('assets/images/icons/icon-96x96.jpg'));
 
         return PDF::setOptions([
             'isHtml5ParserEnabled'  => true,
@@ -51,9 +40,21 @@ class PoDownloladService
             ->loadView('pages.po.pdf_po', [
                 'data'              => $data['po'],
                 'totals'            => $data['totals'],
-                'logo'              => $base64,
+                'logo'              => $logo,
                 'checked'           => $base64Checked,
                 'icon'              => $base64Icon,
             ]);
+    }
+
+    /**
+     * Ubah file gambar menjadi data URI base64. Null jika file tidak ada.
+     */
+    private function imageBase64(string $path): ?string
+    {
+        if (!is_file($path)) {
+            return null;
+        }
+        $type = pathinfo($path, PATHINFO_EXTENSION);
+        return 'data:image/' . $type . ';base64,' . base64_encode(file_get_contents($path));
     }
 }
