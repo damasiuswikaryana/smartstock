@@ -649,6 +649,30 @@
             });
         });
 
+        /**
+         * Aktifkan paste pada Choices mode text (PRF Number).
+         * Teks berisi beberapa nomor (dipisah koma / enter / tab / titik koma) langsung dipecah jadi item,
+         * nomor yang sudah ada tidak ditambahkan lagi. Paste satu nomor tetap masuk ke input seperti biasa.
+         * Global (window) agar bisa dipakai juga oleh modal edit yang dimuat via ajax.
+         */
+        window.enableChoicesPaste = function(choices) {
+            choices.input.element.addEventListener('paste', function(e) {
+                const text = (e.clipboardData || window.clipboardData).getData('text') || '';
+                const parts = text.split(/[\r\n\t,;]+/).map(v => v.trim()).filter(Boolean);
+                if (parts.length < 2) {
+                    return;
+                }
+                e.preventDefault();
+                const existing = new Set(choices.getValue(true));
+                const baru = [...new Set(parts)].filter(v => !existing.has(v));
+                if (baru.length) {
+                    choices.setValue(baru);
+                }
+                choices.clearInput();
+            });
+            return choices;
+        };
+
         document.addEventListener('DOMContentLoaded', function() {
             $('.select2').each(function() {
                 new Choices(this, {
@@ -661,13 +685,13 @@
                 });
             });
 
-            var text_Unique_Val = new Choices('#choices-text-unique-values', {
+            var text_Unique_Val = enableChoicesPaste(new Choices('#choices-text-unique-values', {
                 delimiter: ',',
-                paste: false,
+                paste: true,
                 duplicateItemsAllowed: false,
                 editItems: true,
                 removeItemButton: true
-            });
+            }));
         });
     </script>
 @endpush

@@ -447,11 +447,14 @@
         });
     });
 
-    new Choices('#choices-text-unique-values-edit', {
+    var prfChoicesEdit = new Choices('#choices-text-unique-values-edit', {
         delimiter: ',',
-        paste: false,
+        paste: true,
         duplicateItemsAllowed: false,
         editItems: true,
         removeItemButton: true
     });
+    if (window.enableChoicesPaste) {
+        enableChoicesPaste(prfChoicesEdit);
+    }
 </script>
