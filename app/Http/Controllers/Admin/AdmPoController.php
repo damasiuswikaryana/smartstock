@@ -220,7 +220,7 @@ class AdmPoController extends Controller
                 'po_status'         => "Pending",
                 'entitas_id'        => $input['entitas_id'],
                 'vendor_id'         => $input['vendor_id'],
-                'tax'               => $input['tax'],
+                'tax'               => angkaDesimal($input['tax']),
                 'ppn'               => $input['ppn'],
                 'disc'              => $disc_rp,
                 'disc_perc'         => $disc_pr,
@@ -338,7 +338,7 @@ class AdmPoController extends Controller
             $data->po_date           = $input['po_date'];
             $data->entitas_id        = $input['entitas_id'];
             $data->vendor_id         = $input['vendor_id'];
-            $data->tax               = $input['tax'];
+            $data->tax               = angkaDesimal($input['tax']);
             $data->ppn               = $input['ppn'];
             $data->disc              = $disc_rp;
             $data->disc_perc         = $disc_pr;
