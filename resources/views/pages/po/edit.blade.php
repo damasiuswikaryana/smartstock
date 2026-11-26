@@ -114,12 +114,14 @@
                                                 </select>
                                             </div>
                                             <div class="col-4 col-lg-2">
-                                                <input type="text" inputmode="decimal" class="form-control number-separator"
+                                                <input type="text" inputmode="decimal"
+                                                    class="form-control number-separator"
                                                     name="items[{{ $variant->id }}][nilai_variant]"
                                                     value="{{ pecahDesimal($nilai) }}">
                                             </div>
                                             <div class="col-4 col-lg-1">
-                                                <input type="hidden" name="items[{{ $variant->id }}][item_varian_id]"
+                                                <input type="hidden"
+                                                    name="items[{{ $variant->id }}][item_varian_id]"
                                                     value="{{ $variant->id }}">
                                                 <input type="number" min="0" class="form-control"
                                                     name="items[{{ $variant->id }}][qty]"
@@ -171,8 +173,8 @@
                     <label class="col-lg-4 col-form-label">PPH: <span class="text-danger">*</span></label>
                     <div class="col-lg-8">
                         <div class="input-group">
-                            <input type="number" class="form-control" placeholder="PPH" name="tax"
-                                value="{{ $data->tax }}" required>
+                            <input type="text" inputmode="decimal" class="form-control number-separator"
+                                placeholder="PPH" name="tax" value="{{ $data->tax }}" required>
                             <span class="input-group-text">%</span>
                         </div>
                     </div>
@@ -202,7 +204,7 @@
                             <div class="col-lg-9 ps-1">
                                 <input type="text" inputmode="decimal" class="form-control number-separator"
                                     placeholder="Discount value" name="disc"
-                                    value="{{ pecahDesimal($data->disc ?? $data->disc_perc ?? 0) }}" required>
+                                    value="{{ pecahDesimal($data->disc ?? ($data->disc_perc ?? 0)) }}" required>
                             </div>
                         </div>
                     </div>
@@ -229,9 +231,9 @@
                     <div class="col-lg-8">
                         <div class="input-group">
                             <span class="input-group-text text-success">+ Rp.</span>
-                            <input type="text" inputmode="decimal"
-                                class="form-control number-separator" placeholder="Subtotal ukuran khusus"
-                                name="subtotal_ukuran_khusus" value="{{ pecahDesimal($data->subtotal_ukuran_khusus ?? 0) }}">
+                            <input type="text" inputmode="decimal" class="form-control number-separator"
+                                placeholder="Subtotal ukuran khusus" name="subtotal_ukuran_khusus"
+                                value="{{ pecahDesimal($data->subtotal_ukuran_khusus ?? 0) }}">
                         </div>
                     </div>
                 </div>
@@ -240,9 +242,8 @@
                     <div class="col-lg-8">
                         <div class="input-group">
                             <span class="input-group-text text-success">+ Rp.</span>
-                            <input type="text" inputmode="decimal"
-                                class="form-control number-separator" placeholder="Ongkir" name="ongkir"
-                                value="{{ pecahDesimal($data->ongkir ?? 0) }}">
+                            <input type="text" inputmode="decimal" class="form-control number-separator"
+                                placeholder="Ongkir" name="ongkir" value="{{ pecahDesimal($data->ongkir ?? 0) }}">
                         </div>
                     </div>
                 </div>
@@ -251,9 +252,9 @@
                     <div class="col-lg-8">
                         <div class="input-group">
                             <span class="input-group-text text-success">+ Rp.</span>
-                            <input type="text" inputmode="decimal"
-                                class="form-control number-separator" placeholder="Biaya layanan"
-                                name="biaya_layanan" value="{{ pecahDesimal($data->biaya_layanan ?? 0) }}">
+                            <input type="text" inputmode="decimal" class="form-control number-separator"
+                                placeholder="Biaya layanan" name="biaya_layanan"
+                                value="{{ pecahDesimal($data->biaya_layanan ?? 0) }}">
                         </div>
                     </div>
                 </div>
@@ -264,9 +265,9 @@
                     <div class="col-lg-8">
                         <div class="input-group">
                             <span class="input-group-text text-danger">&minus; Rp.</span>
-                            <input type="text" inputmode="decimal"
-                                class="form-control number-separator" placeholder="Diskon voucher toko"
-                                name="disc_voucher_toko" value="{{ pecahDesimal($data->disc_voucher_toko ?? 0) }}">
+                            <input type="text" inputmode="decimal" class="form-control number-separator"
+                                placeholder="Diskon voucher toko" name="disc_voucher_toko"
+                                value="{{ pecahDesimal($data->disc_voucher_toko ?? 0) }}">
                         </div>
                     </div>
                 </div>
@@ -275,9 +276,9 @@
                     <div class="col-lg-8">
                         <div class="input-group">
                             <span class="input-group-text text-danger">&minus; Rp.</span>
-                            <input type="text" inputmode="decimal"
-                                class="form-control number-separator" placeholder="Potongan"
-                                name="potongan" value="{{ pecahDesimal($data->potongan ?? 0) }}">
+                            <input type="text" inputmode="decimal" class="form-control number-separator"
+                                placeholder="Potongan" name="potongan"
+                                value="{{ pecahDesimal($data->potongan ?? 0) }}">
                         </div>
                     </div>
                 </div>
@@ -286,9 +287,9 @@
                     <div class="col-lg-8">
                         <div class="input-group">
                             <span class="input-group-text">Rp.</span>
-                            <input type="text" inputmode="decimal"
-                                class="form-control number-separator"
-                                placeholder="Total gross (info only)" name="total_gross" value="{{ pecahDesimal($data->total_gross ?? 0) }}">
+                            <input type="text" inputmode="decimal" class="form-control number-separator"
+                                placeholder="Total gross (info only)" name="total_gross"
+                                value="{{ pecahDesimal($data->total_gross ?? 0) }}">
                         </div>
                         <small class="text-muted">Info only, not included in total calculation.</small>
                     </div>
@@ -400,7 +401,8 @@
                 $.each(res.variants, function(i, variant) {
                     let satuanOptions = '';
                     $.each(res.satuans, function(j, satuan) {
-                        satuanOptions += `<option value="${satuan.id}">${satuan.satuan}</option>`;
+                        satuanOptions +=
+                            `<option value="${satuan.id}">${satuan.satuan}</option>`;
                     });
 
                     htmlEdit += `

@@ -129,7 +129,8 @@
                                             <option value="">- Without QR -</option>
                                             @foreach ($qrs as $qr)
                                                 <option value="{{ $qr->id }}">{{ $qr->qr_no }}
-                                                    ({{ tglIndo4($qr->qr_date) }})</option>
+                                                    ({{ tglIndo4($qr->qr_date) }})
+                                                </option>
                                             @endforeach
                                         </select>
                                     </div>
@@ -210,7 +211,8 @@
                                     <label class="col-lg-4 col-form-label">PPH: <span class="text-danger">*</span></label>
                                     <div class="col-lg-8">
                                         <div class="input-group">
-                                            <input type="number" class="form-control" placeholder="PPH" name="tax"
+                                            <input type="text" inputmode="decimal"
+                                                class="form-control number-separator" placeholder="PPH" name="tax"
                                                 value="0" required>
                                             <span class="input-group-text">%</span>
                                         </div>
@@ -238,8 +240,9 @@
                                                 </select>
                                             </div>
                                             <div class="col-lg-9 ps-1">
-                                                <input type="text" inputmode="decimal" class="form-control number-separator"
-                                                    placeholder="Discount value" name="disc" value="0" required>
+                                                <input type="text" inputmode="decimal"
+                                                    class="form-control number-separator" placeholder="Discount value"
+                                                    name="disc" value="0" required>
                                             </div>
                                         </div>
                                     </div>
@@ -250,9 +253,9 @@
                                     <div class="col-lg-8">
                                         <div class="input-group">
                                             <span class="input-group-text">Rp.</span>
-                                            <input type="text" inputmode="decimal" class="form-control number-separator"
-                                                placeholder="Down payment in rupiah" name="dp" value="0"
-                                                required>
+                                            <input type="text" inputmode="decimal"
+                                                class="form-control number-separator" placeholder="Down payment in rupiah"
+                                                name="dp" value="0" required>
                                         </div>
 
                                     </div>
